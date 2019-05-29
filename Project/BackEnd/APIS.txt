@@ -1,0 +1,14 @@
+report
+ping
+add_pubkey
+get_loginserver_record
+list_apis
+list_users
+add_privatedata
+get_privatedata
+rx_broadcast
+rx_privatemessage
+check_messages
+check_pubkey
+ping_check
+rx_groupmessage

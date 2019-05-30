@@ -8,6 +8,7 @@ import { HomeComponent } from './home/home.component';
 import { PrivatemessageComponent } from './home/privatemessage/privatemessage.component';
 import { NavigationbarComponent } from './navigationbar/navigationbar.component';
 import { BroadcastComponent } from './home/broadcast/broadcast.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { BroadcastComponent } from './home/broadcast/broadcast.component';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

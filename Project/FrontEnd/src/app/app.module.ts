@@ -8,6 +8,7 @@ import { HomeComponent } from './home/home.component';
 import { PrivatemessageComponent } from './home/privatemessage/privatemessage.component';
 import { NavigationbarComponent } from './navigationbar/navigationbar.component';
 import { BroadcastComponent } from './home/broadcast/broadcast.component';
+import { OnlineusersComponent } from './home/privatemessage/onlineusers/onlineusers.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { BroadcastComponent } from './home/broadcast/broadcast.component';
     HomeComponent,
     PrivatemessageComponent,
     NavigationbarComponent,
-    BroadcastComponent
+    BroadcastComponent,
+    OnlineusersComponent
   ],
   imports: [
     BrowserModule,

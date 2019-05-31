@@ -15,3 +15,4 @@ response.close() #be a tidy kiwi
 
 JSON_object = json.loads(data.decode(encoding))
 print(JSON_object)
+print(data)

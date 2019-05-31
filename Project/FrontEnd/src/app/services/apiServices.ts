@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { webServer } from '../constants';
 import { Injectable } from '@angular/core';
 
+
 @Injectable()
 export class apiServices {
 
@@ -20,11 +21,15 @@ export class apiServices {
     constructor(private httpClient: HttpClient) { }
 
     public pingAPI() {
-        //console.log(this.creds);
-        //return this.httpClient.get('http://localhost:8080/',{ responseType: 'text' });
-        //return this.httpClient.post('http://localhost:8080/', null, { responseType: 'text' });
-        return this.httpClient.post('http://localhost:8080/', null, { responseType: 'json' });
+        return this.httpClient.post(`${webServer}/ping`, null, { responseType: 'json' });
     }
 
+    public endpointAPI() {
+        return this.httpClient.post(`${webServer}/endpoint`, {"a":"b"}, { responseType: 'text' });
+    }
+
+    public loginAPI(user: String, pass: String) {
+        return this.httpClient.post(`${webServer}/login`, {"user":user, "pass":pass}, { responseType: 'text' });
+    }
 
 }

@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { apiServices } from '../services/apiServices';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  providers: [apiServices],
-  styleUrls: ['./home.component.css']
+  selector: 'app-broadcast',
+  templateUrl: './broadcast.component.html',
+  styleUrls: ['./broadcast.component.css']
 })
-export class HomeComponent implements OnInit {
+export class BroadcastComponent implements OnInit {
 
   constructor(private API: apiServices) { }
 
@@ -16,6 +15,12 @@ export class HomeComponent implements OnInit {
       (response) => {
         console.log(response);
         console.log(typeof (response));
+      }
+    )
+
+    this.API.endpointAPI().subscribe(
+      (response) => {
+        console.log(response);
       }
     )
   }

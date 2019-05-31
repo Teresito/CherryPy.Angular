@@ -1,5 +1,7 @@
 import cherrypy
-
+import urllib.request
+import json
+import base64
 class MainApp(object):
 
 	#CherryPy Configuration
@@ -9,6 +11,7 @@ class MainApp(object):
                  }       
 
     @cherrypy.expose
+    @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_out()
     def ping(self):
         url = "http://cs302.kiwi.land/api/ping"
@@ -24,6 +27,7 @@ class MainApp(object):
 
 
         JSON_object = json.loads(data.decode(encoding))
+        return(JSON_object)
         print(JSON_object)
 
 ##                         ##

@@ -19,7 +19,8 @@ export class apiServices {
 
     public pingAPI() {
         //console.log(this.creds);
-        return this.httpClient.post(`${webServer}/ping`, null, this.header);
+        //return this.httpClient.get('http://localhost:8080/',{ responseType: 'text' });
+        return this.httpClient.post('http://localhost:8080/', null, { responseType: 'text' });
     }
 
 

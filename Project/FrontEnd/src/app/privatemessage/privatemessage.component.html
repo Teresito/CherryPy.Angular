@@ -19,9 +19,11 @@
       <div class="text-center">
         <h1>JALL229</h1>
         <hr style="width:50%">
-        <p>You have no private messages with JALL229</p>
+
+        <p *ngIf="!convoHistory">You have no private messages with JALL229</p>
       </div>
       <!-- TO DO: FOR LOOP FOR MESSAGES -->
+      <ng-template [ngIf]="convoHistory">
       <div class="mx-auto" style="width:70%;height:70%;overflow:scroll; overflow-x:hidden;">
         <div class="card mx-auto" style="width:70%;">
           <div class="lead card-body">
@@ -57,7 +59,10 @@
           </div>
         </div>
         <br>
+        
       </div>
+
+
 
       <div class="mx-auto" style="width:60%;padding-left:2%">
         <div class="input-group mb-3" style="padding-top:4%;">
@@ -68,7 +73,7 @@
           </div>
         </div>
       </div>
-
+</ng-template>
 
     </div>
   </div>

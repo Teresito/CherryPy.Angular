@@ -27,5 +27,5 @@ except urllib.error.HTTPError as error:
     exit()
 
 JSON_object = json.loads(data.decode(encoding))
-print(JSON_object)
+print(JSON_object['api_key'])
 

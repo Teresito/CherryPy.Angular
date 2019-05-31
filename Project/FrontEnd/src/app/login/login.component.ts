@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { apiServices } from '../services/apiServices';
+import { AuthGuardService } from '../services/auth-guard.service';
 
 
 @Component({
@@ -16,7 +17,7 @@ export class LoginComponent implements OnInit {
     password : new FormControl(''),
   });
 
-  constructor(private API: apiServices, private router: Router) { }
+  constructor(private API: apiServices, private auth: AuthGuardService, private router: Router) { }
 
   wrongCreds: boolean = false;
 
@@ -34,6 +35,7 @@ export class LoginComponent implements OnInit {
         }
         else if(response === "1"){
           this.wrongCreds = false;
+          this.auth.setAuthorized(true);
           this.router.navigate(['/broadcast']);
         }
       }

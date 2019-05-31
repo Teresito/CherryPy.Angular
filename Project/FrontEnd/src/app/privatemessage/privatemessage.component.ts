@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { componentState } from '../services/componentService';
 
 @Component({
   selector: 'app-privatemessage',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PrivatemessageComponent implements OnInit {
 
-  constructor() { }
-
+  convoHistory: boolean = true;
+  
+  constructor(private state: componentState) { }
+  
   ngOnInit() {
+    console.log(this.state.eKeyNotify)
   }
 
 }

@@ -9,7 +9,9 @@ import { NavigationbarComponent } from './navigationbar/navigationbar.component'
 import { BroadcastComponent } from './broadcast/broadcast.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { AuthGuardService } from './services/auth-guard.service';
 import { apiServices } from './services/apiServices';
+import { componentState } from './services/componentService';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,7 @@ import { apiServices } from './services/apiServices';
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [apiServices],
+  providers: [AuthGuardService, apiServices, componentState],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

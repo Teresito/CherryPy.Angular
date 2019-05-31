@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DoCheck } from '@angular/core';
 import { apiServices } from '../services/apiServices';
-
+import { FormGroup, FormControl } from '@angular/forms';
+import { componentState } from '../services/componentService';
 @Component({
   selector: 'app-broadcast',
   templateUrl: './broadcast.component.html',
@@ -8,15 +9,24 @@ import { apiServices } from '../services/apiServices';
 })
 export class BroadcastComponent implements OnInit {
 
-  constructor(private API: apiServices) { }
+  eKeyForm: FormGroup = new FormGroup({
+    key: new FormControl(''),
+  });
+
+  constructor(private API: apiServices, private state: componentState) { }
+
+  toggleModal: String;
+  wrongKey: boolean = true;
+  pholder = "Encrpytion Key";
 
   ngOnInit() {
-    this.API.pingAPI().subscribe(
-      (response) => {
-        console.log(response);
-        console.log(typeof (response));
-      }
-    )
+    if (this.state.eKeyNotify === true){
+      this.toggleModal = 'block';
+      this.state.eKeyNotify = false;
+    }
+    else{
+      this.toggleModal = 'none';
+    }
 
     this.API.endpointAPI().subscribe(
       (response) => {

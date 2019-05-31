@@ -1,25 +1,28 @@
 <div class="container">
     <!-- TO DO: FORMS HANDLING -->
     <div class="row" style="padding-top:15%">
-            <div class="card mx-auto" style="width:30%">
-                <div class="card-body">
-                    <h3 class="text-center">Login</h3>
-                    <form (ngSubmit)="onSubmit()" [formGroup]="LoginForm">
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" class="form-control" placeholder="Username" formControlName="username"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" class="form-control" placeholder="Password"
-                                formControlName="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary" [disabled]="LoginForm.invalid">Submit</button>
-                    </form>
-                </div>
+        <div class="card mx-auto" style="width:30%">
+            <div class="card-body">
+                <h3 class="text-center">Login</h3>
+                <form (ngSubmit)="onSubmit()" [formGroup]="LoginForm">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" class="form-control" [ngClass]="{'is-invalid':wrongCreds}" placeholder="Username" formControlName="username"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control" [ngClass]="{'is-invalid':wrongCreds}" placeholder="Password" formControlName="password"
+                            required>
+                    </div>
+                    <div class="alert alert-danger" *ngIf="wrongCreds" role="alert">
+                       No match for username/password
+                    </div>
+                    <button type="submit" class="btn btn-primary" [disabled]="LoginForm.invalid">Submit</button>
+                </form>
             </div>
-        
+        </div>
+
 
     </div>
 </div>

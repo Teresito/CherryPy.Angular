@@ -6,7 +6,7 @@ import { PrivatemessageComponent } from './privatemessage/privatemessage.compone
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
-  {path:'', component: LoginComponent, pathMatch: 'full'},
+  {path:'login', component: LoginComponent, pathMatch: 'full'},
   {path:'broadcast', component: BroadcastComponent, pathMatch: 'full'},
   {path:'message', component: PrivatemessageComponent, pathMatch: 'full'},
   {path:'**', component: PageNotFoundComponent, pathMatch: 'full'},

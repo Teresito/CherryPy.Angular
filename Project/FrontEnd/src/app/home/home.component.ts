@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
     this.API.pingAPI().subscribe(
       (response) => {
         console.log(response);
+        console.log(typeof (response));
       }
     )
   }

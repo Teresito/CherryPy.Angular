@@ -23,7 +23,7 @@ export class apiServices {
         //console.log(this.creds);
         //return this.httpClient.get('http://localhost:8080/',{ responseType: 'text' });
         //return this.httpClient.post('http://localhost:8080/', null, { responseType: 'text' });
-        return this.httpClient.post('http://localhost:8080/', null, { responseType: 'text'as'json' });
+        return this.httpClient.post('http://localhost:8080/', null, { responseType: 'json' });
     }
 
 

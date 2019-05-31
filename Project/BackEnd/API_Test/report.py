@@ -37,6 +37,7 @@ payload = {
 
 try:
     req = urllib.request.Request(url, data=bytes(json.dumps(payload), 'utf-8'), headers=headers)
+
     response = urllib.request.urlopen(req)
     data = response.read() # read the received bytes
     encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
@@ -47,4 +48,5 @@ except urllib.error.HTTPError as error:
 
 JSON_object = json.loads(data.decode(encoding))
 print(JSON_object)
+print(type(data))
 

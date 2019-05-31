@@ -30,9 +30,14 @@ class StringGeneratorWebService(object):
         response.close() #be a tidy kiwi
 
 
+        JSON_object = json.loads(data)
         JSON_object = json.loads(data.decode(encoding))
+        
         print(type(JSON_object))
         return(data)
+#WORKS
+        # print(type(data))
+        # return(data)
 
     def PUT(self, another_string):
         cherrypy.session['mystring'] = another_string

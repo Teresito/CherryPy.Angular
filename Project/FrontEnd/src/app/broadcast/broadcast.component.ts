@@ -2,6 +2,7 @@ import { Component, OnInit, DoCheck } from '@angular/core';
 import { apiServices } from '../services/apiServices';
 import { FormGroup, FormControl } from '@angular/forms';
 import { componentState } from '../services/componentService';
+import { AuthGuard } from '../services/auth-guard.service';
 @Component({
   selector: 'app-broadcast',
   templateUrl: './broadcast.component.html',
@@ -13,7 +14,7 @@ export class BroadcastComponent implements OnInit {
     key: new FormControl(''),
   });
 
-  constructor(private API: apiServices, private state: componentState) { }
+  constructor(private API: apiServices, private state: componentState, private auth: AuthGuard) { }
 
   toggleModal: String;
   wrongKey: boolean = true;
@@ -27,12 +28,12 @@ export class BroadcastComponent implements OnInit {
     else{
       this.toggleModal = 'none';
     }
-
-    this.API.endpointAPI().subscribe(
-      (response) => {
-        console.log(response);
-      }
-    )
+    // TESTING
+    // this.API.endpointAPI().subscribe(
+    //   (response) => {
+    //     console.log(response);
+    //   }
+    // )
   }
 
 }

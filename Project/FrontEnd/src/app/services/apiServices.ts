@@ -32,4 +32,8 @@ export class apiServices {
         return this.httpClient.post(`${webServer}/login`, {"user":user, "pass":pass}, { responseType: 'text' });
     }
 
+    public logoutAPI(){
+        return this.httpClient.post(`${webServer}/logout`, { responseType: 'text' });
+    }
+
 }

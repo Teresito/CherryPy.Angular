@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { apiServices } from '../services/apiServices';
-import { AuthGuardService } from '../services/auth-guard.service';
+import { AuthGuard } from '../services/auth-guard.service';
+import { componentState } from '../services/componentService';
 
 
 @Component({
@@ -17,12 +18,12 @@ export class LoginComponent implements OnInit {
     password : new FormControl(''),
   });
 
-  constructor(private API: apiServices, private auth: AuthGuardService, private router: Router) { }
+  constructor(private API: apiServices, private auth: AuthGuard, private state: componentState, private router: Router) { }
 
   wrongCreds: boolean = false;
 
   ngOnInit() {
-    
+    console.log('wat')
   }
 
   onSubmit(){

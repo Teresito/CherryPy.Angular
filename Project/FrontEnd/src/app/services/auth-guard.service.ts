@@ -1,15 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
+import { HomeGuard } from './home-gaurd';
 
 @Injectable()
-export class AuthGuardService implements CanActivate {
+export class AuthGuard implements CanActivate {
 
-  private authorized: boolean = false;
+  private authorized: boolean;
+  
+  constructor(private route: Router, private home: HomeGuard) { 
+    this.authorized = false;
+  }
 
-  constructor(private route: Router) { }
+  setAuthorized(setAuth: boolean) {
+     this.authorized = setAuth;
+  }
 
-  setAuthorized(setAuth: boolean){
-    this.authorized = setAuth;
+  getAuthorized() {
+    return this.authorized;
   }
 
   canActivate() {

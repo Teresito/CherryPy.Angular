@@ -2,6 +2,7 @@ import { Subject } from 'rxjs';
 
 export class componentState {
     eKeyNotify = true;
+    notifyChanged = new Subject<any>();
     loggedChanged = new Subject<any>();
 
     setLoggedIn(bool: boolean){

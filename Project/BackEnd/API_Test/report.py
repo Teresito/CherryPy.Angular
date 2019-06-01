@@ -29,7 +29,7 @@ headers = {
 }
 
 payload = {
-    "connection_address": "192.168.1.9:1234",
+    "connection_address": "http://302cherrypy.mynetgear.com/",
     "connection_location": "2",
     "incoming_pubkey" : pubkey_hex_str,
     "status" : "online"

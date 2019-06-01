@@ -24,9 +24,10 @@ export class PrivatedataComponent implements OnInit {
   constructor(private API: apiServices, private state: componentState) { }
 
   wrongKey: boolean = false;
-  pholder = "Encrpytion Key";
+  pholder = "Encryption Key";
   buttonKey: String;
   dataReponse: String;
+
   ngOnInit() {
     if (this.state.eKeyNotify === true) {
       this.API.checkPrivateData().subscribe(
@@ -40,10 +41,11 @@ export class PrivatedataComponent implements OnInit {
           else if (response == "error") {
             this.encryptForm = true;
             this.buttonKey = "Encrypt";
-            this.dataReponse = "It seems like you don't have any private data in the login server";
+            this.dataReponse = "It seems like you don't have any private data in the login server. To proceed enter your key for encryption";
           }
         }
       );
+
       this.state.eKeyNotify = false;
     }
 
@@ -51,6 +53,7 @@ export class PrivatedataComponent implements OnInit {
 
   NewKey(){
     this.encryptForm = true;
+    this.buttonKey = "Encrypt";
     this.options = false;
   }
 
@@ -58,12 +61,38 @@ export class PrivatedataComponent implements OnInit {
     this.options = true;
     this.encryptForm = false;
     this.decryptForm = false;
+    this.state.loggedChanged.next();
   }
 
   DecryptKey(){
     this.decryptForm = true;
+    this.buttonKey = "Decrypt";
     this.options = false;
   }
 
+
+  encryptSubmit(){
+    this.wrongKey = false;
+    if (this.eKeyForm.value.newEKey == this.eKeyForm.value.EKeyAgain){
+      this.API.newPrivateData().subscribe(
+        (response)=>{
+          if(response === "ok"){
+            this.state.loggedChanged.next();
+          }
+          else{
+            console.log("ERROR WITH SERVER")
+          }
+        }
+      );
+    }
+    else{
+      this.wrongKey = true;
+    }
+
+  }
+
+  decryptSubmit(){
+
+  }
 
 }

@@ -40,4 +40,8 @@ export class apiServices {
         return this.httpClient.post(`${webServer}/check_privatedata`, null, { responseType: 'text' });
     }
 
+    public newPrivateData(){
+        return this.httpClient.post(`${webServer}/newPrivateData`, null, { responseType: 'text' });
+    }
+
 }

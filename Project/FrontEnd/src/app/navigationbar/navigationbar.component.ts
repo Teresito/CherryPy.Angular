@@ -11,14 +11,20 @@ import { componentState } from '../services/componentService';
 })
 export class NavigationbarComponent implements OnInit {
 
+  zIndex: boolean = true;
+
   constructor(private router: Router, private api: apiServices, private state: componentState) { }
 
   ngOnInit() {
+    this.state.loggedChanged.subscribe(
+        ()=>{
+          this.zIndex = this.state.eKeyNotify      
+        }
+      );
     
   }
 
-  logout(){
-    
+  logout(){  
     this.api.logoutAPI().subscribe(
       (response)=>{
         if (response === 1){

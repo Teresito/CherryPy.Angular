@@ -1,3 +1,4 @@
+
 <div class="container" style="padding-top:5%">
   <div class="row">
     <div class="col">
@@ -42,23 +43,54 @@
   </div>
 </div>
 <!-- Modal -->
-<div class="modal" [ngStyle]="{'display': toggleModal}">
+<div class="modal" [ngStyle]="{'display': toggleDecrypt}">
   <div class="modal-content">
     <div class="container-fluid">
       <div class="row">
         <div class="col">
-          <span class="close" style="cursor: pointer;"(click)="toggleModal='none'" >&times;</span>
+          <span class="close" style="cursor: pointer;" (click)="toggleDecrypt='none'">&times;</span>
           <div class="text-center">
-            <p class="lead" style="padding-top:5%" >
-                It seems like you have private data in the login server
+            <p class="lead" style="padding-top:5%">
+              It seems like you have private data in the login server
             </p>
           </div>
           <form (ngSubmit)="onSubmit()" [formGroup]="eKeyForm">
             <div class="form-group">
               <div class="input-group mb-3">
-                <input type="text" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="{{ pholder }}" formControlName="key">
+                <input type="text" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="{{ pholder }}"
+                  formControlName="key">
                 <div class="input-group-append">
-                  <button class="btn btn-outline-secondary "[ngClass]="{'btn-outline-danger':wrongKey}" 
+                  <button class="btn btn-outline-secondary " [ngClass]="{'btn-outline-danger':wrongKey}"
+                    type="submit">&nbsp;&nbsp;&nbsp;Decrypt&nbsp;&nbsp;&nbsp;</button>
+                </div>
+
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- No Private Data -->
+<div class="modal" [ngStyle]="{'display': toggleEncrypt}">
+  <div class="modal-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <span class="close" style="cursor: pointer;" (click)="toggleEncrypt='none'">&times;</span>
+          <div class="text-center">
+            <p class="lead" style="padding-top:5%">
+              It seems like you have don't private data in the login server
+            </p>
+          </div>
+          <form (ngSubmit)="onSubmit()" [formGroup]="eKeyForm">
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="{{ pholder }}"
+                  formControlName="key">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary " [ngClass]="{'btn-outline-danger':wrongKey}"
                     type="submit">&nbsp;&nbsp;&nbsp;Decrypt&nbsp;&nbsp;&nbsp;</button>
                 </div>
 

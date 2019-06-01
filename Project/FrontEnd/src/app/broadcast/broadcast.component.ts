@@ -9,35 +9,39 @@ import { AuthGuard } from '../services/auth-guard.service';
   styleUrls: ['./broadcast.component.css']
 })
 export class BroadcastComponent implements OnInit {
-
   eKeyForm: FormGroup = new FormGroup({
     key: new FormControl(''),
   });
 
   constructor(private API: apiServices, private state: componentState, private auth: AuthGuard) { }
 
-  toggleModal: String;
+  toggleDecrypt: String = 'none';
+  toggleEncrypt: String = 'none';
   wrongKey: boolean = false;
   pholder = "Encrpytion Key";
 
   ngOnInit() {
-    if (this.state.eKeyNotify === true){
-      this.toggleModal = 'block';
+    if (this.state.eKeyNotify === true) {     
+      this.API.checkPrivateData().subscribe(
+        (response) => {
+          if (response == "ok") {
+            this.toggleDecrypt = 'block';
+          }
+          else if (response == "error"){
+            this.toggleEncrypt = 'block';
+          }
+        }
+      );
       this.state.eKeyNotify = false;
     }
-    else{
-      this.toggleModal = 'none';
+    else {
+      this.toggleDecrypt = 'none';
     }
-    // TESTING
-    // this.API.endpointAPI().subscribe(
-    //   (response) => {
-    //     console.log(response);
-    //   }
-    // )
+
+
   }
 
-  onSubmit(){
-    console.log(this.eKeyForm.value.key);
+  onSubmit() {
     this.wrongKey = true;
   }
 

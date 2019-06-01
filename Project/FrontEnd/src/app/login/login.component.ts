@@ -27,10 +27,24 @@ export class LoginComponent implements OnInit {
     if (this.state.getLoggedIn()){
       this.router.navigate(['/broadcast']);
     }
+
+    this.API.loginAPI('tmag741', 'Teresito_419588351').subscribe(
+      (response)=>{
+        console.log(response);  
+        if(response === "0"){
+          this.wrongCreds = true;
+        }
+        else if(response === "1"){
+          this.wrongCreds = false;
+          this.state.setLoggedIn(true);
+          this.state.loggedChanged.next();
+          this.router.navigate(['/broadcast']);
+        }
+      }
+    )
   }
 
   onSubmit(){
-
     this.wrongCreds = false;
     this.API.loginAPI(this.LoginForm.value.username, this.LoginForm.value.password).subscribe(
       (response)=>{

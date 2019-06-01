@@ -4,7 +4,9 @@ import json
 import cherrypy
 import base64
 
-global api_key
+api_key = 0
+apiHeader = 0
+username = 0
 
 
 
@@ -47,6 +49,27 @@ class Api:
     print("-----")
     return "Helo"
 
+  @cherrypy.expose
+  def check_privatedata(self):
+    url = "http://cs302.kiwi.land/api/get_privatedata"
+
+    try:
+        req = urllib.request.Request(url, headers=apiHeader)
+        response = urllib.request.urlopen(req)
+        data = response.read() # read the received bytes
+        encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
+        response.close()
+    except urllib.error.HTTPError as error:
+        error = error.read()
+        error_json = json.loads(error.decode('utf-8'))
+        return "0"
+
+    JSON_object = json.loads(data.decode(encoding))
+    return(JSON_object['response'])
+    
+    
+
+
   @cherrypy.expose 
   def ping(self):
     url = "http://cs302.kiwi.land/api/ping" 
@@ -60,15 +83,26 @@ class Api:
 
   @cherrypy.expose
   def logout(self):
+    global apiHeader
+    global username
+    global api_key
+
+    print(apiHeader)
+    print(username)
+    print(api_key)
+    apiHeader = 0
+    username = 0
     api_key = 0;
     return "1"
 
   @cherrypy.expose 
   def login(self):
+    global username
+    global api_key
     data = cherrypy.request.body.read()
     data_json = json.loads(data.decode('utf-8'))
     print(data_json)
-
+    username = data_json['user']
 
     url = "http://cs302.kiwi.land/api/load_new_apikey"
 
@@ -92,7 +126,15 @@ class Api:
 
     JSON_object = json.loads(data.decode(encoding))
     api_key = JSON_object['api_key']
+    Api.setAPIHeader(self)
     return "1"
+
+  def setAPIHeader(self):
+    global apiHeader
+    apiHeader = {
+      'X-username': username,
+      'X-apikey' : api_key
+    }
 
 config = {
   'global' : {

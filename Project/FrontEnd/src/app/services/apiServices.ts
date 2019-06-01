@@ -35,5 +35,9 @@ export class apiServices {
     public logoutAPI(){
         return this.httpClient.post(`${webServer}/logout`, { responseType: 'text' });
     }
+    
+    public checkPrivateData(){
+        return this.httpClient.post(`${webServer}/check_privatedata`, null, { responseType: 'text' });
+    }
 
 }

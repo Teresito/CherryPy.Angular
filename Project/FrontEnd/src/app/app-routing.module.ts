@@ -7,7 +7,6 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { AuthGuard } from './services/auth-guard.service';
 import { GroupComponent } from './group/group.component';
 import { AccountComponent } from './account/account.component';
-import { HomeGuard } from './services/home-gaurd';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent, pathMatch: 'full'},

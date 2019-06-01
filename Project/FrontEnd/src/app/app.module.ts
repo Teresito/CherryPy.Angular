@@ -14,7 +14,7 @@ import { apiServices } from './services/apiServices';
 import { componentState } from './services/componentService';
 import { GroupComponent } from './group/group.component';
 import { AccountComponent } from './account/account.component';
-import { HomeGuard } from './services/home-gaurd';
+
 
 @NgModule({
   declarations: [
@@ -25,7 +25,8 @@ import { HomeGuard } from './services/home-gaurd';
     BroadcastComponent,
     PageNotFoundComponent,
     GroupComponent,
-    AccountComponent
+    AccountComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -34,7 +35,7 @@ import { HomeGuard } from './services/home-gaurd';
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [apiServices, componentState, AuthGuard,HomeGuard],
+  providers: [apiServices, componentState, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

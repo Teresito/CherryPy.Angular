@@ -5,6 +5,7 @@ export class componentState {
     loggedChanged = new Subject<any>();
 
     setLoggedIn(bool: boolean){
+        console.log(bool);
         sessionStorage.setItem('loggedIn', String(bool));
     }
 

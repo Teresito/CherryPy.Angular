@@ -16,11 +16,12 @@ export class AppComponent implements OnInit, OnDestroy{
   ngOnInit(){
     this.subscription = this.state.loggedChanged.subscribe(()=>{
       this.valid = this.state.getLoggedIn();
+      console.log(this.state.getLoggedIn());
     });
   }
 
   ngOnDestroy(){
-    //this.subscription.unsubscribe;
+    this.subscription.unsubscribe;
   }
 
 }

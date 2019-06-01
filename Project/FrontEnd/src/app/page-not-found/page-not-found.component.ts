@@ -14,7 +14,7 @@ export class PageNotFoundComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      if (this.state.loggedIn) {
+      if (this.state.getLoggedIn()) {
         this.route.navigate(['/broadcast']);
       }
       else {

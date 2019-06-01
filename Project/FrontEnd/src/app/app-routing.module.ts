@@ -10,7 +10,7 @@ import { AccountComponent } from './account/account.component';
 import { HomeGuard } from './services/home-gaurd';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent, pathMatch: 'full', canActivate: []},
+  { path: 'login', component: LoginComponent, pathMatch: 'full'},
   { path: 'broadcast', component: BroadcastComponent, pathMatch: 'full', canActivate: [AuthGuard]},
   //{ path: 'broadcast', component: BroadcastComponent, pathMatch: 'full', canActivate: []},
   { path: 'message', component: PrivatemessageComponent, pathMatch: 'full', canActivate: [AuthGuard]},

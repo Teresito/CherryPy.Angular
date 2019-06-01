@@ -23,10 +23,14 @@ export class LoginComponent implements OnInit {
   wrongCreds: boolean = false;
 
   ngOnInit() {
-
+    console.log(this.state.getLoggedIn())
+    if (this.state.getLoggedIn()){
+      this.router.navigate(['/broadcast']);
+    }
   }
 
   onSubmit(){
+
     this.wrongCreds = false;
     this.API.loginAPI(this.LoginForm.value.username, this.LoginForm.value.password).subscribe(
       (response)=>{
@@ -36,7 +40,7 @@ export class LoginComponent implements OnInit {
         }
         else if(response === "1"){
           this.wrongCreds = false;
-          this.state.loggedIn = true;
+          this.state.setLoggedIn(true);
           this.state.loggedChanged.next();
           this.router.navigate(['/broadcast']);
         }

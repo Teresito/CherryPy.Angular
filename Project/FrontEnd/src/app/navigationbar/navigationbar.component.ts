@@ -22,11 +22,13 @@ export class NavigationbarComponent implements OnInit {
       (response)=>{
         if (response === 1){
           this.router.navigate(['/login']);
-          this.state.loggedIn = false;
+          this.state.setLoggedIn(false);
+          this.state.eKeyNotify = true;
           this.state.loggedChanged.next();
         }
       }
     );
   }
+
 
 }

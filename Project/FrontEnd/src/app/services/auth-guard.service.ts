@@ -9,9 +9,10 @@ export class AuthGuard implements CanActivate {
   constructor(private route: Router, private state: componentState) {}
 
   canActivate() {
-    if (!this.state.loggedIn) {
+    this.state.loggedChanged.next();
+    if (!this.state.getLoggedIn()) {
       this.route.navigate(['/login']);
     }
-    return this.state.loggedIn;
+    return this.state.getLoggedIn();
   }
 }

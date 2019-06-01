@@ -25,11 +25,18 @@ cherrypy.tools.cors = cherrypy._cptools.HandlerTool(cors)
 
 class Main(object):
     @cherrypy.expose
-    def default(self):
-        return open('./bundled/index.html')
+    def default(self, *args, **kwargs):
+      return Main.index(self)
+
+    @cherrypy.expose
+    def index(self):
+      return open('./bundled/index.html')
 
 @cherrypy.config(**{'tools.cors.on': True}) 
 class Api:
+  @cherrypy.expose
+  def default(self, *args, **kwargs):
+    return "YOU SHALL NOT PASS - Gandalf <br> Stop trying to access my endpoints via browser"
 
   @cherrypy.expose 
   def endpoint(self):
@@ -92,8 +99,8 @@ config = {
     #'server.socket_host' : '192.168.1.13',
     #'server.socket_port' : 80,
     'server.socket_host' : '192.168.1.13',
-    'server.socket_port' : 80,
-    'server.thread_pool' : 8
+    'server.socket_port' : 80
+,    'server.thread_pool' : 8
   },
   '/':{
     'tools.sessions.on': True,
@@ -110,6 +117,7 @@ if __name__ == '__main__':
   #cherrypy.quickstart(Api(), '/api', config)
   cherrypy.tree.mount(Main(), '/', config)
   cherrypy.quickstart(Api(), '/api', config)
+  cherrypy.engine.signals.unsubscribe()
       # Start the web server
   cherrypy.engine.start()
 

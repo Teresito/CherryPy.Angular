@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
   wrongCreds: boolean = false;
 
   ngOnInit() {
-    console.log('wat')
+
   }
 
   onSubmit(){
@@ -36,7 +36,8 @@ export class LoginComponent implements OnInit {
         }
         else if(response === "1"){
           this.wrongCreds = false;
-          this.auth.setAuthorized(true);
+          this.state.loggedIn = true;
+          this.state.loggedChanged.next();
           this.router.navigate(['/broadcast']);
         }
       }

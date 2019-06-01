@@ -25,7 +25,7 @@ import { HomeGuard } from './services/home-gaurd';
     BroadcastComponent,
     PageNotFoundComponent,
     GroupComponent,
-    AccountComponent,
+    AccountComponent
   ],
   imports: [
     BrowserModule,

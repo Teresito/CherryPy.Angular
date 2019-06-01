@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { apiServices } from '../services/apiServices';
 import { AuthGuard } from '../services/auth-guard.service';
+import { componentState } from '../services/componentService';
 
 @Component({
   selector: 'app-navigationbar',
@@ -10,10 +11,10 @@ import { AuthGuard } from '../services/auth-guard.service';
 })
 export class NavigationbarComponent implements OnInit {
 
-  constructor(private router: Router,private api: apiServices, private auth: AuthGuard) { }
+  constructor(private router: Router, private api: apiServices, private state: componentState) { }
 
   ngOnInit() {
-
+    
   }
 
   logout(){
@@ -21,7 +22,8 @@ export class NavigationbarComponent implements OnInit {
       (response)=>{
         if (response === 1){
           this.router.navigate(['/login']);
-          this.auth.setAuthorized(false);
+          this.state.loggedIn = false;
+          this.state.loggedChanged.next();
         }
       }
     );

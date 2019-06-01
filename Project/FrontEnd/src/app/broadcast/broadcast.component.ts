@@ -17,7 +17,7 @@ export class BroadcastComponent implements OnInit {
   constructor(private API: apiServices, private state: componentState, private auth: AuthGuard) { }
 
   toggleModal: String;
-  wrongKey: boolean = true;
+  wrongKey: boolean = false;
   pholder = "Encrpytion Key";
 
   ngOnInit() {
@@ -34,6 +34,11 @@ export class BroadcastComponent implements OnInit {
     //     console.log(response);
     //   }
     // )
+  }
+
+  onSubmit(){
+    console.log(this.eKeyForm.value.key);
+    this.wrongKey = true;
   }
 
 }

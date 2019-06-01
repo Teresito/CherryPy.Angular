@@ -16,6 +16,7 @@ const routes: Routes = [
   { path: 'message', component: PrivatemessageComponent, pathMatch: 'full', canActivate: [AuthGuard]},
   { path: 'group', component: GroupComponent, pathMatch: 'full', canActivate: [AuthGuard]},
   { path: 'account', component: AccountComponent, pathMatch: 'full', canActivate: [AuthGuard]},
+  { path: '', redirectTo: 'login', pathMatch: 'full'},
   {path:'**', component: PageNotFoundComponent, pathMatch: 'full'},
 ];
 

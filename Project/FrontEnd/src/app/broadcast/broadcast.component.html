@@ -1,4 +1,3 @@
-<app-navigationbar></app-navigationbar>
 <div class="container" style="padding-top:5%">
   <div class="row">
     <div class="col">
@@ -57,10 +56,10 @@
           <form (ngSubmit)="onSubmit()" [formGroup]="eKeyForm">
             <div class="form-group">
               <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="{{ pholder }}" formControlName="key">
+                <input type="text" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="{{ pholder }}" formControlName="key">
                 <div class="input-group-append">
-                  <button class="btn btn-outline-secondary"
-                    type="button">&nbsp;&nbsp;&nbsp;Decrypt&nbsp;&nbsp;&nbsp;</button>
+                  <button class="btn btn-outline-secondary "[ngClass]="{'btn-outline-danger':wrongKey}" 
+                    type="submit">&nbsp;&nbsp;&nbsp;Decrypt&nbsp;&nbsp;&nbsp;</button>
                 </div>
 
               </div>

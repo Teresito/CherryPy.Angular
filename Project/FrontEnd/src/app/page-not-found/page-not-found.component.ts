@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthGuard } from '../services/auth-guard.service';
+import { Router } from '@angular/router';
+import { componentState } from '../services/componentService';
 
 @Component({
   selector: 'app-page-not-found',
@@ -7,9 +10,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PageNotFoundComponent implements OnInit {
 
-  constructor() { }
+  constructor(private state: componentState, private route: Router) { }
 
   ngOnInit() {
+    setTimeout(() => {
+      if (this.state.loggedIn) {
+        this.route.navigate(['/broadcast']);
+      }
+      else {
+        this.route.navigate(['/login']);
+      }
+    },
+      2000);
+
   }
 
 }

@@ -66,6 +66,7 @@ class Api:
 
     JSON_object = json.loads(data.decode(encoding))
     return(JSON_object['response'])
+
     
     
 

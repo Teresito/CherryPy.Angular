@@ -6,25 +6,45 @@
   </p>
 </div>
 <form (ngSubmit)="decryptSubmit()" [formGroup]="eKeyForm">
+  <div class="text-center" *ngIf="options">
+    <button type="button" class="btn btn-outline-success" (click)="NewKey()">New Key</button>
+    <span style="padding-left:2%;">
+      <button type="button" class=" btn btn-outline-secondary" (click)="DecryptKey()">Decrypt Data</button>
+    </span>
+  </div>
   <div class="form-group">
-    <div class="input-group mb-3">
 
 
-      <input type="text" *ngIf="decryptForm" class="form-control" [ngClass]="{'is-invalid':wrongKey}"
-        placeholder="{{ pholder }}" formControlName="Dkey">
-
-
-      <input type="text" *ngIf="encryptForm" class="form-control" [ngClass]="{'is-invalid':wrongKey}"
-        placeholder="Encryption Key" formControlName="newEKey">
-      <input type="text" *ngIf="encryptForm" class="form-control" [ngClass]="{'is-invalid':wrongKey}"
-        placeholder="Re-type encryption key" formControlName="EKeyAgain">
-
+    <div class="input-group mb-3" *ngIf="decryptForm">
+      <input type="text" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="{{ pholder }}"
+        formControlName="Dkey">
       <div class="input-group-append">
         <button class="btn btn-outline-secondary " [ngClass]="{'btn-outline-danger':wrongKey}"
           type="submit">&nbsp;&nbsp;&nbsp;{{ buttonKey }}&nbsp;&nbsp;&nbsp;</button>
+        <span *ngIf="optionsBack" style="padding-left:2%;">
+          <button class="btn btn-outline-secondary" (click)="Back()"> Back </button>
+        </span>
       </div>
-
     </div>
   </div>
+
+
+  <div *ngIf="encryptForm">
+    <input type="text" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="Encryption Key"
+      formControlName="newEKey">
+    <div style="padding-top:2%;">
+      <input type="text" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="Re-type encryption key"
+        formControlName="EKeyAgain">
+    </div>
+    <div class="text-center" style="padding-top:2%;padding-bottom:2%;">
+      <button class="btn btn-outline-success " [ngClass]="{'btn-outline-danger':wrongKey}"
+        type="submit">&nbsp;&nbsp;&nbsp;{{ buttonKey }}&nbsp;&nbsp;&nbsp;</button>
+      <span *ngIf="optionsBack" style="padding-left:2%;">
+        <button class="btn btn-outline-secondary" (click)="Back()"> Back </button>
+      </span>
+    </div>
+  </div>
+
+
 </form>
 <!-- </ng-template> -->

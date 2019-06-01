@@ -18,6 +18,8 @@ export class PrivatedataComponent implements OnInit {
 
   decryptForm: boolean = false;
   encryptForm: boolean = false;
+  options: boolean = false;
+  optionsBack: boolean = false;
 
   constructor(private API: apiServices, private state: componentState) { }
 
@@ -30,7 +32,8 @@ export class PrivatedataComponent implements OnInit {
       this.API.checkPrivateData().subscribe(
         (response) => {
           if (response == "ok") {
-            this.decryptForm = true;
+            this.options = true;
+            this.optionsBack = true;
             this.buttonKey = "Decrypt";
             this.dataReponse = "It seems like you have private data in the login server";
           }
@@ -46,11 +49,21 @@ export class PrivatedataComponent implements OnInit {
 
   }
 
-  decryptSubmit() {
-    this.wrongKey = true;
+  NewKey(){
+    this.encryptForm = true;
+    this.options = false;
   }
 
-  encryptSubmit() {
-
+  Back(){
+    this.options = true;
+    this.encryptForm = false;
+    this.decryptForm = false;
   }
+
+  DecryptKey(){
+    this.decryptForm = true;
+    this.options = false;
+  }
+
+
 }

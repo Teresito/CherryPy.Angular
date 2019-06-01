@@ -130,5 +130,5 @@ def serverRecordAPI():
     
 
 if __name__ == "__main__":
-    #privateData()
+    privateData()
     getPrivateData()

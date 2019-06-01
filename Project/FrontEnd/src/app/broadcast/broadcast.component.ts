@@ -9,9 +9,19 @@ import { AuthGuard } from '../services/auth-guard.service';
   styleUrls: ['./broadcast.component.css']
 })
 export class BroadcastComponent implements OnInit {
+  
+  Dkey: FormControl = new FormControl('');
+
   eKeyForm: FormGroup = new FormGroup({
-    key: new FormControl(''),
+    newEKey: new FormControl(''),
+    EKeyAgain: new FormControl(''),
   });
+  
+  dKeyForm: FormGroup = new FormGroup({
+    Dkey: new FormControl(''),
+  });
+
+
 
   constructor(private API: apiServices, private state: componentState, private auth: AuthGuard) { }
 
@@ -41,7 +51,7 @@ export class BroadcastComponent implements OnInit {
 
   }
 
-  onSubmit() {
+  decryptSubmit() {
     this.wrongKey = true;
   }
 

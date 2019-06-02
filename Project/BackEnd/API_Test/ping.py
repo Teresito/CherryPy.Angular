@@ -4,7 +4,7 @@ import json
 url = "http://cs302.kiwi.land/api/ping"
 
 #create request and open it into a response object
-req = urllib.request.Request(url)
+req = urllib.request.Request(url,data=None)
 response = urllib.request.urlopen(req)
 
 #read and process the received bytes
@@ -15,4 +15,3 @@ response.close() #be a tidy kiwi
 
 JSON_object = json.loads(data.decode(encoding))
 print(JSON_object)
-print(data)

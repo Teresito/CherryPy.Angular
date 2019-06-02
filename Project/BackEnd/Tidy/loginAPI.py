@@ -1,98 +1,244 @@
-import cherrypy
-import urllib.request
-import json
-import base64
 import nacl.encoding
 import nacl.signing
-import time
 import nacl.secret
 import nacl.utils
 import nacl.pwhash
+import urllib.request
+import json
+import base64
+import time
 
 HOST = "http://cs302.kiwi.land/api"
 
 # Returns the request response to caller
-
-
 def Request(url, data, header):
-	success = False
-	failed = False
-	if(url == None): 
-		return "No URL was provided"
-	elif(data == None and header == None):  # No data No Header
-		req = urllib.request.Request(url)
-		print("No Data / No Header")
-	elif(data == None and header != None):  # No data and Header
-		req = urllib.request.Request(url, headers=header)
-		print("No Data / Header")
-	elif(data != None and header == None):  # data and No header
-		req = urllib.request.Request(url, data=data)
-		print("Data / No Header")
-	else:
-		req = urllib.request.Request(url, data=data, headers=header)
-		print("Data / Header")
-	try:		
-		response = urllib.request.urlopen(req)
-		data = response.read()
-		encoding = response.info().get_content_charset('utf-8')        
-		response.close()
-		success = True
-	except urllib.error.HTTPError as error:
-		data = error.read()
-		failed = True
 
-	
-	if(success == True):
-		json_response = json.loads(data.decode(encoding))
-		return json_response
-	elif(failed == True):
-		json_response = json.loads(data.decode('utf-8'))
-		return json_response  
+    if(url == None):
+        return "No URL was provided"
+    elif(data == None and header == None):  # No data No Header
+        req = urllib.request.Request(url)
+        print("No Data / No Header")
+    elif(data == None and header != None):  # No data and Header
+        req = urllib.request.Request(url, headers=header)
+        print("No Data / Header")
+    elif(data != None and header == None):  # data and No header
+        req = urllib.request.Request(url, data=data)
+        print("Data / No Header")
+    else:
+        req = urllib.request.Request(url, data=data, headers=header)
+        print("Data / Header")
+    try:
+        response = urllib.request.urlopen(req)
+        data = response.read()
+        encoding = response.info().get_content_charset('utf-8')
+        response.close()
+
+    except urllib.error.HTTPError as error:
+        data = error.read()
+
+    json_response = json.loads(data.decode('utf-8'))
+    return json_response
+
 
 def ping():
-	url = HOST+'/ping'
-	return(Request(url, None, None))
+    url = HOST + '/ping'
+    return(Request(url, None, None))
 
 # Returns private, public key back to server
-def add_pubkey(api_key, username):
-	url = HOST+"/add_pubkey"
-	# PRIVATE KEY
-	hex_key = nacl.signing.SigningKey.generate().encode(encoder=nacl.encoding.HexEncoder)
-	signing_key = nacl.signing.SigningKey(hex_key, encoder=nacl.encoding.HexEncoder)
-	# PUBLIC KEY
-	pubkey_hex = signing_key.verify_key.encode(encoder=nacl.encoding.HexEncoder)
-	pubkey_hex_str = pubkey_hex.decode('utf-8')
-	# SIGNATURE
-	message_bytes = bytes(pubkey_hex_str + username, encoding='utf-8')
-	signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
-	signature_hex_str = signed.signature.decode('utf-8')
-	# HEADER
-	header = {
-		'X-username': username,
-		'X-apikey': api_key
-	}
-	# PAYLOAD
-	payload = {
-		"pubkey": pubkey_hex_str,
-		"username": username,
-		"signature": signature_hex_str,
-	}
 
+
+def add_pubkey(api_key, username):
+    url = HOST + "/add_pubkey"
+    # PRIVATE KEY
+    hex_key = nacl.signing.SigningKey.generate().encode(encoder=nacl.encoding.HexEncoder)
+    signing_key = nacl.signing.SigningKey(hex_key, encoder=nacl.encoding.HexEncoder)
+    # PUBLIC KEY
+    pubkey_hex = signing_key.verify_key.encode(encoder=nacl.encoding.HexEncoder)
+    pubkey_hex_str = pubkey_hex.decode('utf-8')
+    # SIGNATURE
+    message_bytes = bytes(pubkey_hex_str + username, encoding='utf-8')
+    signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
+    signature_hex_str = signed.signature.decode('utf-8')
+    # header = {
+    # 	'X-username': username,
+    # 	'X-apikey': api_key
+    # }
+    ##									   ##
+    #				FIX ME 					#
+    ##									   ##
+    credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
+    b64_credentials = base64.b64encode(credentials.encode('ascii'))
+    headers = {
+        'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
+        'Content-Type': 'application/json; charset=utf-8',
+    }
+    ##									   ##
+    #				FIX ME 					#
+    ##									   ##
+    # PAYLOAD
+    payload = {
+        "pubkey": pubkey_hex_str,
+        "username": username,
+        "signature": signature_hex_str,
+    }
+    payload_b = bytes(json.dumps(payload), 'utf-8')
+
+    keyGen = {
+        'private_key': hex_key,
+        'public_key': pubkey_hex_str
+    }
+
+    server_response = Request(url, payload_b, headers)['response']
+    if(server_response == 'ok'):
+        return(keyGen)
+    else:
+        return("Request Error")
+
+
+def check_pubkey(apikey, pubkey, username):
+    url = HOST + "/check_pubkey?pubkey=" + pubkey
+    header = {
+        'X-username': username,
+        'X-apikey': apikey
+    }
+    return(Request(url, None, header))
 
 # Returns API key to server
+
+
 def load_new_apikey(username, password):
-	url = HOST + "/load_new_apikey"
-	# CREDENTIALS
-	credentials = ('%s:%s' % (username, password))
+    url = HOST + "/load_new_apikey"
+    # CREDENTIALS
+    credentials = ('%s:%s' % (username, password))
+    b64_credentials = base64.b64encode(credentials.encode('ascii'))
+    headers = {
+        'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
+        'Content-Type': 'application/json; charset=utf-8',
+    }
+    return(Request(url, None, headers))
+
+
+def report(apikey, username, address, location, pubkey, status):
+    url = HOST + "/report"
+    # header = {
+    #     'X-username': username,
+    #     'X-apikey': apikey
+    # }
+    ##									   ##
+    #				FIX ME 					#
+    ##									   ##
+    credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
+    b64_credentials = base64.b64encode(credentials.encode('ascii'))
+    header = {
+        'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
+        'Content-Type': 'application/json; charset=utf-8',
+    }
+    ##									   ##
+    #				FIX ME 					#
+    ##									   ##
+    payload = {
+        "connection_address": address,
+        "connection_location": location,
+        "incoming_pubkey": pubkey,
+        "status": status
+    }
+    payload_b = bytes(json.dumps(payload), 'utf-8')
+    return(Request(url, payload_b, header))
+
+
+def get_loginserver_record(apikey, username):
+    url = HOST + "/get_loginserver_record"
+    header = {
+        'X-username': username,
+        'X-apikey': apikey
+    }
+    return(Request(url, None, header))
+
+
+def list_users(apikey, username):
+    url = HOST + "/list_users"
+    # header = {
+ 	#        'X-username': username,
+ 	#        'X-apikey': apikey
+ 	#}
+ 	##									   ##
+    #				FIX ME 					#
+    ##									   ##
+    credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
+    b64_credentials = base64.b64encode(credentials.encode('ascii'))
+    header = {
+        'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
+        'Content-Type': 'application/json; charset=utf-8',
+    }
+    ##									   ##
+    #				FIX ME 					#
+    ##									   ##
+    return(Request(url, None, header))
+
+
+def list_apis():
+    url = HOST + "/list_apis"
+    return(Request(url, None, None))
+
+def loginserver_pubkey():
+	url = HOST + "/loginserver_pubkey"
+	return(Request(url, None, None))
+
+def rx_broadcast(apikey,username,serverRecord,time,message,privkey):
+	url = HOST + "/rx_broadcast"
+	header = {
+        'X-username': username,
+        'X-apikey': apikey
+    }
+    ##									   ##
+    #				FIX ME 					#
+    ##									   ##
+	credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
 	b64_credentials = base64.b64encode(credentials.encode('ascii'))
-	headers = {
-		'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
-		'Content-Type': 'application/json; charset=utf-8',
+	header = {
+	    'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
+	    'Content-Type': 'application/json; charset=utf-8',
 	}
-	return(Request(url,None,headers))
+    ##									   ##
+    #				FIX ME 					#
+    ##									   ##
+	signing_key = nacl.signing.SigningKey(privkey, encoder=nacl.encoding.HexEncoder)	
+	message_bytes = bytes(serverRecord + message + time, encoding='utf-8')
+	signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
+	signature_hex_str = signed.signature.decode('utf-8')
+
+	payload = {
+	    "loginserver_record":serverRecord, 
+	    "message": message,
+	    "sender_created_at": time,
+	    "signature": signature_hex_str
+	}
+
+	payload_b = bytes(json.dumps(payload), 'utf-8')
+	return(Request(url,payload_b,header))
 
 if __name__ == '__main__':
-	name = 'tmag741'
-	password = 'Teresito_419588351'
-	print(load_new_apikey('123','asd'))
-	#print(load_new_apikey(name,password))
+    name = 'tmag741'
+    password = 'Teresito_419588351'
+
+    address = "http://302cherrypy.mynetgear.com/"
+    location = '2'
+    status = "offline"
+
+    APIkey = load_new_apikey(name, password)['api_key']
+    keys = add_pubkey(APIkey, name)
+    pubkey = keys['public_key']
+    privkey = keys['private_key']
+    timeEPOCH = str(time.time())
+    message = "Hello World!"
+    #privkey = nacl.signing.SigningKey(keys['private_key'], encoder=nacl.encoding.HexEncoder)
+    print(report(APIkey, name, address, location, pubkey, status)['response']) # REPORT THEN BROADCAST
+    serverRecord = get_loginserver_record(APIkey,name)['loginserver_record']
+    print(rx_broadcast(APIkey,name,serverRecord,timeEPOCH,message,privkey))
+
+
+    # print(check_pubkey(APIkey,pubkey,name)['response']) #<-- WORKS
+    #print(get_loginserver_record(APIkey,name)['loginserver_record'])
+    # print(list_apis())
+    # print(list_users(APIkey, pubkey))
+    # print(loginserver_pubkey()['response'])

@@ -4,7 +4,7 @@ import base64
 import nacl.encoding
 import nacl.signing
 
-url = "http://cs302.kiwi.land/api/report"
+
 
 # PRIVATE KEY
 # b'3c22f109c37683b833ca5d24fc2d23c41e1bc2a8b26c8064776ef13d8eb57b3c'
@@ -13,6 +13,7 @@ url = "http://cs302.kiwi.land/api/report"
 username = "tmag741"
 password = "Teresito_419588351"
 
+url = "http://cs302.kiwi.land/api/report"
 
 hex_key =  b'fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6'
 signing_key = nacl.signing.SigningKey(hex_key, encoder=nacl.encoding.HexEncoder)
@@ -32,9 +33,9 @@ payload = {
     "connection_address": "http://302cherrypy.mynetgear.com/",
     "connection_location": "2",
     "incoming_pubkey" : pubkey_hex_str,
-    "status" : "online"
+    "status" : "offline"
 }
-
+print(pubkey_hex_str)
 try:
     req = urllib.request.Request(url, data=bytes(json.dumps(payload), 'utf-8'), headers=headers)
 

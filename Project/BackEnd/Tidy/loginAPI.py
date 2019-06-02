@@ -217,6 +217,48 @@ def rx_broadcast(apikey,username,serverRecord,time,message,privkey):
 	payload_b = bytes(json.dumps(payload), 'utf-8')
 	return(Request(url,payload_b,header))
 
+def rx_privatemessage(apikey,username,serverRecord,time,message,privkey,targetKey,target):
+	url = HOST + "/rx_privatemessage"
+	header = {
+		'X-username': username,
+		'X-apikey': apikey
+	}
+    ##									   ##
+    #				FIX ME 					#
+    ##									   ##
+	credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
+	b64_credentials = base64.b64encode(credentials.encode('ascii'))
+	header = {
+	'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
+	'Content-Type': 'application/json; charset=utf-8',
+	}
+    ##									   ##
+    #				FIX ME 					#
+    ##									   ##	
+	# ENCRYPTING MESSAGE
+	message = bytes(message,'utf-8')
+	verifykey = nacl.signing.VerifyKey(targetKey, encoder=nacl.encoding.HexEncoder)
+	publickey = verifykey.to_curve25519_public_key()
+	sealed_box = nacl.public.SealedBox(publickey)
+	encrypted = sealed_box.encrypt(message, encoder=nacl.encoding.HexEncoder)
+	message_hex_str = encrypted.decode('utf-8')
+
+	signing_key = nacl.signing.SigningKey(privkey, encoder=nacl.encoding.HexEncoder)	
+	message_bytes = bytes(serverRecord + targetKey + target + message_hex_str + time, encoding='utf-8')
+	signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
+	signature_hex_str = signed.signature.decode('utf-8')
+
+	payload = {
+	    "loginserver_record" : serverRecord,
+	    "target_pubkey" : targetKey,
+	    "target_username" : target,
+	    "encrypted_message" : message_hex_str,
+	    "sender_created_at" : time,
+	    "signature": signature_hex_str
+	}
+	payload_b = bytes(json.dumps(payload), 'utf-8')
+	return(Request(url,payload_b,header))
+
 if __name__ == '__main__':
     name = 'tmag741'
     password = 'Teresito_419588351'
@@ -234,11 +276,11 @@ if __name__ == '__main__':
     #privkey = nacl.signing.SigningKey(keys['private_key'], encoder=nacl.encoding.HexEncoder)
     print(report(APIkey, name, address, location, pubkey, status)['response']) # REPORT THEN BROADCAST
     serverRecord = get_loginserver_record(APIkey,name)['loginserver_record']
-    print(rx_broadcast(APIkey,name,serverRecord,timeEPOCH,message,privkey))
-
+    #print(rx_broadcast(APIkey,name,serverRecord,timeEPOCH,message,privkey))
+    loginPubKey = loginserver_pubkey()['pubkey']
+    print(rx_privatemessage(APIkey,name,serverRecord,timeEPOCH,"Hello",privkey,loginPubKey,"admin"))
 
     # print(check_pubkey(APIkey,pubkey,name)['response']) #<-- WORKS
     #print(get_loginserver_record(APIkey,name)['loginserver_record'])
     # print(list_apis())
     # print(list_users(APIkey, pubkey))
-    # print(loginserver_pubkey()['response'])

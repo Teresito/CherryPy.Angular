@@ -28,14 +28,14 @@ headers = {
     'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
     'Content-Type' : 'application/json; charset=utf-8',
 }
-
+print(pubkey_hex_str)
+print(pubkey_hex_str)
 payload = {
     "connection_address": "http://302cherrypy.mynetgear.com/",
     "connection_location": "2",
     "incoming_pubkey" : pubkey_hex_str,
     "status" : "offline"
 }
-print(pubkey_hex_str)
 try:
     req = urllib.request.Request(url, data=bytes(json.dumps(payload), 'utf-8'), headers=headers)
 

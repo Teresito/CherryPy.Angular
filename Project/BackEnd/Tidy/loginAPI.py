@@ -120,10 +120,10 @@ def load_new_apikey(username, password):
 
 def report(apikey, username, address, location, pubkey, status):
     url = HOST + "/report"
-    # header = {
-    #     'X-username': username,
-    #     'X-apikey': apikey
-    # }
+    header = {
+        'X-username': username,
+        'X-apikey': apikey
+    }
     ##									   ##
     #				FIX ME 					#
     ##									   ##
@@ -157,19 +157,19 @@ def get_loginserver_record(apikey, username):
 
 def list_users(apikey, username):
     url = HOST + "/list_users"
-    # header = {
- 	#        'X-username': username,
- 	#        'X-apikey': apikey
- 	#}
+    header = {
+ 	       'X-username': username,
+ 	       'X-apikey': apikey
+ 	}
  	##									   ##
     #				FIX ME 					#
     ##									   ##
-    credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
-    b64_credentials = base64.b64encode(credentials.encode('ascii'))
-    header = {
-        'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
-        'Content-Type': 'application/json; charset=utf-8',
-    }
+    # credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
+    # b64_credentials = base64.b64encode(credentials.encode('ascii'))
+    # header = {
+    #     'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
+    #     'Content-Type': 'application/json; charset=utf-8',
+    # }
     ##									   ##
     #				FIX ME 					#
     ##									   ##
@@ -273,14 +273,15 @@ if __name__ == '__main__':
     privkey = keys['private_key']
     timeEPOCH = str(time.time())
     message = "Hello World!"
-    #privkey = nacl.signing.SigningKey(keys['private_key'], encoder=nacl.encoding.HexEncoder)
-    print(report(APIkey, name, address, location, pubkey, status)['response']) # REPORT THEN BROADCAST
-    serverRecord = get_loginserver_record(APIkey,name)['loginserver_record']
-    #print(rx_broadcast(APIkey,name,serverRecord,timeEPOCH,message,privkey))
-    loginPubKey = loginserver_pubkey()['pubkey']
-    print(rx_privatemessage(APIkey,name,serverRecord,timeEPOCH,"Hello",privkey,loginPubKey,"admin"))
+    print(APIkey)
+    # #privkey = nacl.signing.SigningKey(keys['private_key'], encoder=nacl.encoding.HexEncoder)
+    # print(report(APIkey, name, address, location, pubkey, status)['response']) # REPORT THEN BROADCAST
+    # serverRecord = get_loginserver_record(APIkey,name)['loginserver_record']
+    # print(rx_broadcast(APIkey,name,serverRecord,timeEPOCH,message,privkey))
+    # loginPubKey = loginserver_pubkey()['pubkey']
+    # print(rx_privatemessage(APIkey,name,serverRecord,timeEPOCH,"Hello",privkey,loginPubKey,"admin"))
 
-    # print(check_pubkey(APIkey,pubkey,name)['response']) #<-- WORKS
-    #print(get_loginserver_record(APIkey,name)['loginserver_record'])
-    # print(list_apis())
+    # # print(check_pubkey(APIkey,pubkey,name)['response']) #<-- WORKS
+    # #print(get_loginserver_record(APIkey,name)['loginserver_record'])
+    # # print(list_apis())
     # print(list_users(APIkey, pubkey))

@@ -59,22 +59,11 @@ def add_pubkey(api_key, username):
     message_bytes = bytes(pubkey_hex_str + username, encoding='utf-8')
     signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
     signature_hex_str = signed.signature.decode('utf-8')
-    # header = {
-    # 	'X-username': username,
-    # 	'X-apikey': api_key
-    # }
-    ##									   ##
-    #				FIX ME 					#
-    ##									   ##
-    credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
-    b64_credentials = base64.b64encode(credentials.encode('ascii'))
-    headers = {
-        'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
-        'Content-Type': 'application/json; charset=utf-8',
+    header = {
+    	'X-username': username,
+    	'X-apikey': api_key,
+    	'Content-Type':'application/json'
     }
-    ##									   ##
-    #				FIX ME 					#
-    ##									   ##
     # PAYLOAD
     payload = {
         "pubkey": pubkey_hex_str,
@@ -88,7 +77,7 @@ def add_pubkey(api_key, username):
         'public_key': pubkey_hex_str
     }
 
-    server_response = Request(url, payload_b, headers)['response']
+    server_response = Request(url, payload_b, header)['response']
     if(server_response == 'ok'):
         return(keyGen)
     else:
@@ -99,7 +88,8 @@ def check_pubkey(apikey, pubkey, username):
     url = HOST + "/check_pubkey?pubkey=" + pubkey
     header = {
         'X-username': username,
-        'X-apikey': apikey
+        'X-apikey': apikey,
+        'Content-Type': 'application/json'
     }
     return(Request(url, None, header))
 
@@ -122,20 +112,9 @@ def report(apikey, username, address, location, pubkey, status):
     url = HOST + "/report"
     header = {
         'X-username': username,
-        'X-apikey': apikey
+        'X-apikey': apikey,
+        'Content-Type': 'application/json'
     }
-    ##									   ##
-    #				FIX ME 					#
-    ##									   ##
-    credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
-    b64_credentials = base64.b64encode(credentials.encode('ascii'))
-    header = {
-        'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
-        'Content-Type': 'application/json; charset=utf-8',
-    }
-    ##									   ##
-    #				FIX ME 					#
-    ##									   ##
     payload = {
         "connection_address": address,
         "connection_location": location,
@@ -159,20 +138,9 @@ def list_users(apikey, username):
     url = HOST + "/list_users"
     header = {
  	       'X-username': username,
- 	       'X-apikey': apikey
+ 	       'X-apikey': apikey,
+ 	       'Content-Type': 'application/json'
  	}
- 	##									   ##
-    #				FIX ME 					#
-    ##									   ##
-    # credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
-    # b64_credentials = base64.b64encode(credentials.encode('ascii'))
-    # header = {
-    #     'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
-    #     'Content-Type': 'application/json; charset=utf-8',
-    # }
-    ##									   ##
-    #				FIX ME 					#
-    ##									   ##
     return(Request(url, None, header))
 
 
@@ -188,20 +156,10 @@ def rx_broadcast(apikey,username,serverRecord,time,message,privkey):
 	url = HOST + "/rx_broadcast"
 	header = {
         'X-username': username,
-        'X-apikey': apikey
+        'X-apikey': apikey,
+        'Content-Type': 'application/json'
     }
-    ##									   ##
-    #				FIX ME 					#
-    ##									   ##
-	credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
-	b64_credentials = base64.b64encode(credentials.encode('ascii'))
-	header = {
-	    'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
-	    'Content-Type': 'application/json; charset=utf-8',
-	}
-    ##									   ##
-    #				FIX ME 					#
-    ##									   ##
+
 	signing_key = nacl.signing.SigningKey(privkey, encoder=nacl.encoding.HexEncoder)	
 	message_bytes = bytes(serverRecord + message + time, encoding='utf-8')
 	signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
@@ -217,24 +175,23 @@ def rx_broadcast(apikey,username,serverRecord,time,message,privkey):
 	payload_b = bytes(json.dumps(payload), 'utf-8')
 	return(Request(url,payload_b,header))
 
+def get_privatedata(apikey,username)
+	url = HOST + '/get_privatedata'
+	header = {
+        'X-username': username,
+        'X-apikey': apikey,
+        'Content-Type': 'application/json'
+    }
+    return(Request(url,None,header))
+
+
 def rx_privatemessage(apikey,username,serverRecord,time,message,privkey,targetKey,target):
 	url = HOST + "/rx_privatemessage"
 	header = {
 		'X-username': username,
-		'X-apikey': apikey
+		'X-apikey': apikey,
+		'Content-Type': 'application/json'
 	}
-    ##									   ##
-    #				FIX ME 					#
-    ##									   ##
-	credentials = ('%s:%s' % ('tmag741', 'Teresito_419588351'))
-	b64_credentials = base64.b64encode(credentials.encode('ascii'))
-	header = {
-	'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
-	'Content-Type': 'application/json; charset=utf-8',
-	}
-    ##									   ##
-    #				FIX ME 					#
-    ##									   ##	
 	# ENCRYPTING MESSAGE
 	message = bytes(message,'utf-8')
 	verifykey = nacl.signing.VerifyKey(targetKey, encoder=nacl.encoding.HexEncoder)
@@ -272,16 +229,3 @@ if __name__ == '__main__':
     pubkey = keys['public_key']
     privkey = keys['private_key']
     timeEPOCH = str(time.time())
-    message = "Hello World!"
-    print(APIkey)
-    # #privkey = nacl.signing.SigningKey(keys['private_key'], encoder=nacl.encoding.HexEncoder)
-    # print(report(APIkey, name, address, location, pubkey, status)['response']) # REPORT THEN BROADCAST
-    # serverRecord = get_loginserver_record(APIkey,name)['loginserver_record']
-    # print(rx_broadcast(APIkey,name,serverRecord,timeEPOCH,message,privkey))
-    # loginPubKey = loginserver_pubkey()['pubkey']
-    # print(rx_privatemessage(APIkey,name,serverRecord,timeEPOCH,"Hello",privkey,loginPubKey,"admin"))
-
-    # # print(check_pubkey(APIkey,pubkey,name)['response']) #<-- WORKS
-    # #print(get_loginserver_record(APIkey,name)['loginserver_record'])
-    # # print(list_apis())
-    # print(list_users(APIkey, pubkey))

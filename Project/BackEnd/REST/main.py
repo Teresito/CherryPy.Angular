@@ -7,7 +7,7 @@ import base64
 import nacl.encoding
 import nacl.signing
 
-LISTENING_IP = "193.168.1.6"
+LISTENING_IP = "172.23.32.197"
 LISTENING_PORT = 80
 
 api_key = None
@@ -222,7 +222,7 @@ class Api:
         }
 
 config = {
-    'global': {'server.socket_host': '192.168.1.6',
+    'global': {'server.socket_host': LISTENING_IP,
                'server.socket_port': 80,
                'engine.autoreload.on': True,
                'server.thread_pool': 8

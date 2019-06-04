@@ -6,18 +6,6 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class apiServices {
 
-    private creds: String = btoa("tmag741:Teresito_419588351");
-    
-    private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json', }), responseType: 'text' as 'json' };
-
-    private header = {
-        headers: new HttpHeaders({
-            'Authorization': 'Basic' + this.creds,
-            'Content-Type': 'application/json; charset=utf-8',
-            'Access-Control-Allow-Origin': '*',
-        })
-    };
-    // loginServer
     constructor(private httpClient: HttpClient) { }
 
     public pingAPI() {

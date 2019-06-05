@@ -257,7 +257,7 @@ if __name__ == '__main__':
     privKey = keys['private_key']
     report(APIkey,name,"Somehwhere","2",pubKey,"offline")
 
-    myEDKey = "WHATSUPPPPP"
+    myEDKey = "asd123"
 
     privateData = {
         "prikeys": ["...", "..."],

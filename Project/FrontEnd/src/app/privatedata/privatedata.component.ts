@@ -90,7 +90,17 @@ export class PrivatedataComponent implements OnInit {
   }
 
   decryptSubmit(){
-
+    let uniqueKey = this.eKeyForm.value.Dkey;
+    this.API.unlockData(uniqueKey).subscribe(
+      (response) => {
+        if (response === "1") {
+          this.state.loggedChanged.next();
+        }
+        else {
+          this.wrongKey = true;
+        }
+      }
+    );
   }
 
 }

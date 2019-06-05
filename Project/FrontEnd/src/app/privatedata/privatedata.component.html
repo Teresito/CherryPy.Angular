@@ -17,7 +17,7 @@
 
 
     <div class="input-group mb-3" *ngIf="decryptForm">
-      <input type="text" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="{{ pholder }}"
+      <input type="password" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="{{ pholder }}"
         formControlName="Dkey">
       <div class="input-group-append">
         <button class="btn btn-outline-success " [ngClass]="{'btn-outline-danger':wrongKey}"

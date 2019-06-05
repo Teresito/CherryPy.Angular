@@ -7,6 +7,7 @@ import urllib.request
 import json
 import base64
 import time
+import helper
 
 HOST = "http://cs302.kiwi.land/api"
 
@@ -45,14 +46,14 @@ def ping():
     return(Request(url, None, None))
 
 def add_privatedata(apikey,username,userData,privateKey):
-    url = HOST + "/api/add_privatedata"
+    url = HOST + "/add_privatedata"
 
     header = {
         'X-username': username,
         'X-apikey': apikey,
         'Content-Type':'application/json'
     }
-    serverRecord = get_loginserver_record(apikey,username)
+    serverRecord = get_loginserver_record(apikey,username)['loginserver_record']
     timeNow = str(time.time())
     # Signature 
     signing_key = nacl.signing.SigningKey(privateKey, encoder=nacl.encoding.HexEncoder)
@@ -61,13 +62,14 @@ def add_privatedata(apikey,username,userData,privateKey):
     signature_hex_str = signed.signature.decode('utf-8')    
 
     payload = {
-        'privatdata': userData,
+        'privatedata': userData,
         'loginserver_record': serverRecord,
         'client_saved_at': timeNow,
         'signature': signature_hex_str
     }
     payload_b = bytes(json.dumps(payload), 'utf-8')
     return(Request(url,payload_b,header))
+
 # Returns private, public key back to server
 def add_pubkey(apikey, username):
     url = HOST + "/add_pubkey"
@@ -240,14 +242,37 @@ def rx_privatemessage(apikey,username,serverRecord,time,message,privkey,targetKe
 	payload_b = bytes(json.dumps(payload), 'utf-8')
 	return(Request(url,payload_b,header))
 
-# if __name__ == '__main__':
-#     name = 'tmag741'
-#     password = 'Teresito_419588351'
+if __name__ == '__main__':
+    name = 'tmag741'
+    password = 'Teresito_419588351'
 
-#     address = "http://302cherrypy.mynetgear.com/"
-#     location = '2'
-#     status = "offline"
+    address = "http://302cherrypy.mynetgear.com/"
+    location = '2'
+    status = "offline"
 
-#     APIkey = load_new_apikey(name, password)['api_key']
-#     keys = add_pubkey(APIkey, name)
+    APIkey = load_new_apikey(name, password)['api_key']
+
+    keys = add_pubkey(APIkey, name)
+    pubKey = keys['public_key']
+    privKey = keys['private_key']
+    report(APIkey,name,"Somehwhere","2",pubKey,"offline")
+
+    myEDKey = "WHATSUPPPPP"
+
+    privateData = {
+        "prikeys": ["...", "..."],
+        "blocked_pubkeys": ["...", "..."],
+        "blocked_usernames": ["...", "..."],
+        "blocked_words": ["...", "..."],
+        "blocked_message_signatures": ["...", "..."],
+        "favourite_message_signatures": ["...", "..."],
+        "friends_usernames": ["...", "..."]
+    }
+
+    data_hex = helper.encryptData(privateData,myEDKey)
+    print(data_hex)
+    print(add_privatedata(APIkey,name,data_hex,privKey))
+    datastored = get_privatedata(APIkey,name)['privatedata']
+    data_unlocked = helper.decryptData(datastored,myEDKey)
+    print(data_unlocked)
 

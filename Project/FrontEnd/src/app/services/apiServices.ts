@@ -28,6 +28,10 @@ export class apiServices {
         return this.httpClient.post(`${webServer}/check_privatedata`, null, { responseType: 'text' });
     }
 
+    public unlockData(uniqueKey: String) {
+        return this.httpClient.post(`${webServer}/unlock_privatedata`, { 'decryptionKey': uniqueKey }, { responseType: 'text' });
+    }
+
     public newPrivateData(uniqueKey: String){
         return this.httpClient.post(`${webServer}/add_pubkey`, {'encryptionKey':uniqueKey}, { responseType: 'text' });
     }

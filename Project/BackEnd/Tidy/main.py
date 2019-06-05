@@ -59,6 +59,9 @@ class Api:
 
     def isLoggedIn(self):
         if(self.apikey == None or self.username == None):
+            print("-----------------------------------")
+            print("NOT LOGGED IN")
+            print("-----------------------------------")
             return False
         else:
             return True
@@ -102,10 +105,11 @@ class Api:
     def unlock_privatedata(self):
         if(self.isLoggedIn() == False):
             return '0'
+
         body = cherrypy.request.body.read()
         body_json = json.loads(body.decode('utf-8'))
         decryptKey = body_json['decryptionKey']
-        attempt = Api.decryptData(self,decryptKey)
+        attempt = helper.decryptData(self.privateData,decryptKey)
         if(attempt != "error"):
             self.privateData = attempt
             self.EDKey = decryptKey
@@ -135,10 +139,6 @@ class Api:
             self.privateKey = centralResponse['private_key']
             self.publicKey = centralResponse['public_key']
             return '1'
-
-    def checkUser(self):
-        print("Wat")
-
 
 
 config = {

@@ -259,7 +259,11 @@ if __name__ == '__main__':
     pubKey = keys['public_key']
     privKey = keys['private_key']
     report(APIkey,name,"Somehwhere","2",pubKey,"offline")
-        # myEDKey = "asd123"
+    userList = list_users(APIkey, name)['users']
+    for user in userList:
+        if(user['status']=="online"):
+            print(user['username'])
+    # myEDKey = "asd123"
 
     # privateData = {
     #     "prikeys": ["fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6", "..."],

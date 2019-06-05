@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 @Injectable()
 export class componentState {
 
-    constructor(private API: apiServices,private route: Router){}
+    constructor(private API: apiServices){}
 
     eKeyNotify = true;
     inSession = false;

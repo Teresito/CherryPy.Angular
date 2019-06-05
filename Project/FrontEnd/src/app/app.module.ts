@@ -15,6 +15,7 @@ import { componentState } from './services/componentService';
 import { GroupComponent } from './group/group.component';
 import { AccountComponent } from './account/account.component';
 import { PrivatedataComponent } from './privatedata/privatedata.component';
+import { UserListComponent } from './user-list/user-list.component';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { PrivatedataComponent } from './privatedata/privatedata.component';
     GroupComponent,
     AccountComponent,
     PrivatedataComponent,
+    UserListComponent,
 
   ],
   imports: [

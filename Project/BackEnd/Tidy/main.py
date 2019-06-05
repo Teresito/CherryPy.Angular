@@ -9,6 +9,8 @@ import centralAPI
 
 
 LISTENING_IP = "192.168.1.6"
+
+#LISTENING_IP = "http://302cherrypy.mynetgear.com/"
 LISTENING_PORT = 80
 
 
@@ -76,9 +78,12 @@ class Api:
 
         centralResponse = centralAPI.list_users(self.apikey,self.username)
         if(centralResponse['response'] == 'ok'):
-            return centralResponse
+            users = centralResponse['users']
+            
+            return json.dumps(centralResponse)
         else:
             return '0'
+
 
     @cherrypy.expose
     #@cherrypy.tools.allow(methods=['POST'])

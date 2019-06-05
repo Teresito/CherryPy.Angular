@@ -6,8 +6,8 @@ import cherrypy
 import base64
 import nacl.encoding
 import nacl.signing
-
-LISTENING_IP = "172.23.32.197"
+LISTENING_IP = "192.168.1.6"
+#LISTENING_IP = "http://302cherrypy.mynetgear.com/"
 LISTENING_PORT = 80
 
 api_key = None

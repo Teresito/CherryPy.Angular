@@ -15,13 +15,14 @@ def encryptData(userData,encryptKey):
     #BOX
     ops = nacl.pwhash.argon2i.OPSLIMIT_SENSITIVE
     mem = nacl.pwhash.argon2i.MEMLIMIT_SENSITIVE
-    key = nacl.pwhash.argon2id.kdf(nacl.secret.SecretBox.KEY_SIZE,bytes(encryptKey,'utf-8'),salt,ops,mem)
-    box = nacl.secret.SecretBox(key)
+    key = nacl.pwhash.argon2id.kdf(nacl.secret.SecretBox.KEY_SIZE, encryptKey.encode(
+        'utf-8'), salt, ops, mem, encoder=nacl.encoding.HexEncoder)
+    box = nacl.secret.SecretBox(key, encoder=nacl.encoding.HexEncoder)
     nonce = nacl.utils.random(nacl.secret.SecretBox.NONCE_SIZE)
 
     jsonBytes = bytes(json.dumps(userData),'utf-8')
     encrypted = box.encrypt(jsonBytes,nonce,encoder=nacl.encoding.HexEncoder)
-    encrypted_hex_str = encrypted.decode('utf-8')
+    encrypted_hex_str = base64.b64encode(encrypted).decode("utf-8")
 
     return encrypted_hex_str
 
@@ -34,14 +35,16 @@ def decryptData(userData,decryptKey):
 	mem = nacl.pwhash.argon2i.MEMLIMIT_SENSITIVE
 #	key = nacl.pwhash.argon2id.kdf(nacl.secret.SecretBox.KEY_SIZE,bytes(decryptKey,'utf-8'),salt,ops,mem)
 	try:
-		key = nacl.pwhash.argon2id.kdf(nacl.secret.SecretBox.KEY_SIZE,bytes(decryptKey,'utf-8'),salt,ops,mem)
+		key = nacl.pwhash.argon2id.kdf(nacl.secret.SecretBox.KEY_SIZE, decryptKey.encode(
+		    'utf-8'), salt, ops, mem, encoder=nacl.encoding.HexEncoder)
 	except nacl.exceptions.TypeError as error:
 		return "error"	
 	
-	box = nacl.secret.SecretBox(key)
-	
+	box = nacl.secret.SecretBox(key, encoder=nacl.encoding.HexEncoder)
+	print(base64.b64decode(userData))
 	try:
-		message = box.decrypt(userData,encoder=nacl.encoding.HexEncoder)
+		message = box.decrypt(base64.b64decode(userData),
+		                      encoder=nacl.encoding.HexEncoder)
 		message = json.loads(message.decode('utf-8'))
 	except nacl.exceptions.CryptoError as error:
 	    message = "error"

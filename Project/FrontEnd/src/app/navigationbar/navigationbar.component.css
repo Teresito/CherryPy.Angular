@@ -1,1 +1,5 @@
 .pointer {cursor: pointer;}
+
+.hideNav{
+    z-index: -1;
+}

@@ -18,13 +18,13 @@ export class LoginComponent implements OnInit {
     password : new FormControl(''),
   });
 
-  constructor(private API: apiServices, private auth: AuthGuard, private state: componentState, private router: Router) { }
+  constructor(private API: apiServices, private state: componentState, private router: Router) { }
 
   wrongCreds: boolean = false;
 
   ngOnInit() {
-    console.log(this.state.getLoggedIn())
-    if (this.state.getLoggedIn()){
+    //console.log(this.state.getLoggedIn())
+    if(this.state.getLoggedIn()==true){
       this.router.navigate(['/broadcast']);
     }
 
@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
           this.wrongCreds = false;
           this.state.setLoggedIn(true);
           this.state.loggedChanged.next();
+          this.API.reportUser();
           this.router.navigate(['/broadcast']);
         }
       }
@@ -48,7 +49,6 @@ export class LoginComponent implements OnInit {
     this.wrongCreds = false;
     this.API.loginAPI(this.LoginForm.value.username, this.LoginForm.value.password).subscribe(
       (response)=>{
-        console.log(response);  
         if(response === "0"){
           this.wrongCreds = true;
         }
@@ -56,6 +56,7 @@ export class LoginComponent implements OnInit {
           this.wrongCreds = false;
           this.state.setLoggedIn(true);
           this.state.loggedChanged.next();
+          this.API.reportUser();
           this.router.navigate(['/broadcast']);
         }
       }

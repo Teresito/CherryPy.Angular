@@ -6,18 +6,6 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class apiServices {
 
-    private creds: String = btoa("tmag741:Teresito_419588351");
-    
-    private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json', }), responseType: 'text' as 'json' };
-
-    private header = {
-        headers: new HttpHeaders({
-            'Authorization': 'Basic' + this.creds,
-            'Content-Type': 'application/json; charset=utf-8',
-            'Access-Control-Allow-Origin': '*',
-        })
-    };
-    // loginServer
     constructor(private httpClient: HttpClient) { }
 
     public pingAPI() {
@@ -33,11 +21,23 @@ export class apiServices {
     }
 
     public logoutAPI(){
-        return this.httpClient.post(`${webServer}/logout`, { responseType: 'text' });
+        return this.httpClient.post(`${webServer}/logout`, null, { responseType: 'text' });
     }
     
     public checkPrivateData(){
         return this.httpClient.post(`${webServer}/check_privatedata`, null, { responseType: 'text' });
+    }
+
+    public unlockData(uniqueKey: String) {
+        return this.httpClient.post(`${webServer}/unlock_privatedata`, { 'decryptionKey': uniqueKey }, { responseType: 'text' });
+    }
+
+    public newPrivateData(uniqueKey: String){
+        return this.httpClient.post(`${webServer}/add_pubkey`, {'encryptionKey':uniqueKey}, { responseType: 'text' });
+    }
+
+    public reportUser() {
+        return this.httpClient.post(`${webServer}/report_user`, null, { responseType: 'text' });
     }
 
 }

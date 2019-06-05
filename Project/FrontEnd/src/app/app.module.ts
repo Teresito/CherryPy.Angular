@@ -14,6 +14,7 @@ import { apiServices } from './services/apiServices';
 import { componentState } from './services/componentService';
 import { GroupComponent } from './group/group.component';
 import { AccountComponent } from './account/account.component';
+import { PrivatedataComponent } from './privatedata/privatedata.component';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { AccountComponent } from './account/account.component';
     PageNotFoundComponent,
     GroupComponent,
     AccountComponent,
+    PrivatedataComponent,
 
   ],
   imports: [

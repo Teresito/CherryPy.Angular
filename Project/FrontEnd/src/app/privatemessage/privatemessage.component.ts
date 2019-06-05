@@ -13,7 +13,6 @@ export class PrivatemessageComponent implements OnInit {
   constructor(private state: componentState) { }
   
   ngOnInit() {
-    console.log(this.state.eKeyNotify)
   }
 
 }

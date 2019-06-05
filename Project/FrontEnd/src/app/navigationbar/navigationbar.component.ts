@@ -16,9 +16,9 @@ export class NavigationbarComponent implements OnInit {
   constructor(private router: Router, private api: apiServices, private state: componentState) { }
 
   ngOnInit() {
-    this.state.loggedChanged.subscribe(
+    this.state.session.subscribe(
         ()=>{
-          this.zIndex = this.state.eKeyNotify      
+        this.zIndex = !this.state.inSession;
         }
       );
     
@@ -27,12 +27,16 @@ export class NavigationbarComponent implements OnInit {
   logout(){  
     this.api.logoutAPI().subscribe(
       (response)=>{
-        if (response === 1){
+        if (response == '1'){
           this.router.navigate(['/login']);
           this.state.setLoggedIn(false);
+          this.state.startSession(false);
           this.state.deleteSession();
           this.state.eKeyNotify = true;
           this.state.loggedChanged.next();
+        }
+        else{
+          this.router.navigate(['/login']);
         }
       }
     );

@@ -14,13 +14,9 @@ LISTENING_PORT = 80
 
 def cors():
     if cherrypy.request.method == 'OPTIONS':
-        # preflign request
-        # see http://www.w3.org/TR/cors/#cross-origin-request-with-preflight-0
         cherrypy.response.headers['Access-Control-Allow-Methods'] = 'POST'
-        cherrypy.response.headers[
-            'Access-Control-Allow-Headers'] = 'content-type'
+        cherrypy.response.headers['Access-Control-Allow-Headers'] = 'content-type'
         cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
-        # tell CherryPy no avoid normal handler
         return True
     else:
         cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
@@ -84,7 +80,6 @@ class Api:
         if(centralResponse['response'] == "ok"):
             self.apikey = centralResponse['api_key']
             self.username = body_json['user']
-            print(self.apikey)
             return '1'
         else:
             return '0'
@@ -109,9 +104,13 @@ class Api:
         body = cherrypy.request.body.read()
         body_json = json.loads(body.decode('utf-8'))
         decryptKey = body_json['decryptionKey']
-        attempt = helper.decryptData(self.privateData,decryptKey)
-        if(attempt != "error"):
-            self.privateData = attempt
+        unlockedData = helper.decryptData(self.privateData,decryptKey)
+        if(unlockedData != "error"):
+            self.privateData = unlockedData
+            print(type(unlockedData))
+            privateKeyData = unlockedData['prikeys']
+            self.privateKey = privateKeyData[0]
+            self.publicKey = helper.generatePubKey(self.privateKey)
             self.EDKey = decryptKey
             return '1'
         else:
@@ -120,8 +119,19 @@ class Api:
     @cherrypy.expose
     def logout(self):
         if(self.newData == True):
-            userdata_ecrypted = helper.encrypt(self.privateData,self.EDKey)
-
+            userdata_ecrypted = helper.encryptData(self.privateData,self.EDKey)
+            centralResponse = centralAPI.add_privatedata(self.apikey,self.username,userdata_ecrypted,self.privateKey)
+            if(centralResponse['response']=="error"):
+                return '0'
+        centralResponse = centralAPI.report(self.apikey,self.username,"LOCATION N/A","2",self.publicKey,"offline")        
+        self.username = None
+        self.apikey = None
+        self.privateData = None
+        self.privateKey = None
+        self.publicKey = None
+        self.newData = None
+        self.EDKey = None        
+        return '1'
     @cherrypy.expose
     def add_pubkey(self):
         if(self.isLoggedIn() == False):
@@ -132,15 +142,30 @@ class Api:
         body_json = json.loads(body.decode('utf-8'))
         centralResponse = centralAPI.add_pubkey(self.apikey,self.username)
         if(centralResponse == "Request Error"):
-            print(centralResponse)
             return '0'
         else:
             self.EDKey = body_json['encryptionKey']
             self.privateKey = centralResponse['private_key']
             self.publicKey = centralResponse['public_key']
+            centralPing = centralAPI.ping()
+            if(centralPing['response']=='ok'):
+                return '1'
+            else:
+                return '0'
+
+
+    @cherrypy.expose
+    def report_user(self):
+        if(self.isLoggedIn() == False):
+            return '0'
+        centralResponse = centralAPI.report(self.apikey,self.username,"LOCATION N/A","2",self.publicKey,"online")
+        print("==============================")
+        print(centralResponse)
+        print("==============================")
+        if(centralResponse['response']=='ok'):
             return '1'
-
-
+        else:
+            return '0'
 config = {
     'global': {'server.socket_host': LISTENING_IP,
                'server.socket_port': LISTENING_PORT,

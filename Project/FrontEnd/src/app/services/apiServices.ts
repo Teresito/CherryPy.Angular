@@ -21,7 +21,7 @@ export class apiServices {
     }
 
     public logoutAPI(){
-        return this.httpClient.post(`${webServer}/logout`, { responseType: 'text' });
+        return this.httpClient.post(`${webServer}/logout`, null, { responseType: 'text' });
     }
     
     public checkPrivateData(){
@@ -34,6 +34,10 @@ export class apiServices {
 
     public newPrivateData(uniqueKey: String){
         return this.httpClient.post(`${webServer}/add_pubkey`, {'encryptionKey':uniqueKey}, { responseType: 'text' });
+    }
+
+    public reportUser() {
+        return this.httpClient.post(`${webServer}/report_user`, null, { responseType: 'text' });
     }
 
 }

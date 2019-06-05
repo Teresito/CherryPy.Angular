@@ -1,11 +1,11 @@
 <!-- <ng-template> -->
 <!-- <span class="close" style="cursor: pointer;" (click)="toggleDecrypt='none'">&times;</span> -->
 <div class="text-center">
-  <p class="lead" style="padding-top:5%">
+  <p class="lead" style="padding-top:5%" *ngIf="!loading">
     {{ dataResponse }}
   </p>
 </div>
-<form [formGroup]="eKeyForm">
+<form [formGroup]="eKeyForm" *ngIf="!loading">
   <!-- Has private data  -->
   <div class="text-center" *ngIf="options">
     <button type="button" class="btn btn-outline-success" (click)="NewKey()">New Key</button>
@@ -49,4 +49,10 @@
 
 
 </form>
+
+<div class="d-flex justify-content-center" *ngIf="loading" style="padding-top:20%;padding-bottom:20%">
+  <div class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
 <!-- </ng-template> -->

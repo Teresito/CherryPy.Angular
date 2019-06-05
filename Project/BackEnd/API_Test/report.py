@@ -15,7 +15,8 @@ password = "Teresito_419588351"
 
 url = "http://cs302.kiwi.land/api/report"
 
-hex_key =  b'fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6'
+#hex_key =  b'fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6'
+hex_key = bytes('fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6','utf-8')
 signing_key = nacl.signing.SigningKey(hex_key, encoder=nacl.encoding.HexEncoder)
 verify_key = signing_key.verify_key
 pubkey_hex = signing_key.verify_key.encode(encoder=nacl.encoding.HexEncoder)

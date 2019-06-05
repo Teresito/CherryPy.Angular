@@ -20,6 +20,7 @@ export class PrivatedataComponent implements OnInit {
   encryptForm: boolean = false;
   options: boolean = false;
   optionsBack: boolean = false;
+  loading: boolean = true;
 
   constructor(private API: apiServices, private state: componentState) { }
 
@@ -29,9 +30,11 @@ export class PrivatedataComponent implements OnInit {
   dataResponse: String;
 
   ngOnInit() {
+    this.loading = true;
     if (this.state.eKeyNotify === true) {
       this.API.checkPrivateData().subscribe(
         (response) => {
+          
           if (response == "1") {
             this.options = true;
             this.optionsBack = true;
@@ -41,8 +44,9 @@ export class PrivatedataComponent implements OnInit {
           else if (response == "0") {
             this.encryptForm = true;
             this.buttonKey = "Encrypt";
-            this.dataResponse = "It seems like you don't have any private data in the login server. To proceed enter your key for encryption";
+            this.dataResponse = "To proceed, enter your key for encryption. Minimum 5 characters";
           }
+          this.loading = false;
         }
       );
 
@@ -55,7 +59,7 @@ export class PrivatedataComponent implements OnInit {
     this.encryptForm = true;
     this.buttonKey = "Encrypt";
     this.options = false;
-    this.dataResponse = "Enter your new key. Minimum 5 characters"
+    this.dataResponse = "Note: You will not see your past messages. Enter your new key. Minimum 5 characters. "
   }
 
   Back(){
@@ -76,29 +80,36 @@ export class PrivatedataComponent implements OnInit {
   encryptSubmit(){
     this.wrongKey = false;
     let uniqueKey = this.eKeyForm.value.newEKey;
+    this.loading = true;
     this.API.newPrivateData(uniqueKey).subscribe(
       (response) => {
         if (response === "1") {
-          this.state.loggedChanged.next();
+          this.state.startSession(true);
+          this.state.session.next();
+          this.API.reportUser();
         }
         else {
           this.wrongKey = true;
         }
+        this.loading = false;
       }
     );
-
   }
 
   decryptSubmit(){
     let uniqueKey = this.eKeyForm.value.Dkey;
+    this.loading = true;
     this.API.unlockData(uniqueKey).subscribe(
       (response) => {
         if (response === "1") {
-          this.state.loggedChanged.next();
+          this.state.startSession(true);
+          this.state.session.next();
+          this.API.reportUser();
         }
         else {
           this.wrongKey = true;
         }
+        this.loading = false;
       }
     );
   }

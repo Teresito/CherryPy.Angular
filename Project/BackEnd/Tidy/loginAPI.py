@@ -135,6 +135,9 @@ def load_new_apikey(username, password):
 
 def report(apikey, username, address, location, pubkey, status):
     url = HOST + "/report"
+    print('------------------------')
+    print('REPORTING USER %s AS %s' %(username,status))
+    print('------------------------')
     header = {
         'X-username': username,
         'X-apikey': apikey,

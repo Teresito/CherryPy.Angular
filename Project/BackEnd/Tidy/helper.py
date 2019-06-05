@@ -41,7 +41,16 @@ def decryptData(userData,decryptKey):
 	box = nacl.secret.SecretBox(key)
 	
 	try:
-	    message = box.decrypt(userData,encoder=nacl.encoding.HexEncoder)
+		message = box.decrypt(userData,encoder=nacl.encoding.HexEncoder)
+		message = json.loads(message.decode('utf-8'))
 	except nacl.exceptions.CryptoError as error:
 	    message = "error"
 	return message
+
+def generatePubKey(privateKey):
+	hex_key = bytes(privateKey,'utf-8')
+	signing_key = nacl.signing.SigningKey(hex_key, encoder=nacl.encoding.HexEncoder)
+	# PUBLIC KEY
+	pubkey_hex = signing_key.verify_key.encode(encoder=nacl.encoding.HexEncoder)
+	pubkey_hex_str = pubkey_hex.decode('utf-8')
+	return pubkey_hex_str

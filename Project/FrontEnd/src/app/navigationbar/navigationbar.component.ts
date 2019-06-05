@@ -28,15 +28,15 @@ export class NavigationbarComponent implements OnInit {
     this.api.logoutAPI().subscribe(
       (response)=>{
         if (response == '1'){
-          this.router.navigate(['/login']);
           this.state.setLoggedIn(false);
           this.state.startSession(false);
           this.state.deleteSession();
           this.state.eKeyNotify = true;
           this.state.loggedChanged.next();
+          this.router.navigate(['/login']);
         }
         else{
-          this.router.navigate(['/login']);
+          window.top.close();
         }
       }
     );

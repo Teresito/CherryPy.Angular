@@ -25,6 +25,7 @@ export class BroadcastComponent implements OnInit {
     this.state.session.subscribe(
       ()=>{
         if(this.state.inSession){
+          this.state.loggedChanged.next()
           this.toggleModal = 'none';
         }
       }

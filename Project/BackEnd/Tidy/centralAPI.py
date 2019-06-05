@@ -259,25 +259,24 @@ if __name__ == '__main__':
     pubKey = keys['public_key']
     privKey = keys['private_key']
     report(APIkey,name,"Somehwhere","2",pubKey,"offline")
+        # myEDKey = "asd123"
 
-    myEDKey = "asd123"
-
-    privateData = {
-        "prikeys": ["fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6", "..."],
-        "blocked_pubkeys": ["...", "..."],
-        "blocked_usernames": ["...", "..."],
-        "blocked_words": ["...", "..."],
-        "blocked_message_signatures": ["...", "..."],
-        "favourite_message_signatures": ["...", "..."],
-        "friends_usernames": ["...", "..."]
-    }
-    # text = privateData['prikeys']
-    # test = text[0]
-    # print(test)
-    data_hex = helper.encryptData(privateData,myEDKey)
-    print(data_hex)
-    print(add_privatedata(APIkey,name,data_hex,privKey))
-    datastored = get_privatedata(APIkey,name)['privatedata']
-    data_unlocked = helper.decryptData(datastored,myEDKey)
-    print(data_unlocked)
+    # privateData = {
+    #     "prikeys": ["fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6", "..."],
+    #     "blocked_pubkeys": ["...", "..."],
+    #     "blocked_usernames": ["...", "..."],
+    #     "blocked_words": ["...", "..."],
+    #     "blocked_message_signatures": ["...", "..."],
+    #     "favourite_message_signatures": ["...", "..."],
+    #     "friends_usernames": ["...", "..."]
+    # }
+    # # text = privateData['prikeys']
+    # # test = text[0]
+    # # print(test)
+    # data_hex = helper.encryptData(privateData,myEDKey)
+    # print(data_hex)
+    # print(add_privatedata(APIkey,name,data_hex,privKey))
+    # datastored = get_privatedata(APIkey,name)['privatedata']
+    # data_unlocked = helper.decryptData(datastored,myEDKey)
+    # print(data_unlocked)
 

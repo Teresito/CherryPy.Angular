@@ -69,6 +69,16 @@ class Api:
             return True
     # Using header to get IP, i can block their requests to this end point
     # One of the reasons is to minimise frontend pinging hammond/central server
+    @cherrypy.expose
+    def onlineUsers(self):
+        if(self.isLoggedIn() == False):
+            return '0'
+
+        centralResponse = centralAPI.list_users(self.apikey,self.username)
+        if(centralResponse['response'] == 'ok'):
+            return centralResponse
+        else:
+            return '0'
 
     @cherrypy.expose
     #@cherrypy.tools.allow(methods=['POST'])
@@ -107,7 +117,6 @@ class Api:
         unlockedData = helper.decryptData(self.privateData,decryptKey)
         if(unlockedData != "error"):
             self.privateData = unlockedData
-            print(type(unlockedData))
             privateKeyData = unlockedData['prikeys']
             self.privateKey = privateKeyData[0]
             self.publicKey = helper.generatePubKey(self.privateKey)
@@ -159,9 +168,6 @@ class Api:
         if(self.isLoggedIn() == False):
             return '0'
         centralResponse = centralAPI.report(self.apikey,self.username,"LOCATION N/A","2",self.publicKey,"online")
-        print("==============================")
-        print(centralResponse)
-        print("==============================")
         if(centralResponse['response']=='ok'):
             return '1'
         else:

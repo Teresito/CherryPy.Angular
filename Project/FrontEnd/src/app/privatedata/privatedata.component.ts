@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { apiServices } from '../services/apiServices';
 import { FormGroup, FormControl } from '@angular/forms';
 import { componentState } from '../services/componentService';
-import { AuthGuard } from '../services/auth-guard.service';
+
 @Component({
   selector: 'app-privatedata',
   templateUrl: './privatedata.component.html',
@@ -26,22 +26,22 @@ export class PrivatedataComponent implements OnInit {
   wrongKey: boolean = false;
   pholder = "Encryption Key";
   buttonKey: String;
-  dataReponse: String;
+  dataResponse: String;
 
   ngOnInit() {
     if (this.state.eKeyNotify === true) {
       this.API.checkPrivateData().subscribe(
         (response) => {
-          if (response == "ok") {
+          if (response == "1") {
             this.options = true;
             this.optionsBack = true;
             this.buttonKey = "Decrypt";
-            this.dataReponse = "It seems like you have private data in the login server";
+            this.dataResponse = "It seems like you have private data in the login server";
           }
-          else if (response == "error") {
+          else if (response == "0") {
             this.encryptForm = true;
             this.buttonKey = "Encrypt";
-            this.dataReponse = "It seems like you don't have any private data in the login server. To proceed enter your key for encryption";
+            this.dataResponse = "It seems like you don't have any private data in the login server. To proceed enter your key for encryption";
           }
         }
       );
@@ -55,39 +55,37 @@ export class PrivatedataComponent implements OnInit {
     this.encryptForm = true;
     this.buttonKey = "Encrypt";
     this.options = false;
+    this.dataResponse = "Enter your new key. Minimum 5 characters"
   }
 
   Back(){
     this.options = true;
     this.encryptForm = false;
     this.decryptForm = false;
-    this.state.loggedChanged.next();
+    this.dataResponse = "What is your choice?"
   }
 
   DecryptKey(){
     this.decryptForm = true;
     this.buttonKey = "Decrypt";
     this.options = false;
+    this.dataResponse = "Let's decrypt it !"
   }
 
 
   encryptSubmit(){
     this.wrongKey = false;
-    if (this.eKeyForm.value.newEKey == this.eKeyForm.value.EKeyAgain){
-      this.API.newPrivateData().subscribe(
-        (response)=>{
-          if(response === "ok"){
-            this.state.loggedChanged.next();
-          }
-          else{
-            console.log("ERROR WITH SERVER")
-          }
+    let uniqueKey = this.eKeyForm.value.newEKey;
+    this.API.newPrivateData(uniqueKey).subscribe(
+      (response) => {
+        if (response === "1") {
+          this.state.loggedChanged.next();
         }
-      );
-    }
-    else{
-      this.wrongKey = true;
-    }
+        else {
+          this.wrongKey = true;
+        }
+      }
+    );
 
   }
 

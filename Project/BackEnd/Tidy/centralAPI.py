@@ -44,32 +44,10 @@ def ping():
     url = HOST + '/ping'
     return(Request(url, None, None))
 
-def add_privatedata(apikey,username,userData,privateKey):
-    url = HOST + "/api/add_privatedata"
-
-    header = {
-        'X-username': username,
-        'X-apikey': apikey,
-        'Content-Type':'application/json'
-    }
-    serverRecord = get_loginserver_record(apikey,username)
-    timeNow = str(time.time())
-    # Signature 
-    signing_key = nacl.signing.SigningKey(privateKey, encoder=nacl.encoding.HexEncoder)
-    message_bytes = bytes(userData + serverRecord + timeNow, encoding='utf-8')
-    signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
-    signature_hex_str = signed.signature.decode('utf-8')    
-
-    payload = {
-        'privatdata': userData,
-        'loginserver_record': serverRecord,
-        'client_saved_at': timeNow,
-        'signature': signature_hex_str
-    }
-    payload_b = bytes(json.dumps(payload), 'utf-8')
-    return(Request(url,payload_b,header))
 # Returns private, public key back to server
-def add_pubkey(apikey, username):
+
+
+def add_pubkey(api_key, username):
     url = HOST + "/add_pubkey"
     # PRIVATE KEY
     hex_key = nacl.signing.SigningKey.generate().encode(encoder=nacl.encoding.HexEncoder)
@@ -83,7 +61,7 @@ def add_pubkey(apikey, username):
     signature_hex_str = signed.signature.decode('utf-8')
     header = {
     	'X-username': username,
-    	'X-apikey': apikey,
+    	'X-apikey': api_key,
     	'Content-Type':'application/json'
     }
     # PAYLOAD
@@ -100,7 +78,6 @@ def add_pubkey(apikey, username):
     }
 
     server_response = Request(url, payload_b, header)['response']
-    print(server_response)
     if(server_response == 'ok'):
         return(keyGen)
     else:
@@ -250,4 +227,6 @@ def rx_privatemessage(apikey,username,serverRecord,time,message,privkey,targetKe
 
 #     APIkey = load_new_apikey(name, password)['api_key']
 #     keys = add_pubkey(APIkey, name)
-
+#     pubkey = keys['public_key']
+#     privkey = keys['private_key']
+#     timeEPOCH = str(time.time())

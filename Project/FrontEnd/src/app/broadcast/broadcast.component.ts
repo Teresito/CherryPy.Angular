@@ -22,6 +22,11 @@ export class BroadcastComponent implements OnInit {
     else{
       this.toggleModal = 'none';
     }
+    this.state.loggedChanged.subscribe(
+      ()=>{
+        this.toggleModal = 'none'
+      }
+    );
   }
 
 }

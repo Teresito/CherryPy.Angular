@@ -44,4 +44,8 @@ export class apiServices {
         return this.httpClient.post(`${webServer}/broadcast`, { 'message': message}, { responseType: 'text' });
     }
 
+    public get_broadcastMessages(){
+        return this.httpClient.get(`${webServer}/get_publicMessages`, { responseType: 'json' });
+    }
+
 }

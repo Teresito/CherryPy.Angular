@@ -137,6 +137,8 @@ class Interface(object):
         if (self.isLoggedIn() == False):
             return '0'        
         
+        message_list = database.fetchPublicMessages()
+        return json.dumps(message_list)
 
       
 

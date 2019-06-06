@@ -16,7 +16,20 @@ def updatePrivateMessages(user,message,cameFrom,time):
         db.execute(
             "INSERT INTO PRIVATE_MESSAGES (USER,MESSAGE,FROM,TIME) VALUES (?,?,?)", (user, message, cameFrom, time))
 
+def fetchPublicMessages():
+    with sqlite3.connect(database) as db:
+        mouse = db.cursor()
+        mouse.execute("SELECT * FROM PUBLIC_MESSAGES ORDER BY TIME DESC")
 
-# if __name__ == "__main__":
-#     updatePublicMessages('tmag741','HELLO WORLD',123)
+    fetched = mouse.fetchall()
+    jsonbody = {}
+    messageList = []
+    for data in fetched:
+        messageList.append(data)
+
+    jsonbody['public_messages'] = messageList
+    return(jsonbody)
+
+if __name__ == "__main__":
+    print(fetchPublicMessages())
 

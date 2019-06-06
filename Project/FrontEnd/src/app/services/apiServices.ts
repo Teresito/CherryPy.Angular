@@ -16,10 +16,6 @@ export class apiServices {
         return this.httpClient.post(`${webServer}/ping`, null, { responseType: 'text' });
     }
 
-    public endpointAPI() {
-        return this.httpClient.post(`${webServer}/endpoint`, {"a":"b"}, { responseType: 'text' });
-    }
-
     public loginAPI(user: String, pass: String) {
         return this.httpClient.post(`${webServer}/login`, {"user":user, "pass":pass}, { responseType: 'text' });
     }

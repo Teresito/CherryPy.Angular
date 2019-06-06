@@ -39,10 +39,11 @@ export class componentState {
             this.updateUsers();
             // Call intervally
             this.reportTimer = setInterval( ()=>{this.reportUser()}, 10000); // 10 Seconds
-            this.usersTimer = setInterval(() => { this.updateUsers()}, 60000); // 1 minute
+            this.usersTimer = setInterval(() => { this.updateUsers()}, 30000); // 1 minute
         }
         else{
             clearInterval(this.reportTimer);
+            clearInterval(this.usersTimer);
         }
     }
 

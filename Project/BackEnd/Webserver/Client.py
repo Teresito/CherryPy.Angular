@@ -1,49 +1,16 @@
-import json
-import os.path
-
-import cherrypy
-
+import time
 import centralAPI
+import clientAPI
 import helper
-
-LISTENING_IP = "192.168.1.6"
-LISTENING_PORT = 80
-
-
-def cors():
-    if cherrypy.request.method == 'OPTIONS':
-        cherrypy.response.headers['Access-Control-Allow-Methods'] = 'POST'
-        cherrypy.response.headers['Access-Control-Allow-Headers'] = 'content-type'
-        cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
-        return True
-    else:
-        cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
-
-
-def wat():
-    print("WAT")
-    return False
-
-
-cherrypy.tools.cors = cherrypy._cptools.HandlerTool(cors)
-cherrypy.tools.wat = cherrypy._cptools.HandlerTool('before_handler', wat)
-
-
-class Main(object):
-
-    @cherrypy.expose
-    def default(self, *args, **kwargs):
-        return Main.index(self)
-
-    @cherrypy.expose
-    def index(self):
-        return open('./bundled/index.html')
+import json
+import cherrypy
 
 
 @cherrypy.config(**{'tools.cors.on': True})
-class Api:
+class Interface(object):
 
     def __init__(self):
+        self.activeUsers = None
         self.username = None
         self.apikey = None
         self.privateData = None
@@ -51,6 +18,25 @@ class Api:
         self.publicKey = None
         self.newData = None
         self.EDKey = None
+    
+    @cherrypy.expose
+    def default(self, *args, **kwargs):
+        return Interface.index(self)
+
+    @cherrypy.expose
+    def index(self):
+        response = {'response':'error', 'message':'Invalid access point'}
+        response_JSON = json.dumps(response)
+        return response_JSON
+
+    def isLoggedIn(self):
+        if (self.apikey == None or self.username == None):
+            print("-----------------------------------")
+            print("NOT LOGGED IN")
+            print("-----------------------------------")
+            return False
+        else:
+            return True        
 
     def isLoggedIn(self):
         if (self.apikey == None or self.username == None):
@@ -80,7 +66,7 @@ class Api:
             newList = []
             userList = centralResponse['users']
             for user in userList:
-                if (user['status'] == "online" and user['username'] != self.username)):
+                if (user['status'] == "online" and user['username'] != self.username):
                     newList.append(user['username'])
 
             jsonToSend = {}
@@ -116,6 +102,7 @@ class Api:
             return '1'
         else:
             return '0'
+
 
     # Need to check if they're logged in
     @cherrypy.expose
@@ -155,6 +142,27 @@ class Api:
         return '1'
 
     @cherrypy.expose
+    def check_publicMessages(self):
+        if (self.isLoggedIn() == False):
+            return '0'        
+        
+
+      
+
+    @cherrypy.expose
+    def rx_broadcast(self):
+        body = cherrypy.request.body.read()
+        body_json = json.loads(body.decode('utf-8'))
+
+        payload = {
+            'response':'ok',
+            'message':'N/A'
+        }
+
+        return bytes(json.dumps(payload), 'utf-8')
+
+
+    @cherrypy.expose
     def add_pubkey(self):
         if (self.isLoggedIn() == False):
             return '0'
@@ -179,39 +187,11 @@ class Api:
     def report_user(self):
         if (self.isLoggedIn() == False):
             return '0'
+        # MAKE IT DUAL (MAKE FRONT END SEND USERNAME)
+
         centralResponse = centralAPI.report(self.apikey, self.username, "LOCATION N/A", "2", self.publicKey, "online")
+        
         if (centralResponse['response'] == 'ok'):
             return '1'
         else:
             return '0'
-
-
-config = {
-    'global': {'server.socket_host': LISTENING_IP,
-               'server.socket_port': LISTENING_PORT,
-               'engine.autoreload.on': True,
-               'server.thread_pool': 8
-               },
-    '/': {
-        'tools.sessions.on': True,
-        'tools.staticdir.root': os.path.abspath(os.getcwd())
-    },
-
-    '/static': {
-        'tools.staticdir.on': True,
-        'tools.staticdir.dir': './bundled',
-    },
-    # '/api':{
-    # }
-}
-
-if __name__ == '__main__':
-    # cherrypy.quickstart(Api(), '/api', config)
-    cherrypy.tree.mount(Main(), '/', config)
-    cherrypy.quickstart(Api(), '/api', config)
-    cherrypy.engine.signals.unsubscribe()
-    # Start the web server
-    cherrypy.engine.start()
-
-    # And stop doing anything else. Let the web server take over.
-    cherrypy.engine.block()

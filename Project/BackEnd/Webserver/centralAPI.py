@@ -11,39 +11,9 @@ import helper
 
 HOST = "http://cs302.kiwi.land/api"
 
-# Returns the request response to caller
-def Request(url, data, header):
-
-    if(url == None):
-        return "No URL was provided"
-    elif(data == None and header == None):  # No data No Header
-        req = urllib.request.Request(url)
-        #print("No Data / No Header")
-    elif(data == None and header != None):  # No data and Header
-        req = urllib.request.Request(url, headers=header)
-        #print("No Data / Header")
-    elif(data != None and header == None):  # data and No header
-        req = urllib.request.Request(url, data=data)
-        #print("Data / No Header")
-    else:
-        req = urllib.request.Request(url, data=data, headers=header)
-        #print("Data / Header")
-    try:
-        response = urllib.request.urlopen(req)
-        data = response.read()
-        encoding = response.info().get_content_charset('utf-8')
-        response.close()
-
-    except urllib.error.HTTPError as error:
-        data = error.read()
-
-    json_response = json.loads(data.decode('utf-8'))
-    return json_response
-
-
 def ping():
     url = HOST + '/ping'
-    return(Request(url, None, None))
+    return(helper.Request(url, None, None))
 
 def add_privatedata(apikey,username,userData,privateKey):
     url = HOST + "/add_privatedata"
@@ -68,7 +38,7 @@ def add_privatedata(apikey,username,userData,privateKey):
         'signature': signature_hex_str
     }
     payload_b = bytes(json.dumps(payload), 'utf-8')
-    return(Request(url,payload_b,header))
+    return(helper.Request(url,payload_b,header))
 
 # Returns private, public key back to server
 def add_pubkey(apikey, username):
@@ -101,7 +71,7 @@ def add_pubkey(apikey, username):
         'public_key': pubkey_hex_str
     }
 
-    server_response = Request(url, payload_b, header)['response']
+    server_response = helper.Request(url, payload_b, header)['response']
     print(server_response)
     if(server_response == 'ok'):
         return(keyGen)
@@ -116,7 +86,7 @@ def check_pubkey(apikey, pubkey, username):
         'X-apikey': apikey,
         'Content-Type': 'application/json'
     }
-    return(Request(url, None, header))
+    return(helper.Request(url, None, header))
 
 # Returns API key to server
 
@@ -130,7 +100,7 @@ def load_new_apikey(username, password):
         'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
         'Content-Type': 'application/json; charset=utf-8',
     }
-    return(Request(url, None, headers))
+    return(helper.Request(url, None, headers))
 
 
 def report(apikey, username, address, location, pubkey, status):
@@ -150,7 +120,7 @@ def report(apikey, username, address, location, pubkey, status):
         "status": status
     }
     payload_b = bytes(json.dumps(payload), 'utf-8')
-    return(Request(url, payload_b, header))
+    return(helper.Request(url, payload_b, header))
 
 
 def get_loginserver_record(apikey, username):
@@ -159,7 +129,7 @@ def get_loginserver_record(apikey, username):
         'X-username': username,
         'X-apikey': apikey
     }
-    return(Request(url, None, header))
+    return(helper.Request(url, None, header))
 
 
 def list_users(apikey, username):
@@ -169,16 +139,16 @@ def list_users(apikey, username):
            'X-apikey': apikey,
            'Content-Type': 'application/json'
     }
-    return(Request(url, None, header))
+    return(helper.Request(url, None, header))
 
 
 def list_apis():
     url = HOST + "/list_apis"
-    return(Request(url, None, None))
+    return(helper.Request(url, None, None))
 
 def loginserver_pubkey():
     url = HOST + "/loginserver_pubkey"
-    return(Request(url, None, None))
+    return(helper.Request(url, None, None))
 
 def rx_broadcast(apikey,username,serverRecord,time,message,privkey):
     url = HOST + "/rx_broadcast"
@@ -201,7 +171,7 @@ def rx_broadcast(apikey,username,serverRecord,time,message,privkey):
     }
 
     payload_b = bytes(json.dumps(payload), 'utf-8')
-    return(Request(url,payload_b,header))
+    return(helper.Request(url, payload_b, header))
 
 def get_privatedata(apikey,username):
     url = HOST + '/get_privatedata'
@@ -210,7 +180,7 @@ def get_privatedata(apikey,username):
         'X-apikey': apikey,
         'Content-Type': 'application/json'
     }
-    return(Request(url,None,header))
+    return(helper.Request(url, None, header))
 
 
 
@@ -243,52 +213,51 @@ def rx_privatemessage(apikey,username,serverRecord,time,message,privkey,targetKe
         "signature": signature_hex_str
     }
     payload_b = bytes(json.dumps(payload), 'utf-8')
-    return(Request(url,payload_b,header))
+    return(helper.Request(url, payload_b, header))
 
-if __name__ == '__main__':
-    name = 'tmag741'
-    password = 'Teresito_419588351'
+# if __name__ == '__main__':
+#     name = 'tmag741'
+#     password = 'Teresito_419588351'
 
-    address = "http://302cherrypy.mynetgear.com/"
-    location = '2'
-    status = "offline"
+#     address = "http://302cherrypy.mynetgear.com/"
+#     location = '2'
+#     status = "offline"
 
-    APIkey = load_new_apikey(name, password)['api_key']
+#     APIkey = load_new_apikey(name, password)['api_key']
 
-    keys = add_pubkey(APIkey, name)
-    pubKey = keys['public_key']
-    privKey = keys['private_key']
-    report(APIkey,name,"Somehwhere","2",pubKey,"offline")
-
-#     newList = []
-#     userList = list_users(APIkey, name)['users']
-#     for user in userList:
-#         if(user['status']=="online"):
-#             newList.append(user['username'])
-#             #print(user['username'])
+#     keys = add_pubkey(APIkey, name)
+#     pubKey = keys['public_key']
+#     privKey = keys['private_key']
+#     report(APIkey,name,"Somehwhere","2",pubKey,"offline")
+# #     newList = []
+# ####################################
+# #     for user in userList:
+# #         if(user['status']=="online"):
+# #             newList.append(user['username'])
+# #             #print(user['username'])
             
-#     jsonToSend = {}
-#     jsonToSend['amount'] = len(newList)
-#     jsonToSend['userList'] = newList
-#     print(jsonToSend)
-
-    myEDKey = "asd123"
-    privateData = {
-        "prikeys": ["fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6", "..."],
-        "blocked_pubkeys": ["...", "..."],
-        "blocked_usernames": ["...", "..."],
-        "blocked_words": ["...", "..."],
-        "blocked_message_signatures": ["...", "..."],
-        "favourite_message_signatures": ["...", "..."],
-        "friends_usernames": ["...", "..."]
-    }
-    # text = privateData['prikeys']
-    # test = text[0]
-    # print(test)
-    data_hex = helper.encryptData(privateData,myEDKey)
-    print(data_hex)
-    print(add_privatedata(APIkey,name,data_hex,privKey))
-    datastored = get_privatedata(APIkey,name)['privatedata']
-    data_unlocked = helper.decryptData(datastored,myEDKey)
-    print(data_unlocked)
+# #     jsonToSend = {}
+# #     jsonToSend['amount'] = len(newList)
+# #     jsonToSend['userList'] = newList
+# #     print(jsonToSend)
+# ################################
+#     # myEDKey = "asd123"
+#     # privateData = {
+#     #     "prikeys": ["fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6", "..."],
+#     #     "blocked_pubkeys": ["...", "..."],
+#     #     "blocked_usernames": ["...", "..."],
+#     #     "blocked_words": ["...", "..."],
+#     #     "blocked_message_signatures": ["...", "..."],
+#     #     "favourite_message_signatures": ["...", "..."],
+#     #     "friends_usernames": ["...", "..."]
+#     # }
+#     # # text = privateData['prikeys']
+#     # # test = text[0]
+#     # # print(test)
+#     # data_hex = helper.encryptData(privateData,myEDKey)
+#     # print(data_hex)
+#     # print(add_privatedata(APIkey,name,data_hex,privKey))
+#     # datastored = get_privatedata(APIkey,name)['privatedata']
+#     # data_unlocked = helper.decryptData(datastored,myEDKey)
+#     # print(data_unlocked)
 

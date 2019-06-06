@@ -245,26 +245,34 @@ def rx_privatemessage(apikey,username,serverRecord,time,message,privkey,targetKe
     payload_b = bytes(json.dumps(payload), 'utf-8')
     return(Request(url,payload_b,header))
 
-if __name__ == '__main__':
-    name = 'tmag741'
-    password = 'Teresito_419588351'
+# if __name__ == '__main__':
+#     name = 'tmag741'
+#     password = 'Teresito_419588351'
 
-    address = "http://302cherrypy.mynetgear.com/"
-    location = '2'
-    status = "offline"
+#     address = "http://302cherrypy.mynetgear.com/"
+#     location = '2'
+#     status = "offline"
 
-    APIkey = load_new_apikey(name, password)['api_key']
+#     APIkey = load_new_apikey(name, password)['api_key']
 
-    keys = add_pubkey(APIkey, name)
-    pubKey = keys['public_key']
-    privKey = keys['private_key']
-    report(APIkey,name,"Somehwhere","2",pubKey,"offline")
-    userList = list_users(APIkey, name)['users']
-    for user in userList:
-        if(user['status']=="online"):
-            print(user['username'])
+#     keys = add_pubkey(APIkey, name)
+#     pubKey = keys['public_key']
+#     privKey = keys['private_key']
+#     report(APIkey,name,"Somehwhere","2",pubKey,"offline")
+
+#     newList = []
+#     userList = list_users(APIkey, name)['users']
+#     for user in userList:
+#         if(user['status']=="online"):
+#             newList.append(user['username'])
+#             #print(user['username'])
+            
+#     jsonToSend = {}
+#     jsonToSend['amount'] = len(newList)
+#     jsonToSend['userList'] = newList
+#     print(jsonToSend)
+
     # myEDKey = "asd123"
-
     # privateData = {
     #     "prikeys": ["fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6", "..."],
     #     "blocked_pubkeys": ["...", "..."],

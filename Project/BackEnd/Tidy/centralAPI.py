@@ -245,20 +245,20 @@ def rx_privatemessage(apikey,username,serverRecord,time,message,privkey,targetKe
     payload_b = bytes(json.dumps(payload), 'utf-8')
     return(Request(url,payload_b,header))
 
-# if __name__ == '__main__':
-#     name = 'tmag741'
-#     password = 'Teresito_419588351'
+if __name__ == '__main__':
+    name = 'tmag741'
+    password = 'Teresito_419588351'
 
-#     address = "http://302cherrypy.mynetgear.com/"
-#     location = '2'
-#     status = "offline"
+    address = "http://302cherrypy.mynetgear.com/"
+    location = '2'
+    status = "offline"
 
-#     APIkey = load_new_apikey(name, password)['api_key']
+    APIkey = load_new_apikey(name, password)['api_key']
 
-#     keys = add_pubkey(APIkey, name)
-#     pubKey = keys['public_key']
-#     privKey = keys['private_key']
-#     report(APIkey,name,"Somehwhere","2",pubKey,"offline")
+    keys = add_pubkey(APIkey, name)
+    pubKey = keys['public_key']
+    privKey = keys['private_key']
+    report(APIkey,name,"Somehwhere","2",pubKey,"offline")
 
 #     newList = []
 #     userList = list_users(APIkey, name)['users']
@@ -272,23 +272,23 @@ def rx_privatemessage(apikey,username,serverRecord,time,message,privkey,targetKe
 #     jsonToSend['userList'] = newList
 #     print(jsonToSend)
 
-    # myEDKey = "asd123"
-    # privateData = {
-    #     "prikeys": ["fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6", "..."],
-    #     "blocked_pubkeys": ["...", "..."],
-    #     "blocked_usernames": ["...", "..."],
-    #     "blocked_words": ["...", "..."],
-    #     "blocked_message_signatures": ["...", "..."],
-    #     "favourite_message_signatures": ["...", "..."],
-    #     "friends_usernames": ["...", "..."]
-    # }
-    # # text = privateData['prikeys']
-    # # test = text[0]
-    # # print(test)
-    # data_hex = helper.encryptData(privateData,myEDKey)
-    # print(data_hex)
-    # print(add_privatedata(APIkey,name,data_hex,privKey))
-    # datastored = get_privatedata(APIkey,name)['privatedata']
-    # data_unlocked = helper.decryptData(datastored,myEDKey)
-    # print(data_unlocked)
+    myEDKey = "asd123"
+    privateData = {
+        "prikeys": ["fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6", "..."],
+        "blocked_pubkeys": ["...", "..."],
+        "blocked_usernames": ["...", "..."],
+        "blocked_words": ["...", "..."],
+        "blocked_message_signatures": ["...", "..."],
+        "favourite_message_signatures": ["...", "..."],
+        "friends_usernames": ["...", "..."]
+    }
+    # text = privateData['prikeys']
+    # test = text[0]
+    # print(test)
+    data_hex = helper.encryptData(privateData,myEDKey)
+    print(data_hex)
+    print(add_privatedata(APIkey,name,data_hex,privKey))
+    datastored = get_privatedata(APIkey,name)['privatedata']
+    data_unlocked = helper.decryptData(datastored,myEDKey)
+    print(data_unlocked)
 

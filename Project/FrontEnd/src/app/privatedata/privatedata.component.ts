@@ -49,6 +49,20 @@ export class PrivatedataComponent implements OnInit {
           this.loading = false;
         }
       );
+      
+      this.API.unlockData('asd123').subscribe(
+        (response) => {
+          if (response === "1") {
+            this.state.startSession(true);
+            this.state.session.next();
+            this.API.reportUser();
+          }
+          else {
+            this.wrongKey = true;
+          }
+          this.loading = false;
+        }
+      );
 
       this.state.eKeyNotify = false;
     }

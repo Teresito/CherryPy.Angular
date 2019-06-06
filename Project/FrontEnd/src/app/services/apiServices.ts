@@ -9,7 +9,7 @@ export class apiServices {
     constructor(private httpClient: HttpClient) { }
 
     public listUserAPI() {
-        return this.httpClient.post(`${webServer}/onlineUsers`, null, { responseType: 'text' });
+        return this.httpClient.post(`${webServer}/onlineUsers`, null, { responseType: 'json' });
     }    
 
     public pingAPI() {

@@ -80,7 +80,7 @@ class Api:
             newList = []
             userList = centralResponse['users']
             for user in userList:
-                if (user['status'] == "online" and user['username'] != self.username):
+                if (user['status'] == "online" and user['username'] != self.username)):
                     newList.append(user['username'])
 
             jsonToSend = {}

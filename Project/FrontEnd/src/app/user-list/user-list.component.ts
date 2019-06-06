@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { apiServices } from '../services/apiServices';
+import { componentState } from '../services/componentService';
 
 @Component({
   selector: 'app-user-list',
@@ -8,19 +9,28 @@ import { apiServices } from '../services/apiServices';
 })
 export class UserListComponent implements OnInit {
 
-  constructor(private API: apiServices) { }
+
+  onlineUsers: any;
+  timeWait: any;
+  userLoading: boolean = true;
+  constructor(private state: componentState) { }
 
   ngOnInit() {
+    this.onlineUsers = this.state.onlineUsers;
+    console.log(this.onlineUsers)
+    if (this.onlineUsers == undefined){ // Initial login
+      this.timeWait = setInterval(() => {
+        if (this.onlineUsers != undefined) {
+          clearInterval(this.timeWait);
+          this.userLoading = false;
+        }
+        this.onlineUsers = this.state.onlineUsers;
+      }, 2000);
+    }
+    else{
+      this.userLoading = false;
+    }
 
-  }
-
-  loadUser(){
-    this.API.listUserAPI().subscribe(
-      (response) => {
-        console.log(JSON.parse(response));
-      }
-
-    );
   }
 
 }

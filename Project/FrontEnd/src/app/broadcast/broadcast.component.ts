@@ -1,6 +1,7 @@
 import { Component, OnInit, DoCheck } from '@angular/core';
 import { apiServices } from '../services/apiServices';
 import { componentState } from '../services/componentService';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-broadcast',
@@ -10,7 +11,8 @@ import { componentState } from '../services/componentService';
 export class BroadcastComponent implements OnInit {
   
   toggleModal: String = "block";
-
+  message = new FormControl('');
+  loading: boolean = false;
   constructor(private API: apiServices, private state: componentState,){
 
   }
@@ -30,7 +32,22 @@ export class BroadcastComponent implements OnInit {
         }
       }
     );
+      
+  }
 
+  sendMessage(){
+    console.log("wat")
+    this.API.broadcast(this.message.value).subscribe(
+      (response)=>{
+        this.loading = true;
+        if (response == '1'){
+          setTimeout(() => {
+            this.loading = false;
+          }, 3000);
+          this.message.patchValue(null)
+        }
+      }
+    );
   }
 
 }

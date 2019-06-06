@@ -50,7 +50,9 @@ def main():
     cherrypy.tree.mount(Serve.Web_Page(), "/", conf) # Serves the webpage
     cherrypy.tree.mount(API.Interface(), "/api", conf) # End points for my peers
     cherrypy.tree.mount(Client.Interface(), "/client", conf) # Client communication
-
+#                           #
+## FUTURE SESSION WITH RAM ##
+#                           #
     cherrypy.engine.start()
     cherrypy.engine.block()
  

@@ -1,6 +1,7 @@
 import time
 import centralAPI
 import clientAPI
+import database
 import helper
 import json
 import cherrypy
@@ -38,15 +39,6 @@ class Interface(object):
         else:
             return True        
 
-    def isLoggedIn(self):
-        if (self.apikey == None or self.username == None):
-            print("-----------------------------------")
-            print("NOT LOGGED IN")
-            print("-----------------------------------")
-            return False
-        else:
-            return True
-
     def isBodyEmpty(self, byteData):
         if (byteData != b''):
             return False
@@ -55,7 +47,6 @@ class Interface(object):
 
     # Using header to get IP, i can block their requests to this end point
     # One of the reasons is to minimise frontend pinging hammond/central server
-
     @cherrypy.expose
     def onlineUsers(self):
         if (self.isLoggedIn() == False):
@@ -142,7 +133,7 @@ class Interface(object):
         return '1'
 
     @cherrypy.expose
-    def check_publicMessages(self):
+    def get_publicMessages(self):
         if (self.isLoggedIn() == False):
             return '0'        
         
@@ -150,16 +141,13 @@ class Interface(object):
       
 
     @cherrypy.expose
-    def rx_broadcast(self):
+    def broadcast(self):
         body = cherrypy.request.body.read()
         body_json = json.loads(body.decode('utf-8'))
-
-        payload = {
-            'response':'ok',
-            'message':'N/A'
-        }
-
-        return bytes(json.dumps(payload), 'utf-8')
+        message = body_json['message']
+        epoch = time.time()
+        database.updatePublicMessages(self.username, message,epoch)
+        return '1'
 
 
     @cherrypy.expose
@@ -188,9 +176,7 @@ class Interface(object):
         if (self.isLoggedIn() == False):
             return '0'
         # MAKE IT DUAL (MAKE FRONT END SEND USERNAME)
-
-        centralResponse = centralAPI.report(self.apikey, self.username, "LOCATION N/A", "2", self.publicKey, "online")
-        
+        centralResponse = centralAPI.report(self.apikey, self.username, "LOCATION N/A", "2", self.publicKey, "online")       
         if (centralResponse['response'] == 'ok'):
             return '1'
         else:

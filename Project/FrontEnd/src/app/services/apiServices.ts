@@ -39,5 +39,9 @@ export class apiServices {
     public reportUser() {
         return this.httpClient.post(`${webServer}/report_user`, null, { responseType: 'text' });
     }
+    
+    public broadcast(message: String) {
+        return this.httpClient.post(`${webServer}/broadcast`, { 'message': message}, { responseType: 'text' });
+    }
 
 }

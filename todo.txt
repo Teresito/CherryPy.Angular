@@ -1,0 +1,8 @@
+goal for tomorrow
+
+private_messages
+sessions in the database via RAM -> headers from frontend
+report timers from backend to kick user out for 2 minutes of not reporting
+closing tab -> logout
+refreshing tab -> sessions stored
+

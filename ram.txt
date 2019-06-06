@@ -1,0 +1,14 @@
+Session -> RAM db
+
+username 
+apikey
+privatedata
+privatekey
+publickey
+newData
+EDKey
+TIME(for reporting)
+
+onlineUsers
+status
+incoming_pubkey

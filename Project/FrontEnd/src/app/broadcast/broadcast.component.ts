@@ -15,12 +15,17 @@ export class BroadcastComponent implements OnInit {
   message = new FormControl('');
   loading: boolean = false;
   messageList: any;
+  testDate = Date.now();
+  
   constructor(private API: apiServices, private state: componentState,){
 
   }
 
   ngOnInit(){
     this.fetchPublicMessages();
+    console.log(this.testDate);
+    console.log(typeof(this.testDate));
+
     if (this.state.eKeyNotify) {
       this.toggleModal = 'block';
     }
@@ -58,7 +63,8 @@ export class BroadcastComponent implements OnInit {
     this.API.get_broadcastMessages().subscribe(
       (response)=>{
         this.messageList = response['public_messages']
-        console.log(this.messageList);
+        console.log(this.messageList[0][2]);
+        console.log(typeof (this.messageList[0][2]))
       }
     );
   }

@@ -8,12 +8,12 @@ export class apiServices {
 
     constructor(private httpClient: HttpClient) { }
 
-    public pingAPI() {
-        return this.httpClient.post(`${webServer}/ping`, null, { responseType: 'json' });
-    }
+    public listUserAPI() {
+        return this.httpClient.post(`${webServer}/onlineUsers`, null, { responseType: 'json' });
+    }    
 
-    public endpointAPI() {
-        return this.httpClient.post(`${webServer}/endpoint`, {"a":"b"}, { responseType: 'text' });
+    public pingAPI() {
+        return this.httpClient.post(`${webServer}/ping`, null, { responseType: 'text' });
     }
 
     public loginAPI(user: String, pass: String) {

@@ -27,6 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.valid = this.state.getLoggedIn();
       }
     );
+
   }
 
   ngOnDestroy(){

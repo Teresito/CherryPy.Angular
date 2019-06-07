@@ -14,11 +14,11 @@ export class PageNotFoundComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      if (this.state.getLoggedIn()) {
-        this.route.navigate(['/broadcast']);
+      if(this.state.getAuth()){
+        this.route.navigate(['/broadcast'])
       }
-      else {
-        this.route.navigate(['/login']);
+      else{
+        this.route.navigate(['/login'])
       }
     },
       2000);

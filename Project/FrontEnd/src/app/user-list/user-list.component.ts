@@ -16,20 +16,7 @@ export class UserListComponent implements OnInit {
   constructor(private state: componentState) { }
 
   ngOnInit() {
-    this.onlineUsers = this.state.onlineUsers;
-    console.log(this.onlineUsers)
-    if (this.onlineUsers == undefined){ // Initial login
-      this.timeWait = setInterval(() => {
-        if (this.onlineUsers != undefined) {
-          clearInterval(this.timeWait);
-          this.userLoading = false;
-        }
-        this.onlineUsers = this.state.onlineUsers;
-      }, 2000);
-    }
-    else{
-      this.userLoading = false;
-    }
+
 
   }
 

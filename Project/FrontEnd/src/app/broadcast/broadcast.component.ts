@@ -2,7 +2,7 @@ import { Component, OnInit, DoCheck } from '@angular/core';
 import { apiServices } from '../services/apiServices';
 import { componentState } from '../services/componentService';
 import { FormControl } from '@angular/forms';
-import { CommonModule, DatePipe  } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,58 +11,39 @@ import { Router } from '@angular/router';
   styleUrls: ['./broadcast.component.css']
 })
 export class BroadcastComponent implements OnInit {
-  
+
   toggleModal: String = "block";
   message = new FormControl('');
   loading: boolean = false;
+  messageLoading: boolean = true;
   messageList: any;
   testDate = Date.now();
-  
-  constructor(private API: apiServices, private state: componentState, private router: Router){
+
+  constructor(private API: apiServices, private state: componentState, private route: Router) {
 
   }
 
-  ngOnInit(){
-    this.fetchPublicMessages();
-    if (this.state.getNotify()) {
-      this.toggleModal = 'block';
+  ngOnInit() {
+    this.messageList = this.API.get_broadcastMessages().then(
+      (response) => {
+        this.messageList = response;
+        this.messageLoading = false;
+      }
+    );
+    if (this.state.notified) {
+      this.toggleModal = 'block'
     }
-    else{
-      this.toggleModal = 'none';
+    else {
+      this.toggleModal = 'none'
     }
-    
-    this.state.session.subscribe(
-      ()=>{
-        if(this.state.inSession){
-          this.state.loggedChanged.next()
-          this.toggleModal = 'none';
-        }
-      }
-    );
-    
   }
 
-  sendMessage(){
-    this.API.broadcast(this.message.value).subscribe(
-      (response)=>{
-        this.fetchPublicMessages();
-        this.loading = true;
-        if (response == '1'){
-          setTimeout(() => {
-            this.loading = false;
-          }, 3000);
-          this.message.patchValue(null)
-        }
-      }
-    );
+  sendMessage() {
+
   }
 
-  fetchPublicMessages(){    
-    this.API.get_broadcastMessages().subscribe(
-      (response)=>{
-        this.messageList = response['public_messages']
-      }
-    );
+  fetchPublicMessages() {
+
   }
 
 }

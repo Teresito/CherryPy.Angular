@@ -11,26 +11,29 @@ import { NavigationStart, Router } from '@angular/router';
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-  valid: boolean = false;
-  subscription: Subscription;
+  listener = new Subscription;
+  
+  showNav: boolean = false;
+
+  private reportTimer: any;
+  private usersTimer: any;
+
   constructor(private state: componentState, private API: apiServices, private router: Router ){
-    this.subscription = router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        this.state.loggedChanged.next();
-      }
-    });
+
   }
 
   ngOnInit(){
-    this.subscription = this.state.loggedChanged.subscribe(
+    this.showNav = this.state.getAuth();
+    this.listener = this.state.clientState.subscribe(
       ()=>{
-        this.valid = this.state.getLoggedIn();
-      }
-    );
-  }
-
+        this.showNav = this.state.getAuth();
+        console.log(this.state.getAuth())
+      });
+    }
+    
   ngOnDestroy(){
-    this.subscription.unsubscribe;
+    this.listener.unsubscribe();  
+
   }
 
 }

@@ -69,24 +69,24 @@ class Interface(object):
             return '0'
 
     @cherrypy.expose
-    # @cherrypy.tools.allow(methods=['POST'])
     def login(self):
         body = cherrypy.request.body.read()
         body_json = json.loads(body.decode('utf-8'))
-
         centralResponse = centralAPI.load_new_apikey(body_json['user'], body_json['pass'])
+        if(centralResponse == 'error'):
+            return '0'
+
         if (centralResponse['response'] == "ok"):
             self.apikey = centralResponse['api_key']
             self.username = body_json['user']
             return '1'
-        else:
-            return '0'
 
     @cherrypy.expose
     def check_privatedata(self):
         if (self.isLoggedIn() == False):
             return '2'
         centralResponse = centralAPI.get_privatedata(self.apikey, self.username)
+
         if (centralResponse['response'] == "ok"):
             self.privateData = centralResponse['privatedata']
             return '1'

@@ -14,55 +14,40 @@ import { componentState } from '../services/componentService';
 export class LoginComponent implements OnInit {
 
   LoginForm: FormGroup = new FormGroup({
-    username : new FormControl(''),
-    password : new FormControl(''),
+    username: new FormControl(''),
+    password: new FormControl(''),
   });
 
   constructor(private API: apiServices, private state: componentState, private router: Router) { }
 
-  wrongCreds: boolean = false;
-
+  wrongLogin: boolean = false;
+  loading: boolean = false;
+  badAccessMessage: boolean = false;
+  badServer: boolean = false;
   ngOnInit() {
-    //console.log(this.state.getLoggedIn())
-    if(this.state.getLoggedIn()==true){
-      this.router.navigate(['/broadcast']);
-    }
-    this.state.setNotify(true)
-    this.API.loginAPI('tmag741', 'Teresito_419588351').subscribe(
-      (response)=>{
-        console.log(response);  
-        if(response === "0"){
-          this.wrongCreds = true;
-        }
-        else if(response === "1"){
-          this.wrongCreds = false;
-          this.state.setLoggedIn(true);
-          this.state.loggedChanged.next();
-          this.API.reportUser();
-          this.router.navigate(['/broadcast']);
-        }
-      }
-    )
   }
 
-  onSubmit(){
-    this.wrongCreds = false;
-    this.API.loginAPI(this.LoginForm.value.username, this.LoginForm.value.password).subscribe(
-      (response)=>{
-        if(response === "0"){
-          this.wrongCreds = true;
+  onSubmit() {
+    this.loading = true;
+    this.wrongLogin = false;
+    let username = this.LoginForm.value.username;
+    let password = this.LoginForm.value.password;
+    this.API.loginAPI(username, password).subscribe(
+      (response) => {
+        
+        this.wrongLogin = false
+        if (response == '1') {
+          this.state.setClient(username, true)
         }
-        else if(response === "1"){
-          this.wrongCreds = false;
-          this.state.setLoggedIn(true);
-          this.state.loggedChanged.next();
-          this.API.reportUser();
-          this.router.navigate(['/broadcast']);
+        else if (response == 'error'){
+          this.badServer = true;
         }
+        else {
+          this.wrongLogin = true;
+        }
+        this.loading = false;
       }
-    )
-    
-
+    );
   }
 
 }

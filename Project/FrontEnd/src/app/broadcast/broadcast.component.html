@@ -21,18 +21,20 @@
           </div>
         </div>
         <!-- TO DO: FOR LOOP FOR MESSAGES -->
-        <div *ngFor="let tuple of messageList">
+        <span *ngIf="messageLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <ng-template [ngIf]="!messageLoading">
+        <div *ngFor="let tuple of messageList ">
           <div class="card mx-auto" style="width:50%;">
             <div class="lead card-body">
-              <a class="float-left">{{ tuple[0] | uppercase }}</a>
-              <a class="float-right">{{ tuple[2] | date :'h:mm a dd/MMM/yy' | uppercase }}</a><br>
+              <a class="float-left">{{ tuple[0]  | uppercase }}</a>
+              <a class="float-right">{{ tuple[2]  | date :'h:mm a dd/MMM/yy' | uppercase }}</a><br>
               <!-- <a class="float-right">{{ testDate | date :'h:mm a  dd/MMM/yy' | uppercase }}</a><br> -->
               <p class="text-left"> {{ tuple[1] }}</p>
             </div>
           </div>
           <br>
         </div>
-
+</ng-template>
         <br>
       </div>
     </div>

@@ -1,92 +1,48 @@
 import { Subject } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { apiServices } from './apiServices';
+import { Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
+import { apiServices } from './apiServices';
 
 @Injectable()
 export class componentState {
-
-    constructor(private API: apiServices){}
-
-    inSession = false;
-    
-    session = new Subject<any>();
-    loggedChanged = new Subject<any>();
-    usersUpdated = new Subject<any>();
-
-    reportTimer: any;
-    usersTimer: any;
+    notified = true;
     onlineUsers: any;
 
-    setLoggedIn(bool: boolean){
-        sessionStorage.setItem('loggedIn', String(bool));
+    clientState = new Subject<any>();
+    session = new Subject<any>();
+
+
+
+    constructor(private route: Router){}
+
+    setClient(username: string, bool: boolean){
+        sessionStorage.setItem('username', username);
+        sessionStorage.setItem('authenticated', bool.toString());
+        this.route.navigate(['/broadcast'])
+        this.clientState.next();
     }
 
-    getLoggedIn(){
-        return Boolean(sessionStorage.getItem('loggedIn'));
+    clearClient(){
+        sessionStorage.setItem('username', null);
+        sessionStorage.removeItem('authenticated');
+        this.route.navigate(['/login'])
+        this.clientState.next();
     }
 
-    deleteSession(){
-        sessionStorage.clear();
+    getUser(){
+        sessionStorage.getItem('username');
+    }
+
+    getAuth(){
+        return Boolean(sessionStorage.getItem('authenticated'));
     }
     
-    setNotify(bool: boolean){
-        sessionStorage.setItem('notified', String(bool));
+    setABadAccess(bool: boolean){
+        sessionStorage.setItem('badAccess', bool.toString());
     }
 
-    getNotify(){
-        return Boolean(sessionStorage.getItem('notified'));
+    getBadAccess(){
+        return Boolean(sessionStorage.getItem('badAccess'));
     }
 
-    logout(){
-        this.API.logoutAPI().subscribe(
-            (response) => {
-                this.setLoggedIn(false);
-                this.startSession(false);
-                this.deleteSession();
-                this.setNotify(true)
-                this.loggedChanged.next();
-                clearInterval(this.reportTimer);
-                clearInterval(this.usersTimer);
-            }
-        );
-    }
-
-    startSession(session:boolean){
-        this.inSession = session;
-        if(session){
-            // Call once
-            this.reportUser();
-            this.updateUsers();
-            // Call intervally
-            this.reportTimer = setInterval( ()=>{this.reportUser()}, 10000); // 10 Seconds
-            this.usersTimer = setInterval(() => { this.updateUsers()}, 30000); // 1 minute
-            this.setNotify(false);
-        }
-        else{
-            clearInterval(this.reportTimer);
-            clearInterval(this.usersTimer);
-        }
-    }
-
-
-    private reportUser(){
-        this.API.reportUser().subscribe((response) => {
-            if (response == '2') {
-                this.logout();
-            }
-        })
-    }
-
-    private updateUsers(){
-        this.API.listUserAPI().subscribe((response) => {
-            if (response == '2') {
-                this.logout();
-           }
-           else{
-               this.onlineUsers = response['userList'];
-               this.usersUpdated.next();
-           }
-        })
-    }
 }

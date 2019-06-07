@@ -25,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(){
+
     this.showNav = this.state.getAuth();
     this.listener = this.state.clientState.subscribe(
       ()=>{

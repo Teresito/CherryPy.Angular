@@ -65,7 +65,8 @@ def start_session():
 	"PRIVATE_KEY" TEXT NOT NULL UNIQUE,
 	"PUBLIC_KEY" TEXT NOT NULL UNIQUE,
 	"TIME" INTEGER NOT NULL,
-	"STATUS" TEXT NOT NULL
+	"STATUS" TEXT NOT NULL,
+    "EDKEY"	TEXT NOT NULL
     ); """
 
     with sqlite3.connect(SESSION_DB) as con:

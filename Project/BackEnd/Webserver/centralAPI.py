@@ -103,7 +103,7 @@ def add_pubkey(apikey, username):
     if(server_response == 'ok'):
         return(keyGen)
     else:
-        return("Request Error")
+        return("error")
 
 
 def check_pubkey(apikey, pubkey, username):

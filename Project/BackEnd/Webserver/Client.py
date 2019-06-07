@@ -182,16 +182,13 @@ class Interface(object):
         body = cherrypy.request.body.read()
         body_json = json.loads(body.decode('utf-8'))
         centralResponse = centralAPI.add_pubkey(self.apikey, self.username)
-        if (centralResponse == "Request Error"):
+        if (centralResponse == "error"):
             return '0'
         else:
             self.EDKey = body_json['encryptionKey']
             self.privateKey = centralResponse['private_key']
             self.publicKey = centralResponse['public_key']
-            if (centralResponse['response'] == 'ok'):
-                return '1'
-            else:
-                return '0'
+            return '1'
 
     @cherrypy.expose
     def updateStatus(self):

@@ -86,8 +86,8 @@ export class PrivatedataComponent implements OnInit {
           this.state.session.next();
         }
         else {
-          this.wrongKey = false;
-          this.loading = true;
+          this.wrongKey = true;
+          this.loading = false;
         }
       });
     }
@@ -108,9 +108,9 @@ export class PrivatedataComponent implements OnInit {
         sessionStorage.setItem('inSession', true.toString())
         this.state.session.next();
       }
-      else {
-        this.wrongKey = false;
-        this.loading = true;
+      else if (response == 0) {
+        this.wrongKey = true;
+        this.loading = false;
       }
     });
   }

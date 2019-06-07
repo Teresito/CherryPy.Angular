@@ -8,7 +8,7 @@ import nacl.pwhash
 import base64
 import json
 import urllib.request
-
+import clientAPI
 
 def encryptData(userData, encryptKey):
     # SALT
@@ -88,13 +88,7 @@ def Request(url, data, header):
         response = urllib.request.urlopen(req)
         data = response.read()
         response.close()
-    except ValueError as error:
-        print(error)
-        return("error")
-    except urllib.error.URLError as error:
-        print(error)
-        return("error")
-    except urllib.error.HTTPError as error:
+    except Exception as error:
         print(error)
         return("error")
     else:
@@ -104,3 +98,22 @@ def Request(url, data, header):
     #     data = error.read()
 
 
+def pingThread(Hostlist,hostIP,location):
+    errorCount = 0
+    toCall = 0;
+    for host in Hostlist:
+        
+        hostAddress = host['connection_address']
+        hostLocation = host['connection_location']
+        if(hostAddress != hostIP and hostLocation == location):
+            toCall += 1
+            if(hostAddress[:4] != "http"):
+                hostAddress = "http://" + hostAddress
+
+            clientResponse = clientAPI.ping_check(hostAddress,hostIP,location)
+            if(clientResponse == "error"):
+                errorCount += 1
+    
+    print("=================")
+    print("Total errors: "+str(errorCount)+" out of "+str(toCall))
+    print("=================")

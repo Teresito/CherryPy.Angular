@@ -41,7 +41,7 @@
   </div>
 </div>
 <!-- Modal -->
-<div class="modal" [ngStyle]="{'display': toggleModal}">
+<div *ngIf="notify"class="modal" [ngStyle]="{'display': toggleModal}">
   <div class="modal-content">
     <div class="container-fluid">
       <div class="row">

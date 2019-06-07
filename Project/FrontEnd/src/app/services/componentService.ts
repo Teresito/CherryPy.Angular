@@ -5,12 +5,9 @@ import { apiServices } from './apiServices';
 
 @Injectable()
 export class componentState {
-    notified = true;
-    onlineUsers: any;
-
     clientState = new Subject<any>();
     session = new Subject<any>();
-
+    usersList: any;
 
 
     constructor(private route: Router){}
@@ -25,24 +22,14 @@ export class componentState {
     clearClient(){
         sessionStorage.removeItem('username');
         sessionStorage.removeItem('authenticated');
+        sessionStorage.removeItem('inSession');
         this.route.navigate(['/login'])
         this.clientState.next();
-    }
-
-    getUser(){
-        sessionStorage.getItem('username');
+        this.session.next();
     }
 
     getAuth(){
         return Boolean(sessionStorage.getItem('authenticated'));
-    }
-    
-    setABadAccess(bool: boolean){
-        sessionStorage.setItem('badAccess', bool.toString());
-    }
-
-    getBadAccess(){
-        return Boolean(sessionStorage.getItem('badAccess'));
     }
 
 }

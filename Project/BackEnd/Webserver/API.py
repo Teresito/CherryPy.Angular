@@ -27,7 +27,7 @@ class Interface(object):
             if body['loginserver_record'] and body['message'] and body['sender_created_at'] and body['signature']:
                 record_inparts = helper.splitServerRecord(body['loginserver_record'])
                 if(len(record_inparts) == 4):
-                    if(record_inparts[3] == body['signature']):
+                    if(record_inparts[3] == body['signature'] and record_inparts[0]):
                         database.updatePublicMessages(record_inparts[0], body['message'], body['sender_created_at'])
                         payload = {
                             'response': 'ok'

@@ -9,11 +9,10 @@ import nacl.secret
 import nacl.utils
 import nacl.pwhash
 
-def ping_check(host,serverIP):
+def ping_check(host,serverIP,location):
     url = host + "/api/ping_check"
 
     server_time = str(time.time())
-    location = "2"
 
     payload = {
         'my_time':server_time,
@@ -21,11 +20,9 @@ def ping_check(host,serverIP):
         'connection_address': serverIP,
         'connection_location': location
     }
-
-
     payload_b = bytes(json.dumps(payload), 'utf-8')
-    return(helper.Request(url, payload_b, None)) #<---------------- NEED TO CHANGE
-    #return(helper.Request(url, None, None))
+    return(helper.Request(url, payload_b, None))
+
     
 def checkmessage(host):
     url = host + "/api/checkmessages"

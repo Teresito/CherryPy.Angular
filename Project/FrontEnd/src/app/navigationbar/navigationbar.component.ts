@@ -14,14 +14,20 @@ export class NavigationbarComponent implements OnInit {
 
   zIndex: boolean = true;
   listener = new Subscription;
-  constructor(private route: Router, private api: apiServices, private state: componentState) { }
+  constructor(private route: Router, private API: apiServices, private state: componentState) { }
 
   ngOnInit() {
-
+    this.zIndex = !Boolean(sessionStorage.getItem('inSession'))
+    this.state.session.subscribe(()=>{
+      if(Boolean(sessionStorage.getItem('inSession'))){
+        this.zIndex = false;
+      }
+    })
   }
 
   logout(){  
-
+    this.state.clearClient();
+    this.API.logoutAPI();
   }
 
 

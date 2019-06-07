@@ -6,7 +6,7 @@
     <div class="lead card-body text-center" style="height:250px;overflow:scroll; overflow-x:hidden;">
       <!-- style="overflow:scroll; overflow-x:hidden;" -->
       <div *ngIf="!userLoading">
-        <p *ngFor="let user of onlineUsers">
+        <p *ngFor="let user of usersList">
           {{user}}
         </p>
       </div>

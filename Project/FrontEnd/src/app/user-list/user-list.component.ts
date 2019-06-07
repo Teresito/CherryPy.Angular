@@ -10,14 +10,21 @@ import { componentState } from '../services/componentService';
 export class UserListComponent implements OnInit {
 
 
-  onlineUsers: any;
-  timeWait: any;
+  usersList: any;
   userLoading: boolean = true;
-  constructor(private state: componentState) { }
+
+  constructor(private state: componentState,private API: apiServices) { }
 
   ngOnInit() {
+    this.userLoading = false;
+    this.loadUsers();
+  }
 
-
+  loadUsers(){
+    this.API.listUserAPI().then((response) => {
+      this.usersList = response;
+    });
   }
 
 }
+

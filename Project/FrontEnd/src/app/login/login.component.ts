@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
     this.wrongLogin = false;
     let username = this.LoginForm.value.username;
     let password = this.LoginForm.value.password;
-    this.API.loginAPI(username, password).subscribe(
+    this.API.loginAPI(username, password).then(
       (response) => {
         
         this.wrongLogin = false

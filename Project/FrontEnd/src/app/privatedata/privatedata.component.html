@@ -23,7 +23,7 @@
         <button class="btn btn-outline-success " [ngClass]="{'btn-outline-danger':wrongKey}"
           type="button" (click)="decryptSubmit()" [disabled]="eKeyForm.value.Dkey === '' || eKeyForm.value.Dkey === null">&nbsp;&nbsp;&nbsp;{{ buttonKey }}&nbsp;&nbsp;&nbsp;</button>
         <span *ngIf="optionsBack" style="padding-left:2%;">
-          <button class="btn btn-outline-secondary" (click)="Back()"> Back </button>
+          <button class="btn btn-outline-secondary" [disabled]="loading"(click)="Back()"> Back </button>
         </span>
       </div>
     </div>

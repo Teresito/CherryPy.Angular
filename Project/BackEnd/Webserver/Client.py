@@ -4,8 +4,11 @@ import clientAPI
 import database
 import helper
 import json
+import threading
 import cherrypy
 
+LOCATION_ADRESS = "http://302cherrypy.mynetgear.com/"
+WORLD_CONNECTION = '2'
 
 @cherrypy.config(**{'tools.cors.on': True})
 class Interface(object):
@@ -18,6 +21,8 @@ class Interface(object):
         self.privateKey = None
         self.publicKey = None
         self.newData = None
+        self.userStatus = "online"
+        self.checkList = None
         self.EDKey = None
     
     @cherrypy.expose
@@ -35,7 +40,13 @@ class Interface(object):
             print("-----------------------------------")
             print("NOT LOGGED IN")
             print("-----------------------------------")
+            
             return False
+        elif(self.privateKey != None):
+            centralResponse = centralAPI.ping(self.apikey,self.username,self.privateKey)
+            if(centralResponse['authentication']=="error"):
+                return False
+            return True
         else:
             return True        
 
@@ -56,8 +67,9 @@ class Interface(object):
         if (centralResponse['response'] == 'ok'):
             newList = []
             userList = centralResponse['users']
+            self.checkList = centralResponse['users']
             for user in userList:
-                if (user['status'] == "online" and user['username'] != self.username):
+                if (user['username'] != self.username):
                     newList.append(user['username'])
 
             jsonToSend = {}
@@ -146,11 +158,17 @@ class Interface(object):
 
     @cherrypy.expose
     def broadcast(self):
+        if (self.isLoggedIn() == False):
+            return '2'
+
         body = cherrypy.request.body.read()
         body_json = json.loads(body.decode('utf-8'))
         message = body_json['message']
         epoch = time.time()
+        epoch_str = str(epoch)
         database.updatePublicMessages(self.username, message,epoch)
+        centralResponse = centralAPI.rx_broadcast(
+            self.apikey, self.username, message, epoch_str, self.privateKey)
         return '1'
 
 
@@ -169,18 +187,40 @@ class Interface(object):
             self.EDKey = body_json['encryptionKey']
             self.privateKey = centralResponse['private_key']
             self.publicKey = centralResponse['public_key']
-            centralPing = centralAPI.ping()
-            if (centralPing['response'] == 'ok'):
+            if (centralResponse['response'] == 'ok'):
                 return '1'
             else:
                 return '0'
+
+    @cherrypy.expose
+    def updateStatus(self):
+        FUCK = 'SAKE'
+
+    @cherrypy.expose
+    def intervalCheck(self):
+        if(self.checkList == None):
+            centralResponse = centralAPI.list_users(self.apikey, self.username)
+            if (centralResponse['response'] == 'ok'):
+                newList = []
+                userList = centralResponse['users']
+                self.checkList = centralResponse['users']
+
+        pingThread = threading.Thread(target=helper.pingThread, args=(
+            self.checkList, LOCATION_ADRESS, WORLD_CONNECTION))
+        try:
+            pingThread.start()
+        except Exception as error:
+            pass
+
+        return '1';
 
     @cherrypy.expose
     def report_user(self):
         if (self.isLoggedIn() == False):
             return '2'
         # MAKE IT DUAL (MAKE FRONT END SEND USERNAME)
-        centralResponse = centralAPI.report(self.apikey, self.username, "LOCATION N/A", "2", self.publicKey, "online")       
+        centralResponse = centralAPI.report(self.apikey, self.username, LOCATION_ADRESS, WORLD_CONNECTION, self.publicKey, self.userStatus)
+        
         if (centralResponse['response'] == 'ok'):
             return '1'
         else:

@@ -17,6 +17,7 @@ export class BroadcastComponent implements OnInit {
   loading: boolean = false;
   messageLoading: boolean = true;
   messageList: any;
+  notify: boolean;
   testDate = Date.now();
 
   constructor(private API: apiServices, private state: componentState, private route: Router) {
@@ -24,26 +25,36 @@ export class BroadcastComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.fetchPublicMessages();
+    this.state.session.subscribe(
+      () => {
+        if (Boolean(sessionStorage.getItem('inSession'))) {
+          this.toggleModal = 'none';
+        }
+      });
+
+    this.notify = !Boolean(sessionStorage.getItem('inSession'));
+
+  }
+
+  sendMessage() {
+    this.API.broadcast(this.message.value);
+    this.loading = true;
+    setTimeout(() => {
+      this.loading = false;
+      this.message.patchValue(null);
+      this.fetchPublicMessages();
+    }, 2000);
+  }
+
+  fetchPublicMessages() {
+    this.messageLoading = true;
     this.messageList = this.API.get_broadcastMessages().then(
       (response) => {
         this.messageList = response;
         this.messageLoading = false;
       }
     );
-    if (this.state.notified) {
-      this.toggleModal = 'block'
-    }
-    else {
-      this.toggleModal = 'none'
-    }
-  }
-
-  sendMessage() {
-
-  }
-
-  fetchPublicMessages() {
-
   }
 
 }

@@ -215,16 +215,17 @@ def rx_privatemessage(apikey,username,serverRecord,time,message,privkey,targetKe
     payload_b = bytes(json.dumps(payload), 'utf-8')
     return(helper.Request(url, payload_b, header))
 
-# if __name__ == '__main__':
-#     name = 'tmag741'
-#     password = 'Teresito_419588351'
+if __name__ == '__main__':
+    name = 'tmag741'
+    password = 'Teresito_419588351'
+    APIkey = load_new_apikey(name, password)['api_key']
 
-#     address = "http://302cherrypy.mynetgear.com/"
-#     location = '2'
-#     status = "offline"
-
-#     APIkey = load_new_apikey(name, password)['api_key']
-
+    record = get_loginserver_record(APIkey,name)['loginserver_record']
+    data = helper.splitServerRecord(record)
+    print(data[3])
+    print(len(data))
+    for part in data:
+        print(part)
 #     keys = add_pubkey(APIkey, name)
 #     pubKey = keys['public_key']
 #     privKey = keys['private_key']

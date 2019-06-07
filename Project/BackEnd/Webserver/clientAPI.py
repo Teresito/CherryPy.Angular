@@ -83,6 +83,6 @@ def rx_privatemessage(host, serverRecord, message, privkey, targetKey, target):
         
 
 if __name__ == "__main__":
-    ip = "http://302CherryPy.mynetgear.com"
+    ip = "http://172.23.1.134:8080/api/ping_check"
     #ip = "http://192.168.1.6"
     print(ping_check(ip,ip))

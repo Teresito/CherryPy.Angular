@@ -21,25 +21,18 @@ export class NavigationbarComponent implements OnInit {
         this.zIndex = !this.state.inSession;
         }
       );
-    
-  }
-
-  logout(){  
-    this.api.logoutAPI().subscribe(
-      (response)=>{
-        if (response == '1'){
-          this.state.setLoggedIn(false);
-          this.state.startSession(false);
-          this.state.deleteSession();
-          this.state.eKeyNotify = true;
-          this.state.loggedChanged.next();
-          this.router.navigate(['/login']);
-        }
-        else{
-          window.top.close();
+    this.state.loggedChanged.subscribe(
+      ()=>{
+        if(this.state.getLoggedIn()==false){
+          this.state.logout();
+          this.router.navigate(['/login'])
         }
       }
     );
+  }
+
+  logout(){  
+    this.state.logout();
   }
 
 

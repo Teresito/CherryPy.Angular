@@ -63,6 +63,9 @@ def generatePubKey(privateKey):
     pubkey_hex_str = pubkey_hex.decode('utf-8')
     return pubkey_hex_str
 
+def splitServerRecord(record):
+    splitted = record.split(',')
+    return splitted
 
 # Returns the request response to caller
 def Request(url, data, header):

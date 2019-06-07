@@ -31,7 +31,7 @@ export class PrivatedataComponent implements OnInit {
 
   ngOnInit() {
     this.loading = true;
-    if (this.state.eKeyNotify === true) {
+    if (this.state.getNotify() === true) {
       this.API.checkPrivateData().subscribe(
         (response) => {
           
@@ -46,26 +46,30 @@ export class PrivatedataComponent implements OnInit {
             this.buttonKey = "Encrypt";
             this.dataResponse = "To proceed, enter your key for encryption. Minimum 5 characters";
           }
+          else if(response == '2'){
+            this.state.logout();
+          }
           this.loading = false;
         }
       );
       
-      this.API.unlockData('asd123').subscribe(
-        (response) => {
-          if (response === "1") {
-            this.state.startSession(true);
-            this.state.session.next();
-            this.API.reportUser();
-          }
-          else {
-            this.wrongKey = true;
-          }
-          this.loading = false;
-        }
-      );
+      // this.API.unlockData('asd123').subscribe(
+      //   (response) => {
+      //     if (response === "1") {
+      //       this.state.startSession(true);
+      //       this.state.session.next();
+      //       this.API.reportUser();
+      //     }
+      //     else {
+      //       this.wrongKey = true;
+      //     }
+      //     this.loading = false;
+      //   }
+      // );
 
-      this.state.eKeyNotify = false;
+
     }
+
 
   }
 

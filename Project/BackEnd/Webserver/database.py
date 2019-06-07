@@ -2,22 +2,22 @@ import sqlite3
 from sqlite3 import Error
 
 #Consider making a session with RAM
-database = "messages.db"
+message_DB = "messages.db"
 
 
 #checkmessages filter later
 def updatePublicMessages(user,message,time):
-    with sqlite3.connect(database) as db:
+    with sqlite3.connect(message_DB) as db:
         db.execute(
             "INSERT INTO PUBLIC_MESSAGES (USER,MESSAGE,TIME) VALUES (?,?,?)", (user, message, time))
    
 def updatePrivateMessages(user,message,cameFrom,time):
-    with sqlite3.connect(database) as db:
+    with sqlite3.connect(message_DB) as db:
         db.execute(
             "INSERT INTO PRIVATE_MESSAGES (USER,MESSAGE,FROM,TIME) VALUES (?,?,?)", (user, message, cameFrom, time))
 
 def fetchPublicMessages():
-    with sqlite3.connect(database) as db:
+    with sqlite3.connect(message_DB) as db:
         mouse = db.cursor()
         mouse.execute("SELECT * FROM PUBLIC_MESSAGES ORDER BY TIME DESC")
 

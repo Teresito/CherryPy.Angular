@@ -50,7 +50,7 @@ class Interface(object):
     @cherrypy.expose
     def onlineUsers(self):
         if (self.isLoggedIn() == False):
-            return '0'
+            return '2'
 
         centralResponse = centralAPI.list_users(self.apikey, self.username)
         if (centralResponse['response'] == 'ok'):
@@ -64,7 +64,6 @@ class Interface(object):
             jsonToSend['amount'] = len(newList)
             jsonToSend['userList'] = newList
             responseBody = json.dumps(jsonToSend)
-            print(responseBody)
             return (responseBody)
         else:
             return '0'
@@ -86,7 +85,7 @@ class Interface(object):
     @cherrypy.expose
     def check_privatedata(self):
         if (self.isLoggedIn() == False):
-            return '0'
+            return '2'
         centralResponse = centralAPI.get_privatedata(self.apikey, self.username)
         if (centralResponse['response'] == "ok"):
             self.privateData = centralResponse['privatedata']
@@ -99,7 +98,7 @@ class Interface(object):
     @cherrypy.expose
     def unlock_privatedata(self):
         if (self.isLoggedIn() == False):
-            return '0'
+            return '2'
 
         body = cherrypy.request.body.read()
         body_json = json.loads(body.decode('utf-8'))
@@ -117,6 +116,9 @@ class Interface(object):
 
     @cherrypy.expose
     def logout(self):
+        if (self.isLoggedIn() == False):
+            return '2'
+
         if (self.newData == True):
             userdata_ecrypted = helper.encryptData(self.privateData, self.EDKey)
             centralResponse = centralAPI.add_privatedata(self.apikey, self.username, userdata_ecrypted, self.privateKey)
@@ -135,7 +137,7 @@ class Interface(object):
     @cherrypy.expose
     def get_publicMessages(self):
         if (self.isLoggedIn() == False):
-            return '0'        
+            return '2'        
         
         message_list = database.fetchPublicMessages()
         return json.dumps(message_list)
@@ -155,7 +157,7 @@ class Interface(object):
     @cherrypy.expose
     def add_pubkey(self):
         if (self.isLoggedIn() == False):
-            return '0'
+            return '2'
 
         self.newData = True
         body = cherrypy.request.body.read()
@@ -176,7 +178,7 @@ class Interface(object):
     @cherrypy.expose
     def report_user(self):
         if (self.isLoggedIn() == False):
-            return '0'
+            return '2'
         # MAKE IT DUAL (MAKE FRONT END SEND USERNAME)
         centralResponse = centralAPI.report(self.apikey, self.username, "LOCATION N/A", "2", self.publicKey, "online")       
         if (centralResponse['response'] == 'ok'):

@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
     if(this.state.getLoggedIn()==true){
       this.router.navigate(['/broadcast']);
     }
-
+    this.state.setNotify(true)
     this.API.loginAPI('tmag741', 'Teresito_419588351').subscribe(
       (response)=>{
         console.log(response);  

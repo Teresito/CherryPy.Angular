@@ -8,7 +8,6 @@ export class componentState {
 
     constructor(private API: apiServices){}
 
-    eKeyNotify = true;
     inSession = false;
     
     session = new Subject<any>();
@@ -30,6 +29,28 @@ export class componentState {
     deleteSession(){
         sessionStorage.clear();
     }
+    
+    setNotify(bool: boolean){
+        sessionStorage.setItem('notified', String(bool));
+    }
+
+    getNotify(){
+        return Boolean(sessionStorage.getItem('notified'));
+    }
+
+    logout(){
+        this.API.logoutAPI().subscribe(
+            (response) => {
+                this.setLoggedIn(false);
+                this.startSession(false);
+                this.deleteSession();
+                this.setNotify(true)
+                this.loggedChanged.next();
+                clearInterval(this.reportTimer);
+                clearInterval(this.usersTimer);
+            }
+        );
+    }
 
     startSession(session:boolean){
         this.inSession = session;
@@ -40,6 +61,7 @@ export class componentState {
             // Call intervally
             this.reportTimer = setInterval( ()=>{this.reportUser()}, 10000); // 10 Seconds
             this.usersTimer = setInterval(() => { this.updateUsers()}, 30000); // 1 minute
+            this.setNotify(false);
         }
         else{
             clearInterval(this.reportTimer);
@@ -50,25 +72,21 @@ export class componentState {
 
     private reportUser(){
         this.API.reportUser().subscribe((response) => {
-            if (response == '0') {
-                this.setLoggedIn(false);
-                this.loggedChanged.next();
-                this.session.next();
-                clearInterval(this.reportTimer);
+            if (response == '2') {
+                this.logout();
             }
         })
     }
 
     private updateUsers(){
         this.API.listUserAPI().subscribe((response) => {
-            this.onlineUsers = response['userList'];
-            this.usersUpdated.next();
-             if (response == '0') {
-                this.setLoggedIn(false);
-                this.loggedChanged.next();
-                this.session.next();
-                clearInterval(this.usersTimer);
-            }
+            if (response == '2') {
+                this.logout();
+           }
+           else{
+               this.onlineUsers = response['userList'];
+               this.usersUpdated.next();
+           }
         })
     }
 }

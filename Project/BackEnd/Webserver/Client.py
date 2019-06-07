@@ -1,7 +1,7 @@
 import time
 import centralAPI
 import clientAPI
-import database
+import message_handler
 import helper
 import json
 import threading
@@ -9,6 +9,7 @@ import cherrypy
 
 LOCATION_ADRESS = "http://302cherrypy.mynetgear.com/"
 WORLD_CONNECTION = '2'
+SESSION_DB = 'session.db'
 
 @cherrypy.config(**{'tools.cors.on': True})
 class Interface(object):
@@ -151,7 +152,7 @@ class Interface(object):
         if (self.isLoggedIn() == False):
             return '2'        
         
-        message_list = database.fetchPublicMessages()
+        message_list = message_handler.fetchPublicMessages()
         return json.dumps(message_list)
 
       
@@ -166,7 +167,7 @@ class Interface(object):
         message = body_json['message']
         epoch = time.time()
         epoch_str = str(epoch)
-        database.updatePublicMessages(self.username, message,epoch)
+        message_handler.updatePublicMessages(self.username, message, epoch)
         centralResponse = centralAPI.rx_broadcast(
             self.apikey, self.username, message, epoch_str, self.privateKey)
         return '1'

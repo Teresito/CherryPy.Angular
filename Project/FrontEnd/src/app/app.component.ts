@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, HostListener } from '@angular/core';
 import { componentState } from './services/componentService';
 import { Subscription } from 'rxjs';
 import { apiServices } from './services/apiServices';
@@ -10,6 +10,7 @@ import { NavigationStart, Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
+  @HostListener('window:beforeunload')
 
   listener = new Subscription;
   
@@ -52,6 +53,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     )
+  }
+
+  logout() {
+    this.API.logoutAPI();
+    this.state.clearClient();
   }
   
   ngAfterViewInit(){

@@ -4,7 +4,7 @@ import clientAPI
 import helper
 import json
 import cherrypy
-import database
+import message_handler
 
 class Interface(object):
 
@@ -28,7 +28,8 @@ class Interface(object):
                 record_inparts = helper.splitServerRecord(body['loginserver_record'])
                 if(len(record_inparts) == 4):
                     if(record_inparts[3] == body['signature'] and record_inparts[0]):
-                        database.updatePublicMessages(record_inparts[0], body['message'], body['sender_created_at'])
+                        message_handler.updatePublicMessages(
+                            record_inparts[0], body['message'], body['sender_created_at'])
                         payload = {
                             'response': 'ok'
                         }

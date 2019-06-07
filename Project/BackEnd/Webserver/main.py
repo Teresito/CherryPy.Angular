@@ -1,14 +1,13 @@
 import os
 import cherrypy
-# from Controllers import API
-# from Controllers import Serve
-# from Controllers import Client
+import sqlite3
 import API
 import Serve
 import Client
 
 LISTEN_IP = "192.168.1.6"
 LISTEN_PORT = 80
+SESSION_DB = 'session.db'
 
 def cors():
     if cherrypy.request.method == 'OPTIONS':
@@ -50,12 +49,33 @@ def main():
     cherrypy.tree.mount(Serve.Web_Page(), "/", conf) # Serves the webpage
     cherrypy.tree.mount(API.Interface(), "/api", conf) # End points for my peers
     cherrypy.tree.mount(Client.Interface(), "/client", conf) # Client communication
-#                           #
-## FUTURE SESSION WITH RAM ##
-#                           #
+
+    cherrypy.engine.subscribe('start', start_session)
+    cherrypy.engine.subscribe('stop', stop_session)
+
     cherrypy.engine.start()
     cherrypy.engine.block()
  
+
+def start_session():
+    createTABLE = """ CREATE TABLE IF NOT EXISTS USER_SESSION (
+	"USER" TEXT NOT NULL UNIQUE,
+	"APIKEY" TEXT NOT NULL UNIQUE,
+	"PRIVATE_DATA" TEXT NOT NULL UNIQUE,
+	"PRIVATE_KEY" TEXT NOT NULL UNIQUE,
+	"PUBLIC_KEY" TEXT NOT NULL UNIQUE,
+	"TIME" INTEGER NOT NULL,
+	"STATUS" TEXT NOT NULL
+    ); """
+
+    with sqlite3.connect(SESSION_DB) as con:
+        con.execute("DROP TABLE IF EXISTS USER_SESSION")
+        con.execute(createTABLE)
+
+
+def stop_session():
+    with sqlite3.connect(SESSION_DB) as con:
+        con.execute("DROP TABLE IF EXISTS USER_SESSION")
 
 if __name__ == '__main__':
     main()

@@ -23,7 +23,7 @@ export class componentState {
     }
 
     clearClient(){
-        sessionStorage.setItem('username', null);
+        sessionStorage.removeItem('username');
         sessionStorage.removeItem('authenticated');
         this.route.navigate(['/login'])
         this.clientState.next();

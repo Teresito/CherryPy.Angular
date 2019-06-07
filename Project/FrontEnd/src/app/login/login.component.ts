@@ -25,6 +25,14 @@ export class LoginComponent implements OnInit {
   badAccessMessage: boolean = false;
   badServer: boolean = false;
   ngOnInit() {
+    if (Boolean(sessionStorage.getItem('badAccess'))){
+      this.badAccessMessage = Boolean(sessionStorage.getItem('badAccess'));
+      setTimeout(() => {
+        sessionStorage.removeItem('badAccess')
+        this.badAccessMessage = false;
+      }, 3000);
+    }
+
   }
 
   onSubmit() {

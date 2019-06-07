@@ -69,6 +69,7 @@ export class apiServices {
 
     private checkResponse(response: any) {
         if (response == 2) {
+            sessionStorage.setItem('badAccess',true.toString());
             this.state.clearClient();
         }
     }

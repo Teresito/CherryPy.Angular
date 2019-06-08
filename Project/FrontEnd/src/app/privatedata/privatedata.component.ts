@@ -75,6 +75,7 @@ export class PrivatedataComponent implements OnInit {
 
 
   encryptSubmit() {
+    console.log('ENTER')
     this.wrongKey = false;
     this.loading = true;
     let uniqueKey = this.eKeyForm.value.newEKey;

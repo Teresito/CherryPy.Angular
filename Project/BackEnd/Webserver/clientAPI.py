@@ -13,7 +13,9 @@ def ping_check(host,serverIP,location):
     url = host + "/api/ping_check"
 
     server_time = str(time.time())
-
+    header = {
+        'content-type':'application/json'
+    }
     payload = {
         'my_time':server_time,
         'my_active_usernames': 'N/A',
@@ -21,7 +23,8 @@ def ping_check(host,serverIP,location):
         'connection_location': location
     }
     payload_b = bytes(json.dumps(payload), 'utf-8')
-    return(helper.Request(url, payload_b, None))
+
+    return(helper.Request(url, payload_b, header))
 
     
 def checkmessage(host):
@@ -35,8 +38,11 @@ def checkmessage(host):
 def rx_broadcast(host,message,serverRecord,privKey):
     url = host + "/api/rx_broadcast"
 
-    message = bytes(message,'utf-8')
     timeNOW = str(time.time())
+
+    header = {
+        'content-type': 'application/json'
+    }
 
     signing_key = nacl.signing.SigningKey(privKey, encoder=nacl.encoding.HexEncoder)
     message_bytes = bytes(serverRecord + message + timeNOW, encoding='utf-8')
@@ -50,7 +56,7 @@ def rx_broadcast(host,message,serverRecord,privKey):
         'signature':signature_hex_str,
     }
     payload_b = bytes(json.dumps(payload), 'utf-8')
-    return(helper.Request(url,payload_b,None))
+    return(helper.Request(url, payload_b, header))
 
 
 def rx_privatemessage(host, serverRecord, message, privkey, targetKey, target):
@@ -58,6 +64,10 @@ def rx_privatemessage(host, serverRecord, message, privkey, targetKey, target):
     timeNOW = str(time.time())
 
     message = bytes(message, 'utf-8')
+
+    header = {
+        'content-type': 'application/json'
+    }
 
     verifykey = nacl.signing.VerifyKey(targetKey, encoder=nacl.encoding.HexEncoder)
     publickey = verifykey.to_curve25519_public_key()
@@ -76,10 +86,4 @@ def rx_privatemessage(host, serverRecord, message, privkey, targetKey, target):
     }
     
     payload_b = bytes(json.dumps(payload), 'utf-8')
-    return(helper.Request(url, payload_b, None))
-        
-
-if __name__ == "__main__":
-    ip = "http://172.23.1.134:8080/api/ping_check"
-    #ip = "http://192.168.1.6"
-    print(ping_check(ip,ip))
+    return(helper.Request(url, payload_b, header))

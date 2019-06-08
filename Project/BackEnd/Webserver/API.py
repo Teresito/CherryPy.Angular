@@ -20,10 +20,14 @@ class Interface(object):
 
     @cherrypy.expose
     def rx_broadcast(self):
+        print("====================")
+        print("PING_CHECK MESSAGE CALLED")
+        print("====================")
         rawbody = cherrypy.request.body.read()
-        body = json.loads(rawbody)
+        
 
         try:
+            body = json.loads(rawbody)
             if body['loginserver_record'] and body['message'] and body['sender_created_at'] and body['signature']:
                 record_inparts = helper.splitServerRecord(body['loginserver_record'])
                 if(len(record_inparts) == 4):
@@ -43,7 +47,7 @@ class Interface(object):
                         'response': 'error',
                         'message': 'invalid body, server record length'
                     }
-        except KeyError as error:
+        except Exception as error:
             payload = {
                 'response': 'error',
                 'message': 'invalid body,  missing required parameters'
@@ -53,6 +57,9 @@ class Interface(object):
 
     @cherrypy.expose
     def ping_check(self):
+        print("====================")
+        print("PING_CHECK MESSAGE CALLED")
+        print("====================")
         rawbody = cherrypy.request.body.read()
         try:
             body = json.loads(rawbody)
@@ -68,7 +75,10 @@ class Interface(object):
                     'response': 'ok',
                     'my_time': str(time.time()),
                 }
-        except KeyError as error:
+        except Exception as error:
+            print("====================")
+            print(error)
+            print("====================")
             payload = {
                 'response': 'error',
                 'message': 'invalid body, missing required parameters'
@@ -77,6 +87,9 @@ class Interface(object):
 
     @cherrypy.expose
     def rx_privatemessage(self):
+        print("====================")
+        print("RX_PRIVATE MESSAGE CALLED")
+        print("====================")
         rawbody = cherrypy.request.body.read()
         try:
             body = json.loads(rawbody)
@@ -92,7 +105,7 @@ class Interface(object):
                 payload = {
                     'response': 'ok',
                 }
-        except KeyError as error:
+        except Exception as error:
             payload = {
                 'response': 'error',
                 'message': 'invalid body, missing required parameters'

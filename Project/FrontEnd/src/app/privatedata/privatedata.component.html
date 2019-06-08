@@ -21,7 +21,7 @@
         formControlName="Dkey">
       <div class="input-group-append">
         <button class="btn btn-outline-success " [ngClass]="{'btn-outline-danger':wrongKey}"
-          type="button" (click)="decryptSubmit()" [disabled]="eKeyForm.value.Dkey === '' || eKeyForm.value.Dkey === null">&nbsp;&nbsp;&nbsp;{{ buttonKey }}&nbsp;&nbsp;&nbsp;</button>
+          type="button" (keyup.enter)="decryptSubmit()" (click)="decryptSubmit()" [disabled]="eKeyForm.value.Dkey === '' || eKeyForm.value.Dkey === null">&nbsp;&nbsp;&nbsp;{{ buttonKey }}&nbsp;&nbsp;&nbsp;</button>
         <span *ngIf="optionsBack" style="padding-left:2%;">
           <button class="btn btn-outline-secondary" [disabled]="loading"(click)="Back()"> Back </button>
         </span>
@@ -39,7 +39,7 @@
         formControlName="EKeyAgain" required minlength="5">
     </div>
     <div class="text-center" style="padding-top:2%;padding-bottom:2%;">
-      <button class="btn btn-outline-success " [ngClass]="{'btn-outline-danger':wrongKey}"
+      <button class="btn btn-outline-success"  (keyup.enter)="encryptSubmit()" [ngClass]="{'btn-outline-danger':wrongKey}"
         type="button"(click)="encryptSubmit()" [disabled]="eKeyForm.invalid">&nbsp;&nbsp;&nbsp;{{ buttonKey }}&nbsp;&nbsp;&nbsp;</button>
       <span *ngIf="optionsBack" style="padding-left:2%;">
         <button class="btn btn-outline-secondary" (click)="Back()" > Back </button>

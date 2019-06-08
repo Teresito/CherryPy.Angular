@@ -52,6 +52,7 @@ def add_privatedata(apikey,username,userData,privateKey):
     }
     serverRecord = get_loginserver_record(apikey,username)['loginserver_record']
     timeNow = str(time.time())
+
     # Signature 
     signing_key = nacl.signing.SigningKey(privateKey, encoder=nacl.encoding.HexEncoder)
     message_bytes = bytes(userData + serverRecord + timeNow, encoding='utf-8')
@@ -99,7 +100,6 @@ def add_pubkey(apikey, username):
     }
 
     server_response = helper.Request(url, payload_b, header)['response']
-    print(server_response)
     if(server_response == 'ok'):
         return(keyGen)
     else:
@@ -185,7 +185,7 @@ def rx_broadcast(apikey,username,message,time,privkey):
         'Content-Type': 'application/json'
     }
 
-    serverRecord = get_loginserver_record(apikey,username)
+    serverRecord = get_loginserver_record(apikey,username)['loginserver_record']
 
     signing_key = nacl.signing.SigningKey(privkey, encoder=nacl.encoding.HexEncoder)    
     message_bytes = bytes(serverRecord + message +
@@ -248,4 +248,26 @@ def rx_privatemessage(apikey,username,serverRecord,time,message,privkey,targetKe
 if __name__ == '__main__':
     name = 'tmag741'
     password = 'Teresito_419588351'
+    EDkey = 'asd123'
     APIkey = load_new_apikey(name, password)['api_key']
+    addKey = add_pubkey(APIkey,name)
+    private_key = addKey['private_key']
+    public_key = addKey['public_key']
+
+    report(APIkey, name, "TESTING SCRIPT", "2", public_key, 'offline')
+
+    private_data ={
+        "prikeys": ["9a72eeb920ce03a812deda0f49206a89398e09aac546476e6dee4c717ebba638", "..."],
+        "blocked_pubkeys": ["...", "..."],
+        "blocked_usernames": ["...", "..."],
+        "blocked_words": ["...", "..."],
+        "blocked_message_signatures": ["...", "..."],
+        "favourite_message_signatures": ["...", "..."],
+        "friends_usernames": ["...", "..."]
+    }
+
+    encrypted = helper.encryptData(private_data, EDkey)
+
+    print(add_privatedata(APIkey, name, encrypted, private_key))
+    data_toUnlock = get_privatedata(APIkey, name)['privatedata']
+    print(helper.decryptData(data_toUnlock,EDkey))

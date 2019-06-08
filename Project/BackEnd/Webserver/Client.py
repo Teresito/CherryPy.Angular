@@ -9,7 +9,7 @@ import json
 import threading
 import cherrypy
 
-LOCATION_ADRESS = "http://302cherrypy.mynetgear.com/"
+LOCATION_ADRESS = "http://302cherrypy.mynetgear.com"
 WORLD_CONNECTION = '2'
 
 @cherrypy.config(**{'tools.cors.on': True})
@@ -30,12 +30,14 @@ class Interface(object):
             return False
 
         if(typeCheck == 1):
-            if(session_handler.userCheck(user)):
+            if(session_handler.userCheck(user)==True):
                 APIKey = session_handler.userAPIKey(user)
                 privateKey = session_handler.userKeys(user)[0][0]
                 centralResponse = centralAPI.ping(APIKey,user,privateKey)
                 if(centralResponse == "error" or centralResponse['response'] == "error"):
                     return False
+            else:
+                return False
             return True
         elif(typeCheck == 0):
             if(session_handler.userCheck(user) == False):
@@ -56,6 +58,10 @@ class Interface(object):
         APIKey = session_handler.userAPIKey(username)
 
         centralResponse = centralAPI.list_users(APIKey, username)
+        
+        if(centralResponse =="error"):
+            return '0'
+
         if (centralResponse['response'] == 'ok'):
             newList = []
             userList = centralResponse['users']
@@ -183,7 +189,9 @@ class Interface(object):
 
         server_record = centralAPI.get_loginserver_record(
             APIkey, username)['loginserver_record']
-
+        print("=================")
+        print(server_record)
+        print("=================")
         message_handler.updatePublicMessages(username, message, epoch)
 
         message_everyone = threading.Thread(target=thread_tasks.broadcast, args=(
@@ -233,8 +241,11 @@ class Interface(object):
         APIkey = session_handler.userAPIKey(username)
         public_key = session_handler.userKeys(username)[0][1]
         centralResponse = centralAPI.report(APIkey, username, LOCATION_ADRESS, WORLD_CONNECTION, public_key, userStatus)
-        
-        if (centralResponse['response'] == 'ok'):
-            return '1'
+
+        if (centralResponse != "error"):
+            if(centralResponse['response'] == 'ok'):
+                return '1'
+            else:
+                return '0'
         else:
             return '0'

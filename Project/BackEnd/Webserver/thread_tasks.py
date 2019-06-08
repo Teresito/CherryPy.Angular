@@ -2,13 +2,26 @@ import base64
 import session_handler
 import helper
 import clientAPI
+import pprint
 def broadcast(record,message,private_key,hostIP):
     errorCount = 0
     toCall = 0
     uniCount = 0
+    success = 0
     outSide = 0
 
+    print("====================")
+    print("LOOK AT ME ")
+    print("====================")
+    print(pprint.pprint(record))
+    print(type(record))
+    print(record)
+    print("====================")
     unparsed_list = session_handler.fetchList()
+    if(len(unparsed_list) == 0):
+        updateDBList()
+        unparsed_list = session_handler.fetchList()
+        
     for host in unparsed_list:
 
         hostAddress = host[1]
@@ -19,17 +32,19 @@ def broadcast(record,message,private_key,hostIP):
         elif(hostLocation == '2'):
             outSide += 1
 
-        if(hostLocation == hostLocation and hostAddress != hostIP):
+        if(hostAddress != hostIP):
             toCall += 1
             if(hostAddress[:4] != "http"):
                 hostAddress = "http://" + hostAddress
 
             clientResponse = clientAPI.rx_broadcast(
                 hostAddress, message, record, private_key)
-            if(clientResponse == "error"):
+            if(clientResponse == "error" or clientResponse['response']=="error"):
                 errorCount += 1
+            else:
+                success += 1
     print("=================")
-    print("Total broadcast errors: "+str(errorCount)+" out of "+str(toCall))
+    print("Total broadcast success: "+str(errorCount)+" out of "+str(toCall))
     print("=================")
 
 def updateDBList():
@@ -44,6 +59,8 @@ def updateDBList():
     }
 
     json_response = helper.Request(url, None, header)
+    if(json_response == "error"):
+        return None
 
     if (json_response['response'] == 'ok'):
             user_list = json_response['users']
@@ -66,12 +83,9 @@ def ping_checkServers(hostIP,location):
     toCall = 0;
     uniCount = 0
     outSide  = 0
+    success = 0
 
     unparsed_list = session_handler.fetchList()
-    # print("=================")
-    # for user in unparsed_list:
-    #     print(user[2] == '2')
-    # print("=================")
     for host in unparsed_list:
         
         hostAddress = host[1]
@@ -88,14 +102,14 @@ def ping_checkServers(hostIP,location):
                 hostAddress = "http://" + hostAddress
 
             clientResponse = clientAPI.ping_check(hostAddress,hostIP,location)
-            if(clientResponse == "error"):
+            if(clientResponse == "error" or clientResponse['response']=="error"):
                 errorCount += 1
+            else:
+                success += 1
     
     print("=================")
-    print("Total errors: "+str(errorCount)+" out of "+str(toCall))
+    print("Total success: "+str(success)+" out of "+str(toCall))
     print("Total in uni: ", (uniCount))
     print("Total in outside: ", (outSide))
     print("=================")
 
-if __name__ == "__main__":
-    ping_checkServers("SOMEWHERE","2")

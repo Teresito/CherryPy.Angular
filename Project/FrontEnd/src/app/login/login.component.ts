@@ -25,6 +25,9 @@ export class LoginComponent implements OnInit {
   badAccessMessage: boolean = false;
   badServer: boolean = false;
   ngOnInit() {
+    if(sessionStorage.getItem('authenticated')){
+      this.router.navigate(['/broadcast'])
+    }
     if (Boolean(sessionStorage.getItem('badAccess'))){
       this.badAccessMessage = Boolean(sessionStorage.getItem('badAccess'));
       setTimeout(() => {

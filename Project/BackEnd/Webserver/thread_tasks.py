@@ -4,24 +4,20 @@ import helper
 import clientAPI
 import pprint
 def broadcast(record,message,private_key,hostIP):
+    print("=================")
+    print("STARTED SENDING BROADCAST")
+    print("=================")
     errorCount = 0
     toCall = 0
     uniCount = 0
     success = 0
     outSide = 0
 
-    print("====================")
-    print("LOOK AT ME ")
-    print("====================")
-    print(pprint.pprint(record))
-    print(type(record))
-    print(record)
-    print("====================")
     unparsed_list = session_handler.fetchList()
     if(len(unparsed_list) == 0):
         updateDBList()
         unparsed_list = session_handler.fetchList()
-        
+
     for host in unparsed_list:
 
         hostAddress = host[1]
@@ -78,7 +74,13 @@ def updateDBList():
         session_handler.updateList(user,address,location,public_key,time,status)
 
 
+ 
+
+
 def ping_checkServers(hostIP,location):
+    print("=================")
+    print("STARTED PINGING")
+    print("=================")
     errorCount = 0
     toCall = 0;
     uniCount = 0

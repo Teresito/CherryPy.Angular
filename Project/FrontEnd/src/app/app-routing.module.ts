@@ -7,11 +7,12 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { AuthGuard } from './services/auth-guard.service';
 import { GroupComponent } from './group/group.component';
 import { AccountComponent } from './account/account.component';
+import { UsersComponent } from './users/users.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent, pathMatch: 'full'},
   { path: 'broadcast', component: BroadcastComponent, pathMatch: 'full', canActivate: [AuthGuard]},
-  //{ path: 'broadcast', component: BroadcastComponent, pathMatch: 'full', canActivate: []},
+  { path: 'reports', component: UsersComponent, pathMatch: 'full', canActivate: [AuthGuard]},
   { path: 'message', component: PrivatemessageComponent, pathMatch: 'full', canActivate: [AuthGuard]},
   { path: 'group', component: GroupComponent, pathMatch: 'full', canActivate: [AuthGuard]},
   { path: 'account', component: AccountComponent, pathMatch: 'full', canActivate: [AuthGuard]},

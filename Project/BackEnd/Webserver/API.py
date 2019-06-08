@@ -21,32 +21,24 @@ class Interface(object):
     @cherrypy.expose
     def rx_broadcast(self):
         print("====================")
-        print("PING_CHECK MESSAGE CALLED")
+        print("RX_BROADCAST MESSAGE CALLED")
         print("====================")
-        rawbody = cherrypy.request.body.read()
-        
+        rawbody = cherrypy.request.body.read()      
 
         try:
             body = json.loads(rawbody)
             if body['loginserver_record'] and body['message'] and body['sender_created_at'] and body['signature']:
                 record_inparts = helper.splitServerRecord(body['loginserver_record'])
-                if(len(record_inparts) == 4):
-                    if(record_inparts[3] == body['signature'] and len(record_inparts[0]) == 7):
-                        message_handler.updatePublicMessages(
-                            record_inparts[0], body['message'], body['sender_created_at'])
-                        payload = {
-                            'response': 'ok'
-                        }
-                    else:
-                        payload = {
-                            'response': 'error',
-                            'message': 'invalid body, signature/user does not match'
-                        }
-                else:
-                    payload = {
-                        'response': 'error',
-                        'message': 'invalid body, server record length'
-                    }
+                message_handler.updatePublicMessages(
+                    record_inparts[0], body['message'], body['sender_created_at'], body['loginserver_record'], body['signature'])
+                payload = {
+                    'response': 'ok'
+                }
+            else:
+                payload = {
+                    'response': 'error',
+                    'message': 'invalid body,  missing required parameters'
+                }
         except Exception as error:
             payload = {
                 'response': 'error',

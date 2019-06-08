@@ -10,7 +10,7 @@ import { componentState } from '../services/componentService';
 export class UserListComponent implements OnInit {
 
 
-  usersList: any;
+  usersList = [];
   userLoading: boolean = true;
 
   constructor(private state: componentState,private API: apiServices) { }
@@ -20,13 +20,14 @@ export class UserListComponent implements OnInit {
     this.loadUsers();
   }
 
-  loadUsers(){
-    this.userLoading = true
+  loadUsers() {
     this.API.listUserAPI().then((response) => {
-      this.usersList = response;
+      for (let index = 0; index < response.length; index++) {
+        response[index]['connection_updated_at'] = Date.now() - response[index]['connection_updated_at'] * 1000;
+        this.usersList.push(response[index]);
+      }
       this.userLoading = false
     });
   }
-
 }
 

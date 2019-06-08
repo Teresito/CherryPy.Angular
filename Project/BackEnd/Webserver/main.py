@@ -9,7 +9,8 @@ import thread_tasks
 LISTEN_IP = "192.168.1.6"
 LISTEN_PORT = 80
 
-LOCATION_ADRESS = "http://302cherrypy.mynetgear.com"
+#LOCATION_ADRESS = "http://302cherrypy.mynetgear.com"
+LOCATION_ADRESS = "122.60.172.73:80"
 WORLD_CONNECTION = '2'
 
 SESSION_DB = 'session.db'

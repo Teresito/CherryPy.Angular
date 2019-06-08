@@ -16,28 +16,35 @@ export class NavigationbarComponent implements OnInit {
   zIndex: boolean = true;
   listener = new Subscription;
   status = new FormControl('');
-  XSS = "<script>alert('OWNED')</script>"
-  statusList = ['Online','Away','Busy','Offline']
+  search = new FormControl('');
+  statusList = ['Online', 'Away', 'Busy', 'Offline']
   user: string;
   constructor(private route: Router, private API: apiServices, private state: componentState) { }
 
   ngOnInit() {
-    this.status.patchValue(sessionStorage.getItem('status'))
     this.zIndex = !Boolean(sessionStorage.getItem('inSession'))
     this.user = sessionStorage.getItem('username')
-    this.state.session.subscribe(()=>{
-      if(Boolean(sessionStorage.getItem('inSession'))){
+    this.state.session.subscribe(() => {
+      if (Boolean(sessionStorage.getItem('inSession'))) {
         this.zIndex = false;
         this.user = sessionStorage.getItem('username')
       }
     })
   }
 
-  changedStatus(){
-    sessionStorage.setItem('status',this.status.value.toLowerCase())
+  onKeydown(event) {
+    this.searchUser();
   }
 
-  logout(){  
+  searchUser(){
+    this.state.searchTrigger.next(this.search.value);
+  }
+
+  changedStatus() {
+    sessionStorage.setItem('status', this.status.value.toLowerCase())
+  }
+
+  logout() {
     this.state.clearClient();
     this.API.logoutAPI();
   }

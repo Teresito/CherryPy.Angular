@@ -92,6 +92,7 @@ def Request(url, data, header):
         data = response.read()
         response.close()
     except urllib.error.HTTPError as error:
+        print(url)
         print(error.read())
         return("error")
     except Exception as error:

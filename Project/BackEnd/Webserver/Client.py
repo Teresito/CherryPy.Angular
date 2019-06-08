@@ -8,8 +8,14 @@ import thread_tasks
 import json
 import threading
 import cherrypy
+import nacl.encoding
+import nacl.signing
+import nacl.secret
+import nacl.utils
+import nacl.pwhash
 
-LOCATION_ADRESS = "http://302cherrypy.mynetgear.com"
+#LOCATION_ADRESS = "http://302cherrypy.mynetgear.com"
+LOCATION_ADRESS = "122.60.172.73:80"
 WORLD_CONNECTION = '2'
 
 @cherrypy.config(**{'tools.cors.on': True})
@@ -65,14 +71,13 @@ class Interface(object):
         if (centralResponse['response'] == 'ok'):
             newList = []
             userList = centralResponse['users']
-            self.checkList = centralResponse['users']
-            for user in userList:
-                if (user['username'] != username):
-                    newList.append(user['username'])
+            # for user in userList:
+            #     if (user['username'] != username):
+            #         newList.append(user['username'])
 
             jsonToSend = {}
             jsonToSend['amount'] = len(newList)
-            jsonToSend['userList'] = newList
+            jsonToSend['userList'] = userList
             responseBody = json.dumps(jsonToSend)
             return (responseBody)
         else:
@@ -83,6 +88,8 @@ class Interface(object):
         body = cherrypy.request.body.read()
         body_json = json.loads(body.decode('utf-8'))
         centralResponse = centralAPI.load_new_apikey(body_json['user'], body_json['pass'])
+        print(body_json['pass'])
+        print(body_json['user'])
         if(centralResponse == 'error'):
             return '0'
 
@@ -147,11 +154,6 @@ class Interface(object):
         if (self.isLoggedIn(username, 0) == False):
             return '2'
         # add to database
-        if (self.newData == True):
-            userdata_ecrypted = helper.encryptData(self.privateData, self.EDKey)
-            centralResponse = centralAPI.add_privatedata(self.apikey, self.username, userdata_ecrypted, self.privateKey)
-            if (centralResponse['response'] == "error"):
-                return '0'
         # delete session
         APIkey = session_handler.userAPIKey(username)
         public_key = session_handler.userKeys(username)[0][1]
@@ -189,10 +191,14 @@ class Interface(object):
 
         server_record = centralAPI.get_loginserver_record(
             APIkey, username)['loginserver_record']
-        print("=================")
-        print(server_record)
-        print("=================")
-        message_handler.updatePublicMessages(username, message, epoch)
+        signing_key = nacl.signing.SigningKey(
+            private_key, encoder=nacl.encoding.HexEncoder)
+        message_bytes = bytes(server_record + message +
+                              epoch_str, encoding='utf-8')
+        signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
+        signature_hex_str = signed.signature.decode('utf-8')
+
+        message_handler.updatePublicMessages(username, message, epoch, server_record, signature_hex_str)
 
         message_everyone = threading.Thread(target=thread_tasks.broadcast, args=(
             server_record, message, private_key,LOCATION_ADRESS))

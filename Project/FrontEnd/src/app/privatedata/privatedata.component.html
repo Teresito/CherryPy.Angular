@@ -17,11 +17,11 @@
 
 
     <div class="input-group mb-3" *ngIf="decryptForm">
-      <input type="password" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="{{ pholder }}"
+      <input type="password" (keydown.enter)="decryptSubmit()" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="{{ pholder }}"
         formControlName="Dkey">
       <div class="input-group-append">
         <button class="btn btn-outline-success " [ngClass]="{'btn-outline-danger':wrongKey}"
-          type="button" (keyup.enter)="decryptSubmit()" (click)="decryptSubmit()" [disabled]="eKeyForm.value.Dkey === '' || eKeyForm.value.Dkey === null">&nbsp;&nbsp;&nbsp;{{ buttonKey }}&nbsp;&nbsp;&nbsp;</button>
+          type="button" (click)="decryptSubmit()" [disabled]="eKeyForm.value.Dkey === '' || eKeyForm.value.Dkey === null">&nbsp;&nbsp;&nbsp;{{ buttonKey }}&nbsp;&nbsp;&nbsp;</button>
         <span *ngIf="optionsBack" style="padding-left:2%;">
           <button class="btn btn-outline-secondary" [disabled]="loading"(click)="Back()"> Back </button>
         </span>
@@ -35,7 +35,7 @@
     <input type="password" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="Encryption Key"
       formControlName="newEKey" required minlength="5">
     <div style="padding-top:2%;">
-      <input type="password" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="Re-type encryption key"
+      <input type="password" (keydown.enter)="encryptSubmit()" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="Re-type encryption key"
         formControlName="EKeyAgain" required minlength="5">
     </div>
     <div class="text-center" style="padding-top:2%;padding-bottom:2%;">

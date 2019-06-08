@@ -16,7 +16,8 @@ import { GroupComponent } from './group/group.component';
 import { AccountComponent } from './account/account.component';
 import { PrivatedataComponent } from './privatedata/privatedata.component';
 import { UserListComponent } from './user-list/user-list.component';
-
+import { UsersComponent } from './users/users.component';
+import { MarkdownModule } from 'ngx-markdown';
 
 @NgModule({
   declarations: [
@@ -30,11 +31,13 @@ import { UserListComponent } from './user-list/user-list.component';
     AccountComponent,
     PrivatedataComponent,
     UserListComponent,
-
+    UsersComponent,
+    
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    MarkdownModule.forRoot(),
     ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule

@@ -11,9 +11,36 @@ import helper
 
 HOST = "http://cs302.kiwi.land/api"
 
-def ping():
+def ping(apikey,username,privateKey):
     url = HOST + '/ping'
-    return(helper.Request(url, None, None))
+    if(apikey == None and username == None and privateKey == None):
+        
+        return(helper.Request(url, None, None))
+    else:
+
+        header = {
+            'X-username': username,
+            'X-apikey': apikey,
+            'Content-Type': 'application/json'
+        }
+
+        signing_key = nacl.signing.SigningKey(privateKey, encoder=nacl.encoding.HexEncoder)
+
+        pubkey_hex = signing_key.verify_key.encode(encoder=nacl.encoding.HexEncoder)
+        pubkey_hex_str = pubkey_hex.decode('utf-8')
+        signed = signing_key.sign(bytes(pubkey_hex_str,'utf-8'), encoder=nacl.encoding.HexEncoder)
+        signature_hex_str = signed.signature.decode('utf-8')
+
+        payload = {
+            'pubkey':pubkey_hex_str,
+            'signature':signature_hex_str
+        }
+        
+        payload_b = bytes(json.dumps(payload), 'utf-8')
+
+        return(helper.Request(url, payload_b, header))
+    
+
 
 def add_privatedata(apikey,username,userData,privateKey):
     url = HOST + "/add_privatedata"
@@ -25,6 +52,7 @@ def add_privatedata(apikey,username,userData,privateKey):
     }
     serverRecord = get_loginserver_record(apikey,username)['loginserver_record']
     timeNow = str(time.time())
+
     # Signature 
     signing_key = nacl.signing.SigningKey(privateKey, encoder=nacl.encoding.HexEncoder)
     message_bytes = bytes(userData + serverRecord + timeNow, encoding='utf-8')
@@ -72,11 +100,10 @@ def add_pubkey(apikey, username):
     }
 
     server_response = helper.Request(url, payload_b, header)['response']
-    print(server_response)
     if(server_response == 'ok'):
         return(keyGen)
     else:
-        return("Request Error")
+        return("error")
 
 
 def check_pubkey(apikey, pubkey, username):
@@ -150,7 +177,7 @@ def loginserver_pubkey():
     url = HOST + "/loginserver_pubkey"
     return(helper.Request(url, None, None))
 
-def rx_broadcast(apikey,username,serverRecord,time,message,privkey):
+def rx_broadcast(apikey,username,message,time,privkey):
     url = HOST + "/rx_broadcast"
     header = {
         'X-username': username,
@@ -158,8 +185,11 @@ def rx_broadcast(apikey,username,serverRecord,time,message,privkey):
         'Content-Type': 'application/json'
     }
 
+    serverRecord = get_loginserver_record(apikey,username)['loginserver_record']
+
     signing_key = nacl.signing.SigningKey(privkey, encoder=nacl.encoding.HexEncoder)    
-    message_bytes = bytes(serverRecord + message + time, encoding='utf-8')
+    message_bytes = bytes(serverRecord + message +
+                          time, encoding='utf-8')
     signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
     signature_hex_str = signed.signature.decode('utf-8')
 
@@ -218,47 +248,26 @@ def rx_privatemessage(apikey,username,serverRecord,time,message,privkey,targetKe
 if __name__ == '__main__':
     name = 'tmag741'
     password = 'Teresito_419588351'
+    EDkey = 'asd123'
     APIkey = load_new_apikey(name, password)['api_key']
+    addKey = add_pubkey(APIkey,name)
+    private_key = addKey['private_key']
+    public_key = addKey['public_key']
 
-    record = get_loginserver_record(APIkey,name)['loginserver_record']
-    data = helper.splitServerRecord(record)
-    print(data[3])
-    print(len(data))
-    for part in data:
-        print(part)
-#     keys = add_pubkey(APIkey, name)
-#     pubKey = keys['public_key']
-#     privKey = keys['private_key']
-#     report(APIkey,name,"Somehwhere","2",pubKey,"offline")
-# #     newList = []
-# ####################################
-# #     for user in userList:
-# #         if(user['status']=="online"):
-# #             newList.append(user['username'])
-# #             #print(user['username'])
-            
-# #     jsonToSend = {}
-# #     jsonToSend['amount'] = len(newList)
-# #     jsonToSend['userList'] = newList
-# #     print(jsonToSend)
-# ################################
-#     # myEDKey = "asd123"
-#     # privateData = {
-#     #     "prikeys": ["fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6", "..."],
-#     #     "blocked_pubkeys": ["...", "..."],
-#     #     "blocked_usernames": ["...", "..."],
-#     #     "blocked_words": ["...", "..."],
-#     #     "blocked_message_signatures": ["...", "..."],
-#     #     "favourite_message_signatures": ["...", "..."],
-#     #     "friends_usernames": ["...", "..."]
-#     # }
-#     # # text = privateData['prikeys']
-#     # # test = text[0]
-#     # # print(test)
-#     # data_hex = helper.encryptData(privateData,myEDKey)
-#     # print(data_hex)
-#     # print(add_privatedata(APIkey,name,data_hex,privKey))
-#     # datastored = get_privatedata(APIkey,name)['privatedata']
-#     # data_unlocked = helper.decryptData(datastored,myEDKey)
-#     # print(data_unlocked)
+    report(APIkey, name, "TESTING SCRIPT", "2", public_key, 'offline')
 
+    private_data ={
+        "prikeys": ["9a72eeb920ce03a812deda0f49206a89398e09aac546476e6dee4c717ebba638", "..."],
+        "blocked_pubkeys": ["...", "..."],
+        "blocked_usernames": ["...", "..."],
+        "blocked_words": ["...", "..."],
+        "blocked_message_signatures": ["...", "..."],
+        "favourite_message_signatures": ["...", "..."],
+        "friends_usernames": ["...", "..."]
+    }
+
+    encrypted = helper.encryptData(private_data, EDkey)
+
+    print(add_privatedata(APIkey, name, encrypted, private_key))
+    data_toUnlock = get_privatedata(APIkey, name)['privatedata']
+    print(helper.decryptData(data_toUnlock,EDkey))

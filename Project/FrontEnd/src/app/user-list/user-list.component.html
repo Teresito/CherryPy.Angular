@@ -6,8 +6,8 @@
     <div class="lead card-body text-center" style="height:250px;overflow:scroll; overflow-x:hidden;">
       <!-- style="overflow:scroll; overflow-x:hidden;" -->
       <div *ngIf="!userLoading">
-        <p *ngFor="let user of onlineUsers">
-          {{user}}
+        <p *ngFor="let user of usersList">
+          {{user.username}}
         </p>
       </div>
       <div class="d-flex justify-content-center" *ngIf="userLoading" style="padding-top:20%;padding-bottom:20%">
@@ -18,7 +18,7 @@
 
     </div>
     <div class="card-footer text-center">
-      <small class="text-muted">Last updated 3 mins ago</small>
+      <small class="text-muted">Updated 5 minutes ago</small>
     </div>
   </div>
 </div>

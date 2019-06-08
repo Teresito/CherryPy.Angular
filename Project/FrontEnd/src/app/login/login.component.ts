@@ -25,6 +25,17 @@ export class LoginComponent implements OnInit {
   badAccessMessage: boolean = false;
   badServer: boolean = false;
   ngOnInit() {
+    if(sessionStorage.getItem('authenticated')){
+      this.router.navigate(['/broadcast'])
+    }
+    if (Boolean(sessionStorage.getItem('badAccess'))){
+      this.badAccessMessage = Boolean(sessionStorage.getItem('badAccess'));
+      setTimeout(() => {
+        sessionStorage.removeItem('badAccess')
+        this.badAccessMessage = false;
+      }, 3000);
+    }
+
   }
 
   onSubmit() {
@@ -32,7 +43,7 @@ export class LoginComponent implements OnInit {
     this.wrongLogin = false;
     let username = this.LoginForm.value.username;
     let password = this.LoginForm.value.password;
-    this.API.loginAPI(username, password).subscribe(
+    this.API.loginAPI(username, password).then(
       (response) => {
         
         this.wrongLogin = false

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, HostListener } from '@angular/core';
 import { componentState } from './services/componentService';
 import { Subscription } from 'rxjs';
 import { apiServices } from './services/apiServices';
@@ -9,31 +9,62 @@ import { NavigationStart, Router } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
+  @HostListener('window:beforeunload')
 
   listener = new Subscription;
-  
+
   showNav: boolean = false;
 
   private reportTimer: any;
   private usersTimer: any;
 
-  constructor(private state: componentState, private API: apiServices, private router: Router ){
+  constructor(private state: componentState, private API: apiServices, private router: Router) {
 
   }
 
-  ngOnInit(){
+  ngOnInit() {
+
     this.showNav = this.state.getAuth();
-    this.listener = this.state.clientState.subscribe(
-      ()=>{
-        this.showNav = this.state.getAuth();
-        console.log(this.state.getAuth())
-      });
+    if (sessionStorage.getItem('status') == '' && Boolean(sessionStorage.getItem('authenticated'))){
+      sessionStorage.setItem('status', 'online')
     }
-    
-  ngOnDestroy(){
-    this.listener.unsubscribe();  
+    this.listener = this.state.clientState.subscribe(
+      () => {
+        this.showNav = this.state.getAuth();
+      });
 
-  }
+    if (Boolean(sessionStorage.getItem('inSession'))) {
+      this.reportTimer = setInterval(() => {
+        this.API.reportUser();
+      }, 10000);
+
+      this.usersTimer = setInterval(() => {
+        this.state.usersList = this.API.listUserAPI();
+      }, 30000);
+
+    }
+    else {
+      clearInterval(this.reportTimer);
+      clearInterval(this.usersTimer);
+    }
+  
+
+}
+
+logout() {
+  this.API.logoutAPI();
+  this.state.clearClient();
+}
+
+ngAfterViewInit(){
+
+
+}
+
+ngOnDestroy(){
+  this.listener.unsubscribe();
+
+}
 
 }

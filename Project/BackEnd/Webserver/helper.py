@@ -8,45 +8,45 @@ import nacl.pwhash
 import base64
 import json
 import urllib.request
-
+import clientAPI
+import pprint
 
 def encryptData(userData, encryptKey):
-    # SALT
-    salt = bytes(encryptKey, 'utf-8')*16
-    salt = salt[0:16]
-    # BOX
-    ops = nacl.pwhash.argon2i.OPSLIMIT_SENSITIVE
-    mem = nacl.pwhash.argon2i.MEMLIMIT_SENSITIVE
-    key = nacl.pwhash.argon2i.kdf(nacl.secret.SecretBox.KEY_SIZE, encryptKey.encode(
-        'utf-8'), salt, ops, mem, encoder=nacl.encoding.HexEncoder)
-    box = nacl.secret.SecretBox(key, encoder=nacl.encoding.HexEncoder)
+    box = create_secretBox(encryptKey)
     nonce = nacl.utils.random(nacl.secret.SecretBox.NONCE_SIZE)
 
     jsonBytes = bytes(json.dumps(userData), 'utf-8')
-    encrypted = box.encrypt(jsonBytes, nonce, encoder=nacl.encoding.HexEncoder)
+    encrypted = box.encrypt(jsonBytes, nonce)
     encrypted_hex_str = base64.b64encode(encrypted).decode("utf-8")
 
     return encrypted_hex_str
 
 
-def decryptData(userData, decryptKey):
-    # SALT
-    salt = bytes(decryptKey, 'utf-8')*16
-    salt = salt[0:16]
-    # BOX
+def create_secretBox(encryption_key):
+
+    kdf = nacl.pwhash.argon2i.kdf
+
+    password = encryption_key.encode('utf-8')
+    salt = nacl.pwhash.argon2i.SALTBYTES * password
+
+    cut_salt = salt[0:nacl.pwhash.argon2i.SALTBYTES]
     ops = nacl.pwhash.argon2i.OPSLIMIT_SENSITIVE
     mem = nacl.pwhash.argon2i.MEMLIMIT_SENSITIVE
-#	key = nacl.pwhash.argon2id.kdf(nacl.secret.SecretBox.KEY_SIZE,bytes(decryptKey,'utf-8'),salt,ops,mem)
-    try:
-        key = nacl.pwhash.argon2i.kdf(nacl.secret.SecretBox.KEY_SIZE, decryptKey.encode(
-            'utf-8'), salt, ops, mem, encoder=nacl.encoding.HexEncoder)
-    except nacl.exceptions.TypeError as error:
-        return "error"
 
-    box = nacl.secret.SecretBox(key, encoder=nacl.encoding.HexEncoder)
+    symmetric_key = kdf(nacl.secret.SecretBox.KEY_SIZE, password, salt=cut_salt,
+                        opslimit=ops, memlimit=mem, encoder=nacl.encoding.HexEncoder)
+
+    secret_box = nacl.secret.SecretBox(symmetric_key,encoder=nacl.encoding.HexEncoder)
+    return secret_box    
+
+
+def decryptData(userData, decryptKey):
+    box = create_secretBox(decryptKey)
+
     try:
-        message = box.decrypt(base64.b64decode(userData),
-                              encoder=nacl.encoding.HexEncoder)
+        userData_UTF = userData.encode('utf-8')
+        message_object = base64.b64decode(userData_UTF)
+        message = box.decrypt(message_object)
         message = json.loads(message.decode('utf-8'))
     except nacl.exceptions.CryptoError as error:
         message = "error"
@@ -63,44 +63,43 @@ def generatePubKey(privateKey):
     pubkey_hex_str = pubkey_hex.decode('utf-8')
     return pubkey_hex_str
 
+
 def splitServerRecord(record):
     splitted = record.split(',')
     return splitted
 
 # Returns the request response to caller
+
+
 def Request(url, data, header):
 
     if(url == None):
         return "No URL was provided"
     elif(data == None and header == None):  # No data No Header
         req = urllib.request.Request(url)
-        #print("No Data / No Header")
+
     elif(data == None and header != None):  # No data and Header
         req = urllib.request.Request(url, headers=header)
-        #print("No Data / Header")
+
     elif(data != None and header == None):  # data and No header
         req = urllib.request.Request(url, data=data)
-        #print("Data / No Header")
+
     else:
         req = urllib.request.Request(url, data=data, headers=header)
-        #print("Data / Header")
+
     try:
-        response = urllib.request.urlopen(req)
+        response = urllib.request.urlopen(req, timeout=5)
         data = response.read()
         response.close()
-    except ValueError as error:
-        print(error)
-        return("error")
-    except urllib.error.URLError as error:
-        print(error)
-        return("error")
     except urllib.error.HTTPError as error:
-        print(error)
+        print(url)
+        print(error.read())
+        return("error")
+    except Exception as error:
         return("error")
     else:
         json_response = json.loads(data.decode('utf-8'))
+        # print("===================")
+        # pprint.pprint(json_response)
+        # print("===================")
         return json_response
-    # except urllib.error.HTTPError as error:
-    #     data = error.read()
-
-

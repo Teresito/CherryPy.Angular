@@ -4,7 +4,7 @@ import clientAPI
 import helper
 import json
 import cherrypy
-import database
+import message_handler
 
 class Interface(object):
 
@@ -20,29 +20,26 @@ class Interface(object):
 
     @cherrypy.expose
     def rx_broadcast(self):
-        rawbody = cherrypy.request.body.read()
-        body = json.loads(rawbody)
+        print("====================")
+        print("RX_BROADCAST MESSAGE CALLED")
+        print("====================")
+        rawbody = cherrypy.request.body.read()      
 
         try:
+            body = json.loads(rawbody)
             if body['loginserver_record'] and body['message'] and body['sender_created_at'] and body['signature']:
                 record_inparts = helper.splitServerRecord(body['loginserver_record'])
-                if(len(record_inparts) == 4):
-                    if(record_inparts[3] == body['signature']):
-                        database.updatePublicMessages(record_inparts[0], body['message'], body['sender_created_at'])
-                        payload = {
-                            'response': 'ok'
-                        }
-                    else:
-                        payload = {
-                            'response': 'error',
-                            'message': 'invalid body, signature does not match'
-                        }
-                else:
-                    payload = {
-                        'response': 'error',
-                        'message': 'invalid body, server record length'
-                    }
-        except KeyError as error:
+                message_handler.updatePublicMessages(
+                    record_inparts[0], body['message'], body['sender_created_at'], body['loginserver_record'], body['signature'])
+                payload = {
+                    'response': 'ok'
+                }
+            else:
+                payload = {
+                    'response': 'error',
+                    'message': 'invalid body,  missing required parameters'
+                }
+        except Exception as error:
             payload = {
                 'response': 'error',
                 'message': 'invalid body,  missing required parameters'
@@ -52,8 +49,9 @@ class Interface(object):
 
     @cherrypy.expose
     def ping_check(self):
-        ##### FURTHER FILTER FOR ONLINE USERS BY RECIEVED PAYLOAD
-        ###### MAKE IT DUAL (MAKE FRONT END SEND USERNAME)###########
+        print("====================")
+        print("PING_CHECK MESSAGE CALLED")
+        print("====================")
         rawbody = cherrypy.request.body.read()
         try:
             body = json.loads(rawbody)
@@ -69,16 +67,21 @@ class Interface(object):
                     'response': 'ok',
                     'my_time': str(time.time()),
                 }
-        except KeyError as error:
+        except Exception as error:
+            print("====================")
+            print(error)
+            print("====================")
             payload = {
                 'response': 'error',
                 'message': 'invalid body, missing required parameters'
             }
-        #return bytes(json.dumps(payload), 'utf-8')
         return json.dumps(payload)
 
     @cherrypy.expose
     def rx_privatemessage(self):
+        print("====================")
+        print("RX_PRIVATE MESSAGE CALLED")
+        print("====================")
         rawbody = cherrypy.request.body.read()
         try:
             body = json.loads(rawbody)
@@ -94,7 +97,7 @@ class Interface(object):
                 payload = {
                     'response': 'ok',
                 }
-        except KeyError as error:
+        except Exception as error:
             payload = {
                 'response': 'error',
                 'message': 'invalid body, missing required parameters'

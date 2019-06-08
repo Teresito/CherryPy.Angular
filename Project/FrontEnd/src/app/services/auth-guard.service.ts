@@ -8,10 +8,11 @@ export class AuthGuard implements CanActivate {
   constructor(private route: Router, private state: componentState) {}
 
   canActivate() {
-    if (!this.state.getAuth()){
+    let auth = Boolean(sessionStorage.getItem('authenticated'));
+    if (!auth){
       this.route.navigate(['/login']);
     }
-    return this.state.getAuth();
+    return auth;
   }
   
 }

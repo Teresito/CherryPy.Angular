@@ -10,14 +10,24 @@ import { componentState } from '../services/componentService';
 export class UserListComponent implements OnInit {
 
 
-  onlineUsers: any;
-  timeWait: any;
+  usersList = [];
   userLoading: boolean = true;
-  constructor(private state: componentState) { }
+
+  constructor(private state: componentState,private API: apiServices) { }
 
   ngOnInit() {
-
-
+    this.userLoading = false;
+    this.loadUsers();
   }
 
+  loadUsers() {
+    this.API.listUserAPI().then((response) => {
+      for (let index = 0; index < response.length; index++) {
+        response[index]['connection_updated_at'] = Date.now() - response[index]['connection_updated_at'] * 1000;
+        this.usersList.push(response[index]);
+      }
+      this.userLoading = false
+    });
+  }
 }
+

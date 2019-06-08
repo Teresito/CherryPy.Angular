@@ -60,6 +60,7 @@ export class PrivatedataComponent implements OnInit {
 
   Back() {
     this.options = true;
+    this.wrongKey = false;
     this.encryptForm = false;
     this.decryptForm = false;
     this.dataResponse = "What is your choice?"
@@ -74,23 +75,47 @@ export class PrivatedataComponent implements OnInit {
 
 
   encryptSubmit() {
+    console.log('ENTER')
     this.wrongKey = false;
     this.loading = true;
-
     let uniqueKey = this.eKeyForm.value.newEKey;
-    this.API.newPrivateData(uniqueKey).then((response)=>{
-      if(response == '1'){
-        
-      }
-      else{
-        this.wrongKey = false;
-        this.loading = true;
-      }
-    });
+    let match = this.eKeyForm.value.EKeyAgain;
+    if(match == uniqueKey){
+      this.API.newPrivateData(uniqueKey).then((response) => {
+        if (response == '1') {
+          sessionStorage.setItem('status', 'online');
+          sessionStorage.setItem('inSession', true.toString())
+          this.state.session.next();
+        }
+        else {
+          this.wrongKey = true;
+          this.loading = false;
+        }
+      });
+    }
+    else{
+      this.wrongKey = true;
+      this.loading = false;
+    }
+
   }
 
   decryptSubmit() {
+    this.wrongKey = false;
+    this.loading = true;
 
+    let uniqueKey = this.eKeyForm.value.Dkey;
+    this.API.unlockData(uniqueKey).then((response) => {
+      if (response == '1') {
+        sessionStorage.setItem('status','online');
+        sessionStorage.setItem('inSession', true.toString());
+        this.state.session.next();
+      }
+      else if (response == 0) {
+        this.wrongKey = true;
+        this.loading = false;
+      }
+    });
   }
 
 }

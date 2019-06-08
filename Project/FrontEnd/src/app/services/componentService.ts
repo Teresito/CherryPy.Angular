@@ -1,21 +1,19 @@
 import { Subject } from 'rxjs';
 import { Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { apiServices } from './apiServices';
 
 @Injectable()
 export class componentState {
-    notified = true;
-    onlineUsers: any;
-
     clientState = new Subject<any>();
     session = new Subject<any>();
-
+    searchTrigger = new Subject<string>();
+    usersList: any;
 
 
     constructor(private route: Router){}
 
     setClient(username: string, bool: boolean){
+        sessionStorage.setItem('status', 'Online');
         sessionStorage.setItem('username', username);
         sessionStorage.setItem('authenticated', bool.toString());
         this.route.navigate(['/broadcast'])
@@ -23,26 +21,17 @@ export class componentState {
     }
 
     clearClient(){
-        sessionStorage.setItem('username', null);
+        sessionStorage.removeItem('status');
+        sessionStorage.removeItem('username');
         sessionStorage.removeItem('authenticated');
+        sessionStorage.removeItem('inSession');
         this.route.navigate(['/login'])
         this.clientState.next();
-    }
-
-    getUser(){
-        sessionStorage.getItem('username');
+        this.session.next();
     }
 
     getAuth(){
         return Boolean(sessionStorage.getItem('authenticated'));
-    }
-    
-    setABadAccess(bool: boolean){
-        sessionStorage.setItem('badAccess', bool.toString());
-    }
-
-    getBadAccess(){
-        return Boolean(sessionStorage.getItem('badAccess'));
     }
 
 }

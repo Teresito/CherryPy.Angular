@@ -13,8 +13,9 @@ export class PageNotFoundComponent implements OnInit {
   constructor(private state: componentState, private route: Router) { }
 
   ngOnInit() {
+    let auth = Boolean(sessionStorage.getItem('authenticated'));
     setTimeout(() => {
-      if(this.state.getAuth()){
+      if (auth){
         this.route.navigate(['/broadcast'])
       }
       else{

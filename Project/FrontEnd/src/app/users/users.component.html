@@ -1,0 +1,36 @@
+<div class="container-fluid" style="padding-top:5%">
+  <div class="row">
+    <div class="col text-center">
+      <h2>User Reports</h2>
+      <hr style="width:40%">
+      <div class="card mx-auto" style="width:80%;padding: 0 0 0 0;">
+        <div class="card-body text-center lead">
+          <span *ngIf="messageLoading" class="spinner-border spinner-border-sm" style="width: 3rem; height: 3rem;" role="status" aria-hidden="true"></span>
+
+          <table *ngIf="!messageLoading"class="table table-sm mx-auto" >
+            <thead>
+              <tr>
+                <th scope="col">Username</th>
+                <th scope="col">Address</th>
+                <th scope="col">Location</th>
+                <th scope="col">Since</th>
+                <th scope="col">Public Key</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of usersList" [ngClass]="{'table-success': user.status === 'online','table-danger': user.status === 'offline','table-warning': user.status === 'busy'}">
+                <td>{{user.username}}</td>
+                <td>{{user.connection_address | slice:0:20}}</td>
+                <td>{{user.connection_location }}</td>
+                <td>{{user.connection_updated_at | date :'mm:ss' | uppercase}} </td>
+                <td>{{user.incoming_pubkey | slice:0:20}}. . . </td>
+                <td>{{user.status}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,7 +11,8 @@
             <!-- <input (keydown.enter)="onKeydown($event)" type="text-area" class="form-control lead"
               placeholder="Send a broadcast message" aria-label="Recipient's username" aria-describedby="basic-addon2"
               [formControl]="message"> -->
-                                <textarea class="form-control" (keydown.enter)="onKeydown($event)" placeholder="Send a broadcast message"  [formControl]="message" rows="3"></textarea>
+            <textarea class="form-control" (keydown.enter)="onKeydown($event)" placeholder="Send a broadcast message"
+              [formControl]="message" rows="3"></textarea>
             <div class="input-group-append">
               <button class="btn btn-outline-secondary"
                 [ngClass]="{'btn-outline-success':message.valid, 'btn-outline-secondary': message.invalid || loading}"
@@ -70,9 +71,9 @@
         <div class="col" style="padding:0 0 0 0;">
           <div class="card">
             <div class="card-body">
-            <markdown ngPreserveWhitespaces>
-              {{markedDownMessage}}
-            </markdown>
+              <markdown ngPreserveWhitespaces>
+                {{markedDownMessage}}
+              </markdown>
             </div>
           </div>
         </div>

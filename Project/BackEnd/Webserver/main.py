@@ -4,9 +4,14 @@ import sqlite3
 import API
 import Serve
 import Client
+import thread_tasks
 
 LISTEN_IP = "192.168.1.6"
 LISTEN_PORT = 80
+
+LOCATION_ADRESS = "http://302cherrypy.mynetgear.com/"
+WORLD_CONNECTION = '2'
+
 SESSION_DB = 'session.db'
 
 def cors():
@@ -58,7 +63,16 @@ def main():
  
 
 def start_session():
-    createTABLE = """ CREATE TABLE IF NOT EXISTS USER_SESSION (
+    interval_ping = cherrypy.process.plugins.BackgroundTask(
+        120, thread_tasks.ping_checkServers, [LOCATION_ADRESS, WORLD_CONNECTION])
+    
+    interval_list = cherrypy.process.plugins.BackgroundTask(
+        30, thread_tasks.updateDBList)
+
+    interval_ping.start()
+    interval_list.start()
+
+    createSESSION = """ CREATE TABLE IF NOT EXISTS "USER_SESSION" (
 	"USER" TEXT NOT NULL UNIQUE,
 	"APIKEY" TEXT NOT NULL UNIQUE,
 	"PRIVATE_DATA" TEXT UNIQUE,
@@ -69,14 +83,26 @@ def start_session():
     "EDKEY"	TEXT
     ); """
 
+    createLIST = """ CREATE TABLE IF NOT EXISTS "USER_LIST" (
+	"USER"	TEXT NOT NULL UNIQUE,
+	"ADDRESS"	TEXT NOT NULL,
+	"LOCATION"	TEXT NOT NULL,
+	"PUBLIC_KEY"	TEXT NOT NULL UNIQUE,
+	"TIME"	INTEGER NOT NULL,
+	"STATUS"	TEXT NOT NULL
+    );"""
+
     with sqlite3.connect(SESSION_DB) as con:
         con.execute("DROP TABLE IF EXISTS USER_SESSION")
-        con.execute(createTABLE)
+        con.execute("DROP TABLE IF EXISTS USER_LIST")
+        con.execute(createSESSION)
+        con.execute(createLIST)
 
 
 def stop_session():
     with sqlite3.connect(SESSION_DB) as con:
         con.execute("DROP TABLE IF EXISTS USER_SESSION")
+        con.execute("DROP TABLE IF EXISTS USER_LIST")
 
 if __name__ == '__main__':
     main()

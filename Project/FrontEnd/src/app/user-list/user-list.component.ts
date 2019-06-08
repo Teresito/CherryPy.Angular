@@ -21,8 +21,10 @@ export class UserListComponent implements OnInit {
   }
 
   loadUsers(){
+    this.userLoading = true
     this.API.listUserAPI().then((response) => {
       this.usersList = response;
+      this.userLoading = false
     });
   }
 

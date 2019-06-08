@@ -18,7 +18,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private reportTimer: any;
   private usersTimer: any;
-  private checkTimer: any;
 
   constructor(private state: componentState, private API: apiServices, private router: Router ){
 
@@ -42,14 +41,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
             this.state.usersList = this.API.listUserAPI();
           },30000);
 
-          this.checkTimer = setInterval(()=>{
-            console.log('CAllED')
-            this.API.checkClients().then();
-          },60000)
         }
         else{
           clearInterval(this.reportTimer);
-          clearInterval(this.checkTimer);
           clearInterval(this.usersTimer);
         }
       }

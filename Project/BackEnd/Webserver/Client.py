@@ -4,13 +4,13 @@ import clientAPI
 import message_handler
 import session_handler
 import helper
+import thread_tasks
 import json
 import threading
 import cherrypy
 
 LOCATION_ADRESS = "http://302cherrypy.mynetgear.com/"
 WORLD_CONNECTION = '2'
-SESSION_DB = 'session.db'
 
 @cherrypy.config(**{'tools.cors.on': True})
 class Interface(object):
@@ -25,7 +25,10 @@ class Interface(object):
         response_JSON = json.dumps(response)
         return response_JSON
     # typeCheck 0 for just login/unlock_data/add_pubkey/check_privatedata 1 for everything else
-    def isLoggedIn(self,user,typeCheck): 
+    def isLoggedIn(self,user,typeCheck):
+        if(session_handler.hasData()==True):# NO DATA
+            return False
+
         if(typeCheck == 1):
             if(session_handler.userCheck(user)):
                 APIKey = session_handler.userAPIKey(user)
@@ -46,17 +49,19 @@ class Interface(object):
     def user_list(self):
         body = cherrypy.request.body.read()
         body_json = json.loads(body.decode('utf-8'))
-
-        if (self.isLoggedIn(self, body_json['username'], 1) == False):
+        username = body_json['username']
+        if (self.isLoggedIn(username, 1) == False):
             return '2'
 
-        centralResponse = centralAPI.list_users(self.apikey, self.username)
+        APIKey = session_handler.userAPIKey(username)
+
+        centralResponse = centralAPI.list_users(APIKey, username)
         if (centralResponse['response'] == 'ok'):
             newList = []
             userList = centralResponse['users']
             self.checkList = centralResponse['users']
             for user in userList:
-                if (user['username'] != self.username):
+                if (user['username'] != username):
                     newList.append(user['username'])
 
             jsonToSend = {}
@@ -142,8 +147,10 @@ class Interface(object):
             if (centralResponse['response'] == "error"):
                 return '0'
         # delete session
-        centralResponse = centralAPI.report(self.apikey, self.username, "LOCATION N/A", "2", self.publicKey, "offline")
-
+        APIkey = session_handler.userAPIKey(username)
+        public_key = session_handler.userKeys(username)[0][1]
+        centralResponse = centralAPI.report(APIkey, username, LOCATION_ADRESS, WORLD_CONNECTION, public_key, "offline")
+        session_handler.deleteUser(username)
         return '1'
 
     @cherrypy.expose
@@ -167,15 +174,25 @@ class Interface(object):
         if (self.isLoggedIn(username, 1) == False):
             return '2'
 
-        body = cherrypy.request.body.read()
-        body_json = json.loads(body.decode('utf-8'))
+        APIkey = session_handler.userAPIKey(username)
+        private_key = session_handler.userKeys(username)[0][0]
+
         message = body_json['message']
         epoch = time.time()
         epoch_str = str(epoch)
+
+        server_record = centralAPI.get_loginserver_record(
+            APIkey, username)['loginserver_record']
+
         message_handler.updatePublicMessages(username, message, epoch)
-        
-        APIkey = session_handler.userAPIKey(username)
-        private_key = session_handler.userKeys(username)[0][0]
+
+        message_everyone = threading.Thread(target=thread_tasks.broadcast, args=(
+            server_record, message, private_key,LOCATION_ADRESS))
+        try:
+            message_everyone.start()
+        except Exception as error:
+            pass
+
 
         centralResponse = centralAPI.rx_broadcast(APIkey,username, message, epoch_str, private_key)
         return '1'
@@ -186,45 +203,22 @@ class Interface(object):
         body = cherrypy.request.body.read()
         body_json = json.loads(body.decode('utf-8'))
         username = body_json['username']
+
         if (self.isLoggedIn(username, 0) == False):
             return '2'
 
-        self.newData = True
-        body = cherrypy.request.body.read()
-        body_json = json.loads(body.decode('utf-8'))
         APIkey = session_handler.userAPIKey(username)
-        private_key = session_handler.userKeys(username)[0][0]
-        centralResponse = centralAPI.add_pubkey(APIkey,private_key)
+        centralResponse = centralAPI.add_pubkey(APIkey, username)
         if (centralResponse == "error"):
             return '0'
         else:
-            self.EDKey = body_json['encryptionKey']
-            self.privateKey = centralResponse['private_key']
-            self.publicKey = centralResponse['public_key']
+            EDKey = body_json['encryptionKey']
+            privateKey = centralResponse['private_key']
+            publicKey = centralResponse['public_key']
+            
+            session_handler.updateKeys(username, privateKey, publicKey)
+            session_handler.updateEDKey(username, EDKey)
             return '1'
-
-    @cherrypy.expose
-    def updateStatus(self):
-        FUCK = 'SAKE'
-
-    @cherrypy.expose
-    def intervalCheck(self):
-        # Update list -> via my cred
-        # ping
-        if(self.checkList == None):
-            centralResponse = centralAPI.list_users(self.apikey, self.username)
-            if (centralResponse['response'] == 'ok'):
-                newList = []
-                userList = centralResponse['users']
-                self.checkList = centralResponse['users']
-
-        pingThread = threading.Thread(target=helper.pingThread, args=(self.checkList, LOCATION_ADRESS, WORLD_CONNECTION))
-        try:
-            pingThread.start()
-        except Exception as error:
-            pass
-
-        return '1';
 
     @cherrypy.expose
     def report_user(self):
@@ -232,14 +226,10 @@ class Interface(object):
         body_json = json.loads(body.decode('utf-8'))
         username = body_json['username']
         userStatus = body_json['userStatus']
-        
+
         if (self.isLoggedIn(username, 1) == False):
             return '2'
         
-        print("===================")
-        print(session_handler.userKeys(username)[0][1])
-        print("===================")
-
         APIkey = session_handler.userAPIKey(username)
         public_key = session_handler.userKeys(username)[0][1]
         centralResponse = centralAPI.report(APIkey, username, LOCATION_ADRESS, WORLD_CONNECTION, public_key, userStatus)

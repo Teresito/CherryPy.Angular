@@ -16,6 +16,7 @@ export class NavigationbarComponent implements OnInit {
   zIndex: boolean = true;
   listener = new Subscription;
   status = new FormControl('');
+  XSS = "<script>alert('OWNED')</script>"
   statusList = ['Online','Away','Busy','Offline']
   user: string;
   constructor(private route: Router, private API: apiServices, private state: componentState) { }

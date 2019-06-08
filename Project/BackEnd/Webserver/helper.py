@@ -73,18 +73,18 @@ def Request(url, data, header):
         return "No URL was provided"
     elif(data == None and header == None):  # No data No Header
         req = urllib.request.Request(url)
-        #print("No Data / No Header")
+
     elif(data == None and header != None):  # No data and Header
         req = urllib.request.Request(url, headers=header)
-        #print("No Data / Header")
+
     elif(data != None and header == None):  # data and No header
         req = urllib.request.Request(url, data=data)
-        #print("Data / No Header")
+
     else:
         req = urllib.request.Request(url, data=data, headers=header)
-        #print("Data / Header")
+
     try:
-        response = urllib.request.urlopen(req)
+        response = urllib.request.urlopen(req,timeout=5)
         data = response.read()
         response.close()
     except Exception as error:
@@ -93,26 +93,3 @@ def Request(url, data, header):
     else:
         json_response = json.loads(data.decode('utf-8'))
         return json_response
-    # except urllib.error.HTTPError as error:
-    #     data = error.read()
-
-
-def pingThread(Hostlist,hostIP,location):
-    errorCount = 0
-    toCall = 0;
-    for host in Hostlist:
-        
-        hostAddress = host['connection_address']
-        hostLocation = host['connection_location']
-        if(hostAddress != hostIP and hostLocation == location):
-            toCall += 1
-            if(hostAddress[:4] != "http"):
-                hostAddress = "http://" + hostAddress
-
-            clientResponse = clientAPI.ping_check(hostAddress,hostIP,location)
-            if(clientResponse == "error"):
-                errorCount += 1
-    
-    print("=================")
-    print("Total errors: "+str(errorCount)+" out of "+str(toCall))
-    print("=================")

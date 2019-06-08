@@ -53,8 +53,6 @@ class Interface(object):
 
     @cherrypy.expose
     def ping_check(self):
-        ##### FURTHER FILTER FOR ONLINE USERS BY RECIEVED PAYLOAD
-        ###### MAKE IT DUAL (MAKE FRONT END SEND USERNAME)###########
         rawbody = cherrypy.request.body.read()
         try:
             body = json.loads(rawbody)
@@ -75,7 +73,6 @@ class Interface(object):
                 'response': 'error',
                 'message': 'invalid body, missing required parameters'
             }
-        #return bytes(json.dumps(payload), 'utf-8')
         return json.dumps(payload)
 
     @cherrypy.expose

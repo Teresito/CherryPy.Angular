@@ -10,9 +10,15 @@ def addUser(user, apikey):
     epoch = time.time()
     with sqlite3.connect(SESSION_DB) as db:
         db.execute("DELETE FROM USER_SESSION WHERE USER=?", [user])
-        db.execute(
-            "INSERT INTO USER_SESSION (USER,APIKEY,TIME,STATUS) VALUES (?,?,?,?)", (user, apikey, epoch,"online"))
+        db.execute("INSERT INTO USER_SESSION (USER,APIKEY,TIME,STATUS) VALUES (?,?,?,?)", (user, apikey, epoch,"online"))
 
+def hasData():
+    with sqlite3.connect(SESSION_DB) as db:
+        mouse = db.cursor()
+        mouse.execute("SELECT 1 FROM USER_SESSION ")
+
+    fetched = mouse.fetchall()
+    return(len(fetched) == 0)
 
 def deleteUser(user):
     with sqlite3.connect(SESSION_DB) as db:
@@ -78,4 +84,16 @@ def updateReport(user):
     with sqlite3.connect(SESSION_DB) as db:
         db.execute("UPDATE USER_SESSION SET TIME = ? WHERE USER=? ",(epoch, user))
 
+def updateList(user,address,location,public_key,time,status):
+    with sqlite3.connect(SESSION_DB) as db:
+        db.execute("DELETE FROM USER_LIST WHERE USER=?", [user])
+        db.execute("INSERT INTO USER_LIST (USER,ADDRESS,LOCATION,PUBLIC_KEY,TIME,STATUS) VALUES (?,?,?,?,?,?)",
+                   (user, address, location, public_key, time, status))
 
+def fetchList():
+    with sqlite3.connect(SESSION_DB) as db:
+        mouse=db.cursor()
+        mouse.execute("SELECT * FROM USER_LIST")
+    
+    fetched=mouse.fetchall()
+    return fetched

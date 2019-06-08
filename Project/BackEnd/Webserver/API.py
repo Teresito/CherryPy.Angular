@@ -27,7 +27,7 @@ class Interface(object):
             if body['loginserver_record'] and body['message'] and body['sender_created_at'] and body['signature']:
                 record_inparts = helper.splitServerRecord(body['loginserver_record'])
                 if(len(record_inparts) == 4):
-                    if(record_inparts[3] == body['signature'] and record_inparts[0]):
+                    if(record_inparts[3] == body['signature'] and len(record_inparts[0]) == 7):
                         message_handler.updatePublicMessages(
                             record_inparts[0], body['message'], body['sender_created_at'])
                         payload = {
@@ -36,7 +36,7 @@ class Interface(object):
                     else:
                         payload = {
                             'response': 'error',
-                            'message': 'invalid body, signature does not match'
+                            'message': 'invalid body, signature/user does not match'
                         }
                 else:
                     payload = {

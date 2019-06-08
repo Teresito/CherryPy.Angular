@@ -10,7 +10,7 @@ export class apiServices {
     constructor(private httpClient: HttpClient, private state: componentState) { }
 
     public async listUserAPI(): Promise<any> {
-        let response = await this.httpClient.post(`${webServer}/onlineUsers`, {'username':sessionStorage.getItem('username')}, { responseType: 'json' }).toPromise();
+        let response = await this.httpClient.post(`${webServer}/user_list`, {'username':sessionStorage.getItem('username')}, { responseType: 'json' }).toPromise();
         this.checkResponse(response);
         return response['userList'];
     }
@@ -50,7 +50,7 @@ export class apiServices {
     }
     // FOR NOW JUST ONE
     public async reportUser(): Promise<any> {
-        let response = await this.httpClient.post(`${webServer}/report_user`, { 'username': sessionStorage.getItem('username') }, { responseType: 'json' }).toPromise();
+        let response = await this.httpClient.post(`${webServer}/report_user`, { 'username': sessionStorage.getItem('username'), 'userStatus': sessionStorage.getItem('status') }, { responseType: 'json' }).toPromise();
         this.checkResponse(response);
         return response;
     }
@@ -62,7 +62,7 @@ export class apiServices {
     }
 
     public async get_broadcastMessages(): Promise<any> {
-        let response = await this.httpClient.get(`${webServer}/get_publicMessages`, { responseType: 'json' }).toPromise()
+        let response = await this.httpClient.post(`${webServer}/get_publicMessages`, { 'username': sessionStorage.getItem('username') },{ responseType: 'json' }).toPromise()
         this.checkResponse(response);
         return response['public_messages'];
     }

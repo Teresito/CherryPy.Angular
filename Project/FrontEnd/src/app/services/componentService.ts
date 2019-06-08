@@ -12,6 +12,7 @@ export class componentState {
     constructor(private route: Router){}
 
     setClient(username: string, bool: boolean){
+        sessionStorage.setItem('status', 'Online');
         sessionStorage.setItem('username', username);
         sessionStorage.setItem('authenticated', bool.toString());
         this.route.navigate(['/broadcast'])
@@ -19,6 +20,7 @@ export class componentState {
     }
 
     clearClient(){
+        sessionStorage.removeItem('status');
         sessionStorage.removeItem('username');
         sessionStorage.removeItem('authenticated');
         sessionStorage.removeItem('inSession');

@@ -1,6 +1,6 @@
-
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" [ngClass]="{'hideNav': zIndex}">
-  <a class="navbar-brand" href="">CherryPy/Angular</a>
+  <a class="navbar-brand" style="font-size:1.25rem;color:white">CherryPy/Angular</a>
+
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
     aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -9,12 +9,20 @@
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <!-- TO DO: BLOCKING AT ACCOUNT SETTINGS -->
-      <li class="nav-item pointer"><a routerLink="/broadcast" routerLinkActive="active" class="nav-link" >Home</a></li>      
+      <li class="nav-item pointer"><a routerLink="/broadcast" routerLinkActive="active" class="nav-link">Home</a></li>
       <li class="nav-item pointer"><a routerLink="/message" routerLinkActive="active" class="nav-link">Messages</a></li>
-      <li class="nav-item pointer"><a routerLink="/group" routerLinkActive="active" class="nav-link" >Groups</a></li> 
-      <li class="nav-item pointer"><a routerLink="/account" routerLinkActive="active" class="nav-link" >Account Settings</a></li> 
+      <li class="nav-item pointer"><a routerLink="/group" routerLinkActive="active" class="nav-link">Groups</a></li>
+      <li class="nav-item pointer"><a routerLink="/account" routerLinkActive="active" class="nav-link">Account
+          Settings</a></li>
     </ul>
-
+    <a class="navbar-brand" style="font-size:1.25rem;color:white">{{user | uppercase}}</a>
+    
+      <select (click)="changedStatus()"[formControl]="status" class="form-control form-control-md" style="width:7%">
+        <option [value]="selected" *ngFor="let selected of statusList">{{selected}}</option>
+      </select>
+    
+    &nbsp;
+    &nbsp;
     <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success mr-2 my-2 my-sm-0" type="button">Search</button>

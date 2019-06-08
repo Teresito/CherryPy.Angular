@@ -82,6 +82,7 @@ export class PrivatedataComponent implements OnInit {
     if(match == uniqueKey){
       this.API.newPrivateData(uniqueKey).then((response) => {
         if (response == '1') {
+          sessionStorage.setItem('status', 'online');
           sessionStorage.setItem('inSession', true.toString())
           this.state.session.next();
         }
@@ -105,7 +106,8 @@ export class PrivatedataComponent implements OnInit {
     let uniqueKey = this.eKeyForm.value.Dkey;
     this.API.unlockData(uniqueKey).then((response) => {
       if (response == '1') {
-        sessionStorage.setItem('inSession', true.toString())
+        sessionStorage.setItem('status','online');
+        sessionStorage.setItem('inSession', true.toString());
         this.state.session.next();
       }
       else if (response == 0) {

@@ -45,8 +45,7 @@ def decryptData(userData, decryptKey):
 
     box = nacl.secret.SecretBox(key, encoder=nacl.encoding.HexEncoder)
     try:
-        message = box.decrypt(base64.b64decode(userData),
-                              encoder=nacl.encoding.HexEncoder)
+        message = box.decrypt(base64.b64decode(userData),encoder=nacl.encoding.HexEncoder)
         message = json.loads(message.decode('utf-8'))
     except nacl.exceptions.CryptoError as error:
         message = "error"

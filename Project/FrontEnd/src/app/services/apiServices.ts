@@ -57,7 +57,7 @@ export class apiServices {
     }
 
     public async privatemessage(message: String, target_username: String, target_key: String): Promise<any> {
-        let response = await this.httpClient.post(`${webServer}/privatemessage`, { 'message': message, 'target_user':target_username,'target_key':target_key,'username': sessionStorage.getItem('username') }, { responseType: 'json' }).toPromise();
+        let response = await this.httpClient.post(`${webServer}/privateMessage`, { 'message': message, 'target_user':target_username,'target_key':target_key,'username': sessionStorage.getItem('username') }, { responseType: 'json' }).toPromise();
         this.checkResponse(response);
         return response;
     }

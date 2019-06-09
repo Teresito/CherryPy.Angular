@@ -62,7 +62,7 @@ def rx_broadcast(host,message,serverRecord,privKey):
 
 
 def rx_privatemessage(host, server_record, encrypted_message, target_key, target_user, private_key):
-    url = host + "/rx_privatemessage"
+    url = host + "/api/rx_privatemessage"
     timeNOW = str(time.time())
 
     signing_key = nacl.signing.SigningKey(private_key, encoder=nacl.encoding.HexEncoder)

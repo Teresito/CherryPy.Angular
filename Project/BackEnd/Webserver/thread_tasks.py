@@ -47,7 +47,7 @@ def private_message(record, Emessage, hostIP, target_user, target_key, private_k
             else:
                 success += 1
     print("=================")
-    print("Total PMESSAGES success: "+str(errorCount)+" out of "+str(toCall))
+    print("Total PMESSAGES success: "+str(success)+" out of "+str(toCall))
     print("=================")
 
 def broadcast(record,message,private_key,hostIP):
@@ -92,7 +92,7 @@ def broadcast(record,message,private_key,hostIP):
             else:
                 success += 1
     print("=================")
-    print("Total broadcast success: "+str(errorCount)+" out of "+str(toCall))
+    print("Total broadcast success: "+str(success)+" out of "+str(toCall))
     print("=================")
 
 def updateDBList():

@@ -152,13 +152,14 @@ class Interface(object):
         username = body_json['username']
         target_user = body_json['target_user']
         target_key = body_json['target_key']
+        message = body_json['message']
+
         if (self.isLoggedIn(username, 0) == False):
             return '2'
 
         APIkey = session_handler.userAPIKey(username)
         private_key = session_handler.userKeys(username)[0][0]
 
-        message = body_json['message']
         # ENCRYPT
         encrypted_message = helper.encryptMessage(message,target_key)
         epoch = time.time()
@@ -172,10 +173,10 @@ class Interface(object):
         signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
         signature_hex_str = signed.signature.decode('utf-8')
 
-        message_everyone = threading.Thread(target=thread_tasks.private_message, args=(
-            server_record, encrypted_message, LOCATION_ADRESS, target_user, target_key))
+        message_one = threading.Thread(target=thread_tasks.private_message, args=(
+            server_record, encrypted_message, LOCATION_ADRESS, target_user, target_key, private_key))
         try:
-            message_everyone.start()
+            message_one.start()
         except Exception as error:
             pass
 

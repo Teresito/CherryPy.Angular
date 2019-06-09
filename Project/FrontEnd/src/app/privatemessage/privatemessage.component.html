@@ -23,56 +23,67 @@
     <div class="col-9" style="height:100%;">
       <ng-template [ngIf]="!clickedUser">
         <div class="text-center lead mx-auto">
-          <h4 (click)="loadMessages()">Click a user to begin a conversation</h4>
+
+          <h4 style="padding-top:2%"(click)="loadMessages()">Conversation history</h4>
+          <div *ngFor="let message of messageList; let i = index">
+            <div class="card mx-auto" style="width:70%">
+              <div class="card-body">
+                <b class="float-left">{{message[2]|uppercase}} </b>
+                <p class="float-right">{{message[3] | date :'h:mm a dd/MMM/yy' | uppercase}}</p><br>
+                <p class="float-left">{{message[1]}}</p><br><br>
+
+                  <!-- <button class="btn btn-outline-info btn-sm float-left" (click)="showMarkDown(tuple[1])">Markdown</button>
+                  <button class="btn btn-outline-danger btn-sm float-left mx-2" (click)="favouriteMessage(i)"
+                    [disabled]="favLoading">Favourite ❤️<span *ngIf="favLoading" class="spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true"></span></button>
+                  <button class="btn btn-dark btn-sm float-right" (click)="blockMessage(i)" [disabled]="blockLoading">Block ⛔<span
+                      *ngIf="blockLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button> -->
+
+              </div>
+              
+            </div>
+            <br>
+          </div>
         </div>
       </ng-template>
 
       <ng-template [ngIf]="clickedUser">
-        <div class="text-center">
-
-          <h1 (click)="loadMessages()">JALL229</h1>
-          <hr style="width:50%">
-          <p *ngIf="!convoHistory">You have no private messages with JALL229</p>
-
-
-        </div>
-        <!-- TO DO: FOR LOOP FOR MESSAGES -->
-        <ng-template [ngIf]="convoHistory">
-          <span *ngIf="listLoading" class="mx-auto spinner-border spinner-border-sm" style="width: 3rem; height: 3rem;"
-            role="status" aria-hidden="true"></span>
-
-          <div style="height:670px;overflow:scroll; overflow-x:hidden;">
-
-            <div class="card mx-auto" style="width:80%;">
-              <div class="lead card-body">
-                <a class="float-left">JALL299 </a><br>
-                <p class="text-left">Lorem ipsum dolor sit amet
-                  consectetur adipisicing elit. Quas minus explicabo ipsam molestias. Suscipit eum nisi sequi earum
-                  magni
-                  nesciunt!</p>
-                  <a class="float-right">1:33 AM 30/05/2019</a><br>
-              </div>
+        <div style="padding-top:20%">
+          <div class="card mx-auto" style="width:70%;">
+            <div class="card-body text-center">
+              <b>
+                <h3>
+                  Send a message to {{selectedUser.username | uppercase}}
+                </h3>
+              </b>
             </div>
-            <br>
-
-
-          </div>
-
-
-
-
-        </ng-template>
-      </ng-template>
-      <div class="mx-auto" style="width:60%;padding-left:3%" *ngIf="clickedUser">
-        <div class="input-group mb-3" style="padding-top:4%;bottom:0;">
-          <input type="text" class="form-control" placeholder="Send a private message to JALL229"
-            aria-label="Recipient's username" aria-describedby="basic-addon2">
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary mx-auto"
-              type="button">&nbsp;&nbsp;&nbsp;Send&nbsp;&nbsp;&nbsp;</button>
+        <div class="mx-auto" style="width:50%;">
+          <div class="input-group mb-3">
+            <textarea class="form-control" (keydown.enter)="onKeydown($event)" placeholder="Send a broadcast message"
+              [formControl]="message" rows="2"></textarea>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary"
+                [ngClass]="{'btn-outline-success':message.valid, 'btn-outline-secondary': message.invalid || loading}"
+                (click)="sendMessage()" [disabled]="message.value == null ||message.value == '' || loading" type="button">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Send&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+          </div>
+        </div>
+
+      </ng-template>
+
     </div>
   </div>
 </div>
+
+<button class="btn btn-dark text-center" style="bottom:2%;right:1%;position:fixed;" (click)="clickedUser=false">
+  <h4>History</h4>
+</button>
+<button class="btn btn-dark text-center" [disabled]="messageLoading" style="bottom:2%;right:8%;position:fixed;"
+  (click)="loadMessages()">
+  <h4>&nbsp;⟳&nbsp;</h4>
+</button>

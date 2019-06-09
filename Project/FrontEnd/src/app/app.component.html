@@ -1,4 +1,4 @@
 
-<app-navigationbar *ngIf="showNav"></app-navigationbar>
-<!-- <app-navigationbar *ngIf="showNav" (window:beforeunload)="logout()"></app-navigationbar> -->
+<!-- <app-navigationbar *ngIf="showNav"></app-navigationbar> -->
+<app-navigationbar *ngIf="showNav" (window:beforeunload)="logout()"></app-navigationbar>
 <router-outlet></router-outlet>

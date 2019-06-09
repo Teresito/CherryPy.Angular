@@ -35,6 +35,9 @@ def main():
             'tools.staticdir.on': True,
             'tools.staticdir.dir': './Bundled',
         },
+        '/favicon.ico': {
+            'tools.staticfile.on': False,
+        }
     }
 
 

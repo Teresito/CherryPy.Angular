@@ -26,11 +26,12 @@ export class BroadcastComponent implements OnInit {
   searchList = [];
   searchZero = false;
   searched: string;
-  
+
   showMarked = false;
   modalMarked = 'none';
   public markedDownMessage: string;
-  
+  broadTimer: any;
+
 
   constructor(private API: apiServices, private state: componentState, private markService: MarkdownService) {
 
@@ -43,28 +44,34 @@ export class BroadcastComponent implements OnInit {
         if (Boolean(sessionStorage.getItem('inSession'))) {
           this.toggleModal = 'none';
         }
-      });
-    setInterval(()=>{
-      this.fetchPublicMessages();
-    },30000)
 
-    this.state.searchTrigger.subscribe((search)=>{
-      if(search != '' || search != null){
+        if (Boolean(sessionStorage.getItem('inSession')))
+          this.broadTimer = setInterval(() => {
+            this.fetchPublicMessages();
+          }, 30000)
+        else {
+          clearInterval(this.broadTimer);
+        }
+      });
+
+
+    this.state.searchTrigger.subscribe((search) => {
+      if (search != '' || search != null) {
         this.searchList = [];
         this.isSearching = true;
         this.searchZero = false;
         for (let index = 0; index < this.messageList.length; index++) {
           // this.searchList = this.messageList[index][0];
-          if (this.messageList[index][0].substring(0, search.length) == search){
+          if (this.messageList[index][0].substring(0, search.length) == search) {
             this.searchList.push(this.messageList[index]);
           }
         }
-        if(this.searchList.length == 0){
+        if (this.searchList.length == 0) {
           this.searchZero = true;
           this.searched = search;
         }
       }
-      else{
+      else {
         this.searchList = [];
         this.searchZero = false;
         this.isSearching = false;
@@ -74,26 +81,26 @@ export class BroadcastComponent implements OnInit {
 
   }
 
-  showMarkDown(message:string){
+  showMarkDown(message: string) {
     this.showMarked = true;
     this.modalMarked = 'block';
-    
+
     // this.markedDownMessage = this.markService.compile(message);
     this.markedDownMessage = message
     // console.log(message)
     // console.log(this.markedDownMessage)
-    
+
 
   }
 
-  closeMarkDown(){
+  closeMarkDown() {
     this.showMarked = false;
     this.modalMarked = 'none';
     this.markedDownMessage = null;
   }
 
   onKeydown(event) {
-    if (!this.loading){
+    if (!this.loading) {
       this.sendMessage();
     }
   }
@@ -113,7 +120,7 @@ export class BroadcastComponent implements OnInit {
       (response) => {
         console.log(response);
         for (let index = 0; index < response.length; index++) {
-          response[index][2] = response[index][2]*1000;          
+          response[index][2] = response[index][2] * 1000;
         }
         this.messageList = response;
         this.messageLoading = false;

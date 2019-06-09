@@ -14,6 +14,9 @@ class Interface(object):
 
     @cherrypy.expose
     def index(self):
+        print("====================")
+        print("BAD ACCESS POINT")
+        print("====================")
         response = {'response': 'error', 'message': 'Invalid access point'}
         response_JSON = json.dumps(response)
         return response_JSON
@@ -34,6 +37,9 @@ class Interface(object):
                 payload = {
                     'response': 'ok'
                 }
+                print("====================")
+                print("PUBLIC MESSAGE SUCCESS")
+                print("====================")
             else:
                 payload = {
                     'response': 'error',
@@ -67,6 +73,14 @@ class Interface(object):
                     'response': 'ok',
                     'my_time': str(time.time()),
                 }
+                print("====================")
+                print("PING_CHECK SUCCESS")
+                print("====================")
+            else:
+                payload = {
+                    'response':'error',
+                    'message':'invalid body, missing required parameters'
+                }
         except Exception as error:
             print("====================")
             print(error)
@@ -97,6 +111,9 @@ class Interface(object):
                 payload = {
                     'response': 'ok',
                 }
+                print("====================")
+                print("PRIVATE MESSAGE SUCCESS")
+                print("====================")
         except Exception as error:
             payload = {
                 'response': 'error',

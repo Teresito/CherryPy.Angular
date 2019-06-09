@@ -3,8 +3,12 @@
     <div class="col">
       <div class="starter-template text-center">
         <!-- <app-user-list></app-user-list> -->
-
-        <h1 (click)="fetchPublicMessages()">Public Broadcasts</h1>
+        <h1 (click)="fetchPublicMessages()" style="padding-right:1%;display:inline">Public Broadcasts</h1>
+        <span *ngIf="messageLoading"class="spinner-border" style="animation-play-state:initial;" role="status" >
+          <span class="sr-only">Loading...</span>
+          <span class="glyphicon glyphicon-repeat"></span>
+        </span>
+        
         <hr style="width:50%">
         <div class="mx-auto" style="width:50%;">
           <div class="input-group mb-3">
@@ -25,17 +29,16 @@
           </div>
         </div>
         <!-- TO DO: FOR LOOP FOR MESSAGES -->
-        <span *ngIf="messageLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         <ng-template [ngIf]="!messageLoading">
           <ng-template [ngIf]="!isSearching">
-            <div *ngFor="let tuple of messageList ">
-              <div class="card mx-auto" style="width:50%;">
-                <div class="lead card-body">
+            <div *ngFor="let tuple of messageList">
+              <div class="card mx-auto" style="width:50%;height:200px;" >
+                <div class="lead card-body"[ngClass]="{'overflow':tuple[1].length > 200}">
                   <a class="float-left">{{ tuple[0]  | uppercase }}</a>
                   <a class="float-right">{{ tuple[2]  | date :'h:mm a dd/MMM/yy' | uppercase }}</a><br>
                   <p class="text-left"> {{ tuple[1] }}</p>
-                  <button class="btn btn-secondary btn-sm float-left" (click)="showMarkDown(tuple[1])">Markdown</button>
                 </div>
+                <button style="bottom:5%;left:1%;position:absolute;"class="btn btn-secondary btn-sm float-left float-bottom" (click)="showMarkDown(tuple[1])">Markdown</button>
               </div>
               <br>
             </div>
@@ -44,16 +47,16 @@
             <div class="lead text-center" *ngIf="searchZero">
               <p> Search found zero match for {{searched }}</p>
             </div>
-            <div *ngFor="let tuple of searchList ">
-              <div class="card mx-auto" style="width:50%;">
-                <div class="lead card-body">
+            <div *ngFor="let tuple of searchList">
+              <div class="card mx-auto" style="width:50%;height:200px;">
+                <div class="lead card-body" [ngClass]="{'overflow':tuple[1].length > 200}">
                   <a class="float-left">{{ tuple[0]  | uppercase }}</a>
                   <a class="float-right">{{ tuple[2]  | date :'h:mm a dd/MMM/yy' | uppercase }}</a><br>
                   <p class="text-left"> {{ tuple[1] }}</p>
-                  <button class="btn btn-secondary btn-sm float-left" (click)="showMarkDown(tuple[1])">Markdown</button>
                 </div>
+                <button style="bottom:5%;left:1%;position:absolute;" class="btn btn-secondary btn-sm float-left float-bottom"
+                  (click)="showMarkDown(tuple[1])">Markdown</button>
               </div>
-
               <br>
             </div>
           </ng-template>
@@ -71,9 +74,10 @@
         <div class="col" style="padding:0 0 0 0;">
           <div class="card">
             <div class="card-body">
-              <markdown ngPreserveWhitespaces>
+              <markdown [data]="markedDownMessage"></markdown>
+              <!-- <markdown ngPreserveWhitespaces>
                 {{markedDownMessage}}
-              </markdown>
+              </markdown> -->
             </div>
           </div>
         </div>

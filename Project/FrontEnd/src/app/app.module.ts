@@ -7,7 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { PrivatemessageComponent } from './privatemessage/privatemessage.component';
 import { NavigationbarComponent } from './navigationbar/navigationbar.component';
 import { BroadcastComponent } from './broadcast/broadcast.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AuthGuard } from './services/auth-guard.service';
 import { apiServices } from './services/apiServices';
@@ -17,7 +17,7 @@ import { AccountComponent } from './account/account.component';
 import { PrivatedataComponent } from './privatedata/privatedata.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { UsersComponent } from './users/users.component';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 @NgModule({
   declarations: [
@@ -37,7 +37,21 @@ import { MarkdownModule } from 'ngx-markdown';
   imports: [
     BrowserModule,
     FormsModule,
-    MarkdownModule.forRoot(),
+    MarkdownModule.forRoot({
+      loader: HttpClient, // optional, only if you use [src] attribute
+      markedOptions: {
+        provide: MarkedOptions,
+        useValue: {
+          gfm: true,
+          tables: true,
+          breaks: false,
+          pedantic: false,
+          sanitize: true,
+          smartLists: true,
+          smartypants: false,
+        },
+      },
+    }),
     ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule

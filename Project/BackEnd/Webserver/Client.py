@@ -244,8 +244,13 @@ class Interface(object):
         if (self.isLoggedIn(username, 1) == False):
             return '2'
         
+        if(userStatus == '' or userStatus == None):
+            userStatus = 'online'
+        
+
         APIkey = session_handler.userAPIKey(username)
         public_key = session_handler.userKeys(username)[0][1]
+        session_handler.updateStatus(username,userStatus)
         centralResponse = centralAPI.report(APIkey, username, LOCATION_ADRESS, WORLD_CONNECTION, public_key, userStatus)
 
         if (centralResponse != "error"):

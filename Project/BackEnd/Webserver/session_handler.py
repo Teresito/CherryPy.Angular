@@ -43,6 +43,8 @@ def userPrivateData(user):
     fetched = mouse.fetchall()
     return(fetched[0][0])
 
+
+
 def userCheck(user):
     check = False
     with sqlite3.connect(SESSION_DB) as db:
@@ -78,6 +80,10 @@ def updateEDKey(user, EDKey):
     with sqlite3.connect(SESSION_DB) as db:
         db.execute("UPDATE USER_SESSION SET EDKEY = ? WHERE USER = ? ", (EDKey, user))
 
+
+def updateStatus(user,status):
+	with sqlite3.connect(SESSION_DB) as db:
+		db.execute("UPDATE USER_SESSION SET STATUS = ? WHERE USER = ? ", (status,user))
 
 def updateReport(user):
     epoch = time.time()

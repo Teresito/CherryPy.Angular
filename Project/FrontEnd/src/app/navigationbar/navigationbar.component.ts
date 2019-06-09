@@ -37,7 +37,7 @@ export class NavigationbarComponent implements OnInit {
   }
 
   searchUser(){
-    this.state.searchTrigger.next(this.search.value);
+    this.state.searchTrigger.next(this.search.value.toLowerCase());
   }
 
   changedStatus() {

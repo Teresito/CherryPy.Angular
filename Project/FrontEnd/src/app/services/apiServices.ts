@@ -71,7 +71,7 @@ export class apiServices {
     public async get_privateMessages(): Promise<any> {
         let response = await this.httpClient.post(`${webServer}/get_privateMessages`, { 'username': sessionStorage.getItem('username') },{ responseType: 'json' }).toPromise()
         this.checkResponse(response);
-        return response['public_messages'];
+        return response['private_messages'];
     }
 
     public async checkClients(): Promise<any> {

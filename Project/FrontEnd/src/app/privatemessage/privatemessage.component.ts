@@ -24,6 +24,7 @@ export class PrivatemessageComponent implements OnInit {
 
   loadMessages() {
     this.API.get_privateMessages().then((response) => {      
+      console.log(response)
       this.messageList = response
     });
   }

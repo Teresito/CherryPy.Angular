@@ -43,15 +43,16 @@ def fetchPrivateMessages():
     jsonbody['private_messages'] = messageList
     return(jsonbody)
 
-# if __name__ == "__main__":
-#     messageList = fetchPrivateMessages()
+if __name__ == "__main__":
+    messageList = fetchPrivateMessages()
 
-#     wat = []
-#     for message in messageList['private_messages']:
-#         if(message[0] == 'tmag741'):
-#             # print(message[1]) # ENCRYPTED
-#             # print(message[3]) # TIME
-#             # print(message[2]) # FROM
-#             wat.append(message)
+    wat = []
+    for message in messageList['private_messages']:
+        if(message[0] == 'tmag741'):
+            print(type(message[0]))
+            # print(message[1]) # ENCRYPTED
+            # print(message[3]) # TIME
+            # print(message[2]) # FROM
+            wat.append(message)
 
 # pprint.pprint(wat[0][0])

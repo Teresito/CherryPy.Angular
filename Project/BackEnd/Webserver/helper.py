@@ -71,17 +71,19 @@ def splitServerRecord(record):
 # Returns the request response to caller
 
 def encryptMessage(message,public_key):
-
+    public_key = bytes(public_key, 'utf-8')
     verifykey = nacl.signing.VerifyKey(public_key, encoder=nacl.encoding.HexEncoder)
     publickey = verifykey.to_curve25519_public_key()
     sealed_box = nacl.public.SealedBox(publickey)
-    encrypted = sealed_box.encrypt(message, encoder=nacl.encoding.HexEncoder)
+    encrypted = sealed_box.encrypt(message.encode('utf-8'), encoder=nacl.encoding.HexEncoder)
     encrypted_message = encrypted.decode('utf-8')
 
     return encrypted_message
 
-def decrypt(enrypted_message,private_key):
-    verifykey = nacl.signing.VerifyKey(private_key, encoder=nacl.encoding.HexEncoder)
+def decryptMessage(enrypted_message,private_key):
+    private_key = bytes(private_key, 'utf-8')
+    verifykey = nacl.signing.SigningKey(
+        private_key, encoder=nacl.encoding.HexEncoder)
     privateKey = verifykey.to_curve25519_private_key()
     sealed_box = nacl.public.SealedBox(privateKey)
     decrypted = sealed_box.decrypt(enrypted_message, encoder=nacl.encoding.HexEncoder)
@@ -121,3 +123,17 @@ def Request(url, data, header):
         # pprint.pprint(json_response)
         # print("===================")
         return json_response
+
+
+if __name__ == "__main__":
+    key = 'fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6'
+    private_key = b'fbb230618365d64547c54a7bf8d22a60abf908958de3f00d28d9ba3301a5abc6'
+    public_key = generatePubKey(key)
+    
+    message = "Hello World"
+
+    encrypted_message = encryptMessage(message, public_key)
+    message_decrypted = decryptMessage(encrypted_message, key)
+    print(encrypted_message)
+    print(message_decrypted)
+    

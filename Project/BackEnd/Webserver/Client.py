@@ -133,12 +133,16 @@ class Interface(object):
         json_body = {}
         message_array = []
         for message in message_list['private_messages']:
+            
             if(message[0] == username):
-                message[1] = helper.decrypt(message[1], private_key)
-                message_array.append(message)
+                decrypted_message = helper.decryptMessage(message[1], private_key)
+                tempTuple = (message[0], decrypted_message,
+                             message[2], message[3], message[4], message[5], message[6])
+
+                message_array.append(tempTuple)
 
         json_body['private_messages'] = message_array
-        return json.dumps(message_list)
+        return json.dumps(json_body)
 
 
     @cherrypy.expose

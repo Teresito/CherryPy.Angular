@@ -23,7 +23,7 @@
     <div class="col-9" style="height:100%;">
       <ng-template [ngIf]="!clickedUser">
         <div class="text-center lead mx-auto">
-          <h4>Click a user to begin a conversation</h4>
+          <h4 (click)="loadMessages()">Click a user to begin a conversation</h4>
         </div>
       </ng-template>
 

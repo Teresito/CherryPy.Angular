@@ -47,11 +47,17 @@ class Interface(object):
                     'response': 'error',
                     'message': 'invalid body,  missing required parameters'
                 }
+                print("====================")
+                print("PUBLIC MESSAGE FAILED")
+                print("====================")
         except Exception as error:
             payload = {
                 'response': 'error',
                 'message': 'invalid body,  missing required parameters'
             }
+            print("====================")
+            print("PUBLIC MESSAGE FAILED")
+            print("====================")
         # return bytes(json.dumps(payload), 'utf-8')
         return json.dumps(payload)
 

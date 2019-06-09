@@ -31,20 +31,24 @@
           <ng-template [ngIf]="!isSearching">
             <div *ngFor="let tuple of messageList; let i = index">
               <div class="card mx-auto" style="width:50%;height:200px;">
-                <div class="lead card-body" [ngClass]="{'overflow':tuple[1].length > 200}">
+                <div class="lead card-body" style="position: relative" [ngClass]="{'overflow':tuple[1].length > 200}">
                   <a class="float-left"><b>{{ tuple[0]  | uppercase }}</b></a>
                   <a class="float-right"><b>{{ tuple[2]  | date :'h:mm a dd/MMM/yy' | uppercase }}</b></a><br>
                   <p class="text-left"> {{ tuple[1] }}</p>
 
+
+                  <button class="btn btn-outline-info btn-sm float-left"
+                    (click)="showMarkDown(tuple[1])">Markdown</button>
+                  <button class="btn btn-outline-danger btn-sm float-left mx-2" (click)="favouriteMessage(i)"
+                    [disabled]="favLoading">Favourite ❤️<span *ngIf="favLoading"
+                      class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>
+                  <button class="btn btn-dark btn-sm float-right" (click)="blockMessage(i)"
+                    [disabled]="blockLoading">Block ⛔<span *ngIf="blockLoading" class="spinner-border spinner-border-sm"
+                      role="status" aria-hidden="true"></span></button>
+
+
                 </div>
-                <button style="bottom:5%;left:1%;position:absolute;" class="btn btn-outline-info btn-sm float-left"
-                  (click)="showMarkDown(tuple[1])">Markdown</button>
-                <button style="bottom:5%;left:11%;position:absolute;" class="btn btn-outline-danger btn-sm float-left"
-                  (click)="favouriteMessage(i)" [disabled]="favLoading">Favourite ❤️<span *ngIf="favLoading"
-                    class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>
-                <button style="bottom:5%;right:1%;position:absolute;" class="btn btn-dark btn-sm float-left"
-                  (click)="blockMessage(i)" [disabled]="blockLoading">Block ⛔<span *ngIf="blockLoading"
-                    class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>
+
               </div>
               <br>
             </div>
@@ -53,21 +57,23 @@
             <div class="lead text-center" *ngIf="searchZero">
               <p> Search found zero match for {{searched }}</p>
             </div>
-            <div *ngFor="let tuple of searchList">
+            <div *ngFor="let tuple of searchList;let i = index">
               <div class="card mx-auto" style="width:50%;height:200px;">
                 <div class="lead card-body" [ngClass]="{'overflow':tuple[1].length > 200}">
                   <a class="float-left"><b>{{ tuple[0]  | uppercase }}</b></a>
                   <a class="float-right"><b> {{ tuple[2]  | date :'h:mm a dd/MMM/yy' | uppercase }} </b></a><br>
                   <p class="text-left"> {{ tuple[1] }}</p>
+                  <button class="btn btn-outline-info btn-sm float-left"
+                    (click)="showMarkDown(tuple[1])">Markdown</button>
+                  <button class="btn btn-outline-danger btn-sm float-left mx-2" (click)="favouriteMessage(i)"
+                    [disabled]="favLoading">Favourite ❤️<span *ngIf="favLoading"
+                      class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>
+                  <button class="btn btn-dark btn-sm float-right" (click)="blockMessage(i)"
+                    [disabled]="blockLoading">Block ⛔<span *ngIf="blockLoading" class="spinner-border spinner-border-sm"
+                      role="status" aria-hidden="true"></span></button>
+
                 </div>
-                <button style="bottom:5%;left:1%;position:absolute;" class="btn btn-outline-info btn-sm float-left"
-                  (click)="showMarkDown(tuple[1])">Markdown</button>
-                <button style="bottom:5%;left:11%;position:absolute;" class="btn btn-outline-danger btn-sm float-left"
-                  (click)="favouriteMessage(i)" [disabled]="favLoading">Favourite ❤️<span *ngIf="favLoading"
-                    class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>
-                <button style="bottom:5%;right:1%;position:absolute;" class="btn btn-dark btn-sm float-left" (click)="blockMessage(i)"
-                  [disabled]="blockLoading">Block ⛔<span *ngIf="blockLoading" class="spinner-border spinner-border-sm" role="status"
-                    aria-hidden="true"></span></button>
+
               </div>
               <br>
             </div>
@@ -82,7 +88,8 @@
 <button class="btn btn-dark text-center" style="bottom:2%;right:1%;position:fixed;" (click)="backToTop()">
   <h3>&nbsp;↑&nbsp;</h3>
 </button>
-<button class="btn btn-dark text-center" [disabled]="messageLoading" style="bottom:2%;right:5%;position:fixed;" (click)="updateList()">
+<button class="btn btn-dark text-center" [disabled]="messageLoading" style="bottom:2%;right:5%;position:fixed;"
+  (click)="updateList()">
   <h3>&nbsp;⟳&nbsp;</h3>
 </button>
 <!-- Mark down modal -->

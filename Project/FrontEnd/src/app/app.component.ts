@@ -33,7 +33,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       () => {
         this.showNav = this.state.getAuth();
       });
-
     if (Boolean(sessionStorage.getItem('inSession'))) {
       this.reportTimer = setInterval(() => {
         this.API.reportUser();
@@ -48,6 +47,23 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       clearInterval(this.reportTimer);
       clearInterval(this.usersTimer);
     }
+    this.state.session.subscribe(()=>{
+      if (Boolean(sessionStorage.getItem('inSession'))) {
+        this.reportTimer = setInterval(() => {
+          this.API.reportUser();
+        }, 10000);
+
+        this.usersTimer = setInterval(() => {
+          this.state.usersList = this.API.listUserAPI();
+        }, 30000);
+
+      }
+      else {
+        clearInterval(this.reportTimer);
+        clearInterval(this.usersTimer);
+      }
+    });
+
   
 
 }

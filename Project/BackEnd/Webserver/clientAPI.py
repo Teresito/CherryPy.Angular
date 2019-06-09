@@ -35,6 +35,8 @@ def checkmessage(host):
     payload_b = bytes(json.dumps(payload), 'utf-8')    
     return(helper.Request(url,payload_b,None))
 
+
+
 def rx_broadcast(host,message,serverRecord,privKey):
     url = host + "/api/rx_broadcast"
 
@@ -59,30 +61,27 @@ def rx_broadcast(host,message,serverRecord,privKey):
     return(helper.Request(url, payload_b, header))
 
 
-def rx_privatemessage(host, serverRecord, message, privkey, targetKey, target):
+def rx_privatemessage(host, server_record, encrypted_message, target_key, target_user, private_key):
     url = host + "/rx_privatemessage"
     timeNOW = str(time.time())
 
-    message = bytes(message, 'utf-8')
+    signing_key = nacl.signing.SigningKey(private_key, encoder=nacl.encoding.HexEncoder)
+    message_bytes = bytes(server_record + target_key + target_user +
+                          encrypted_message + timeNOW, encoding='utf-8')
+    signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
+    signature_hex_str = signed.signature.decode('utf-8')
 
     header = {
         'content-type': 'application/json'
     }
 
-    verifykey = nacl.signing.VerifyKey(targetKey, encoder=nacl.encoding.HexEncoder)
-    publickey = verifykey.to_curve25519_public_key()
-    
-    sealed_box = nacl.public.SealedBox(publickey)
-    
-    encrypted = sealed_box.encrypt(message, encoder=nacl.encoding.HexEncoder)
-    message_hex_str = encrypted.decode('utf-8')
-
     payload = {
-        "loginserver_record": serverRecord,
-        "target_pubkey": targetKey,
-        "target_username": target,
-        "encrypted_message": message_hex_str,
+        "loginserver_record": server_record,
+        "target_pubkey": target_key,
+        "target_username": target_user,
+        "encrypted_message": encrypted_message,
         "sender_created_at": timeNOW,
+        'signature': signature_hex_str
     }
     
     payload_b = bytes(json.dumps(payload), 'utf-8')

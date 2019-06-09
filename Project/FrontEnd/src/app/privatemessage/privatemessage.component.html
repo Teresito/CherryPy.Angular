@@ -1,67 +1,78 @@
 <div class="container-fluid" style="padding-top:4%">
-  <div class="row">
-    <div class="col">
-      <app-user-list></app-user-list>
+  <div class="row h-100">
 
-      <div class="text-center">
-        <h1>JALL229</h1>
-        <hr style="width:50%">
+    <div class="col-3" style="padding-left:5%;padding-top:1%">
 
-        <p *ngIf="!convoHistory">You have no private messages with JALL229</p>
-      </div>
-      <!-- TO DO: FOR LOOP FOR MESSAGES -->
-      <ng-template [ngIf]="convoHistory">
-      <div class="mx-auto" style="width:70%;height:70%;overflow:scroll; overflow-x:hidden;">
-        <div class="card mx-auto" style="width:70%;">
-          <div class="lead card-body">
-            <a class="float-left">TMAG741</a>
-            <a class="float-right">1:33 AM 30/05/2019</a><br>
-            <p class="text-left">Lorem ipsum dolor sit amet
-              consectetur adipisicing elit. Quas minus explicabo ipsam molestias. Suscipit eum nisi sequi earum magni
-              nesciunt!</p>
-          </div>
+      <div class="lead">
+        <div class="text-center">
+          <h3>Online Users</h3>
+          <span *ngIf="listLoading" class="mx-auto spinner-border spinner-border-sm" style="width: 3rem; height: 3rem;"
+            role="status" aria-hidden="true"></span>
         </div>
-        <br>
-
-        <div class="card mx-auto" style="width:70%;">
-          <div class="lead card-body">
-            <a class="float-left">JALL229</a>
-            <a class="float-right">1:33 AM 30/05/2019</a><br>
-            <p class="text-left">Lorem ipsum dolor sit amet
-              consectetur adipisicing elit. Quas minus explicabo ipsam molestias. Suscipit eum nisi sequi earum magni
-              nesciunt!
-            </p>
-          </div>
+        <div class="mx-auto " style="height:700px;overflow:auto; overflow-x:hidden;">
+          <span *ngFor="let user of usersList;let i = index">
+            <p style="cursor: pointer;" class="text-center" (click)="messageUser(i)"><b>( {{user.status}} )
+                {{user.username | uppercase}}</b> ✎</p>
+            <br>
+          </span>
         </div>
-        <br>
 
-        <div class="card mx-auto" style="width:70%;">
-          <div class="lead card-body">
-            <a class="float-left">JALL229</a>
-            <a class="float-right">1:33 AM 30/05/2019</a><br>
-            <p class="text-left">Lorem ipsum dolor sit amet
-              consectetur adipisicing elit. Quas minus explicabo ipsam molestias. Suscipit eum nisi sequi earum magni
-              nesciunt!
-            </p>
-          </div>
-        </div>
-        <br>
-        
       </div>
 
+    </div>
+    <div class="col-9" style="height:100%;">
+      <ng-template [ngIf]="!clickedUser">
+        <div class="text-center lead mx-auto">
+          <h4>Click a user to begin a conversation</h4>
+        </div>
+      </ng-template>
+
+      <ng-template [ngIf]="clickedUser">
+        <div class="text-center">
+
+          <h1 (click)="loadMessages()">JALL229</h1>
+          <hr style="width:50%">
+          <p *ngIf="!convoHistory">You have no private messages with JALL229</p>
 
 
-      <div class="mx-auto" style="width:60%;padding-left:3%">
-        <div class="input-group mb-3" style="padding-top:4%;">
+        </div>
+        <!-- TO DO: FOR LOOP FOR MESSAGES -->
+        <ng-template [ngIf]="convoHistory">
+          <span *ngIf="listLoading" class="mx-auto spinner-border spinner-border-sm" style="width: 3rem; height: 3rem;"
+            role="status" aria-hidden="true"></span>
+
+          <div style="height:670px;overflow:scroll; overflow-x:hidden;">
+
+            <div class="card mx-auto" style="width:80%;">
+              <div class="lead card-body">
+                <a class="float-left">JALL299 </a><br>
+                <p class="text-left">Lorem ipsum dolor sit amet
+                  consectetur adipisicing elit. Quas minus explicabo ipsam molestias. Suscipit eum nisi sequi earum
+                  magni
+                  nesciunt!</p>
+                  <a class="float-right">1:33 AM 30/05/2019</a><br>
+              </div>
+            </div>
+            <br>
+
+
+          </div>
+
+
+
+
+        </ng-template>
+      </ng-template>
+      <div class="mx-auto" style="width:60%;padding-left:3%" *ngIf="clickedUser">
+        <div class="input-group mb-3" style="padding-top:4%;bottom:0;">
           <input type="text" class="form-control" placeholder="Send a private message to JALL229"
             aria-label="Recipient's username" aria-describedby="basic-addon2">
           <div class="input-group-append">
-            <button class="btn btn-outline-secondary mx-auto" type="button">&nbsp;&nbsp;&nbsp;Send&nbsp;&nbsp;&nbsp;</button>
+            <button class="btn btn-outline-secondary mx-auto"
+              type="button">&nbsp;&nbsp;&nbsp;Send&nbsp;&nbsp;&nbsp;</button>
           </div>
         </div>
       </div>
-</ng-template>
-
     </div>
   </div>
 </div>

@@ -3,6 +3,53 @@ import session_handler
 import helper
 import clientAPI
 import pprint
+
+
+def private_message(record, Emessage, hostIP, target_user, target_key, private_key):
+    print("=================")
+    print("STARTED SENDING PRIVATE_MESSAGES")
+    print("=================")
+    errorCount = 0
+    toCall = 0
+    uniCount = 0
+    success = 0
+    outSide = 0
+
+    unparsed_list = session_handler.fetchList()
+    if(len(unparsed_list) == 0):
+        updateDBList()
+        unparsed_list = session_handler.fetchList()
+
+    for host in unparsed_list:
+
+        hostAddress = host[1]
+        hostLocation = host[2]
+
+        if(hostLocation == '1' or hostLocation == '0'):
+            uniCount += 1
+        elif(hostLocation == '2'):
+            outSide += 1
+
+        if(hostAddress != hostIP):
+            toCall += 1
+            if(hostAddress[:4] != "http"):
+                hostAddress = "http://" + hostAddress
+
+            clientResponse = clientAPI.rx_privatemessage(
+                hostAddress, record, Emessage, target_key, target_user, private_key)
+            if(clientResponse != "error"):
+                if(clientResponse['response'] == "error"):
+                    errorCount += 1
+                else:
+                    success += 1
+            elif(clientResponse == "error"):
+                errorCount += 1
+            else:
+                success += 1
+    print("=================")
+    print("Total PMESSAGES success: "+str(errorCount)+" out of "+str(toCall))
+    print("=================")
+
 def broadcast(record,message,private_key,hostIP):
     print("=================")
     print("STARTED SENDING BROADCAST")
@@ -35,7 +82,12 @@ def broadcast(record,message,private_key,hostIP):
 
             clientResponse = clientAPI.rx_broadcast(
                 hostAddress, message, record, private_key)
-            if(clientResponse == "error" or clientResponse['response']=="error"):
+            if(clientResponse != "error"):
+                if( clientResponse['response']=="error"):
+                    errorCount += 1
+                else:
+                    success += 1
+            elif(clientResponse == "error"):
                 errorCount += 1
             else:
                 success += 1

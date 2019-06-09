@@ -177,7 +177,13 @@ export class BroadcastComponent implements OnInit {
             index = 0;
           }
         }
-
+        for (let index = 0; index < response.length; index++) {
+          if (response[index][1].includes('!Meta') || response[index][1].indexOf('!Meta') > -1) {
+            response.splice(index, 1)
+            index = 0;
+          }
+        }
+        
         console.log(response.length + " Removed !META")
         this.messageList = response;
         this.messageLoading = false;
@@ -190,17 +196,18 @@ export class BroadcastComponent implements OnInit {
     this.API.broadcast("!Meta:favourite_broadcast:[" + this.messageList[messageIndex][4] + "]")
     setTimeout(() => {
       this.favLoading = false;
+      this.fetchPublicMessages();
     }, 2500);
-    this.fetchPublicMessages();
   }
 
   blockMessage(messageIndex: number){
     this.blockLoading = true;
+
     this.API.broadcast("!Meta:block_broadcast:[" + this.messageList[messageIndex][4] + "]");
     setTimeout(() => {
       this.blockLoading = false;
+      this.fetchPublicMessages();
     }, 2500);
-    this.fetchPublicMessages();
   }
 
 

@@ -56,8 +56,20 @@ export class apiServices {
         return response;
     }
 
+    public async privatemessage(message: String, target_username: String, target_key: String): Promise<any> {
+        let response = await this.httpClient.post(`${webServer}/privatemessage`, { 'message': message, 'target_user':target_username,'target_key':target_key,'username': sessionStorage.getItem('username') }, { responseType: 'json' }).toPromise();
+        this.checkResponse(response);
+        return response;
+    }
+
     public async get_broadcastMessages(): Promise<any> {
         let response = await this.httpClient.post(`${webServer}/get_publicMessages`, { 'username': sessionStorage.getItem('username') },{ responseType: 'json' }).toPromise()
+        this.checkResponse(response);
+        return response['public_messages'];
+    }
+
+    public async get_privateMessages(): Promise<any> {
+        let response = await this.httpClient.post(`${webServer}/get_privateMessages`, { 'username': sessionStorage.getItem('username') },{ responseType: 'json' }).toPromise()
         this.checkResponse(response);
         return response['public_messages'];
     }

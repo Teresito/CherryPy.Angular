@@ -21,6 +21,7 @@ WORLD_CONNECTION = '2'
 @cherrypy.config(**{'tools.cors.on': True})
 class Interface(object):
   
+
     @cherrypy.expose
     def default(self, *args, **kwargs):
         return Interface.index(self)
@@ -118,6 +119,67 @@ class Interface(object):
         else:
             return '0'
 
+    @cherrypy.expose
+    def get_privateMessages(self):
+        body = cherrypy.request.body.read()
+        body_json = json.loads(body.decode('utf-8'))
+        username = body_json['username']
+
+        if (self.isLoggedIn(username, 0) == False):
+            return '2'
+
+        message_list = message_handler.fetchPrivateMessages()
+        private_key = session_handler.userKeys(username)[0][0]
+        json_body = {}
+        message_array = []
+        for message in message_list['private_messages']:
+            if(message[0] == username):
+                message[1] = helper.decrypt(message[1], private_key)
+                message_array.append(message)
+
+        json_body['private_messages'] = message_array
+        return json.dumps(message_list)
+
+
+    @cherrypy.expose
+    def privateMessage(self):
+        body = cherrypy.request.body.read()
+        body_json = json.loads(body.decode('utf-8'))
+        username = body_json['username']
+        target_user = body_json['target_user']
+        target_key = body_json['target_key']
+        if (self.isLoggedIn(username, 0) == False):
+            return '2'
+
+        APIkey = session_handler.userAPIKey(username)
+        private_key = session_handler.userKeys(username)[0][0]
+
+        message = body_json['message']
+        # ENCRYPT
+        encrypted_message = helper.encryptMessage(message,target_key)
+        epoch = time.time()
+        epoch_str = str(epoch)
+
+        server_record = centralAPI.get_loginserver_record(APIkey, username)['loginserver_record']
+        signing_key = nacl.signing.SigningKey(
+            private_key, encoder=nacl.encoding.HexEncoder)
+        message_bytes = bytes(server_record + target_key + target_user +
+                              encrypted_message + epoch_str, encoding='utf-8')
+        signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
+        signature_hex_str = signed.signature.decode('utf-8')
+
+        message_everyone = threading.Thread(target=thread_tasks.private_message, args=(
+            server_record, encrypted_message, LOCATION_ADRESS, target_user, target_key))
+        try:
+            message_everyone.start()
+        except Exception as error:
+            pass
+
+        message_handler.updatePrivateMessages(
+            target_user, encrypted_message, username, epoch, server_record, signature_hex_str,target_key)
+        
+        return '1'
+       
 
     # Need to check if they're logged in
     @cherrypy.expose

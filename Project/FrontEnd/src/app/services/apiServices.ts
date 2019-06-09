@@ -15,11 +15,6 @@ export class apiServices {
         return response['userList'];
     }
 
-    public async pingAPI(): Promise<any> {
-        let response = await this.httpClient.post(`${webServer}/ping`, { 'username': sessionStorage.getItem('username') }, { responseType: 'json' }).toPromise();
-        this.checkResponse(response);
-        return response;
-    }
 
     public loginAPI(user: String, pass: String) {
         return this.httpClient.post(`${webServer}/login`, { "user": user, "pass": pass }, { responseType: 'json' }).toPromise();
@@ -76,7 +71,6 @@ export class apiServices {
     private checkResponse(response: any) {
         if (response == 2) {
             sessionStorage.setItem('badAccess',true.toString());
-
             this.state.clearClient();
         }
     }

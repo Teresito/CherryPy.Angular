@@ -256,7 +256,7 @@ class Interface(object):
         if (centralResponse != "error"):
             if(centralResponse['response'] == 'ok'):
                 return '1'
-            else:
-                return '0'
+            elif(centralResponse['response']=="error"):
+                return '2'
         else:
             return '0'

@@ -3,18 +3,15 @@
     <div class="col">
       <div class="starter-template text-center">
         <!-- <app-user-list></app-user-list> -->
-        <h1 (click)="fetchPublicMessages()" style="padding-right:1%;display:inline">Public Broadcasts</h1>
-        <span *ngIf="messageLoading"class="spinner-border" style="animation-play-state:initial;" role="status" >
+        <h1 style="padding-right:1%;display:inline">Public Broadcasts</h1>
+        <span *ngIf="messageLoading" class="spinner-border" style="animation-play-state:initial;" role="status">
           <span class="sr-only">Loading...</span>
           <span class="glyphicon glyphicon-repeat"></span>
         </span>
-        
+
         <hr style="width:50%">
         <div class="mx-auto" style="width:50%;">
           <div class="input-group mb-3">
-            <!-- <input (keydown.enter)="onKeydown($event)" type="text-area" class="form-control lead"
-              placeholder="Send a broadcast message" aria-label="Recipient's username" aria-describedby="basic-addon2"
-              [formControl]="message"> -->
             <textarea class="form-control" (keydown.enter)="onKeydown($event)" placeholder="Send a broadcast message"
               [formControl]="message" rows="3"></textarea>
             <div class="input-group-append">
@@ -28,17 +25,26 @@
             </div>
           </div>
         </div>
+
         <!-- TO DO: FOR LOOP FOR MESSAGES -->
         <ng-template [ngIf]="!messageLoading">
           <ng-template [ngIf]="!isSearching">
-            <div *ngFor="let tuple of messageList">
-              <div class="card mx-auto" style="width:50%;height:200px;" >
-                <div class="lead card-body"[ngClass]="{'overflow':tuple[1].length > 200}">
-                  <a class="float-left">{{ tuple[0]  | uppercase }}</a>
-                  <a class="float-right">{{ tuple[2]  | date :'h:mm a dd/MMM/yy' | uppercase }}</a><br>
+            <div *ngFor="let tuple of messageList; let i = index">
+              <div class="card mx-auto" style="width:50%;height:200px;">
+                <div class="lead card-body" [ngClass]="{'overflow':tuple[1].length > 200}">
+                  <a class="float-left"><b>{{ tuple[0]  | uppercase }}</b></a>
+                  <a class="float-right"><b>{{ tuple[2]  | date :'h:mm a dd/MMM/yy' | uppercase }}</b></a><br>
                   <p class="text-left"> {{ tuple[1] }}</p>
+
                 </div>
-                <button style="bottom:5%;left:1%;position:absolute;"class="btn btn-secondary btn-sm float-left float-bottom" (click)="showMarkDown(tuple[1])">Markdown</button>
+                <button style="bottom:5%;left:1%;position:absolute;" class="btn btn-outline-info btn-sm float-left"
+                  (click)="showMarkDown(tuple[1])">Markdown</button>
+                <button style="bottom:5%;left:11%;position:absolute;" class="btn btn-outline-danger btn-sm float-left"
+                  (click)="favouriteMessage(i)" [disabled]="favLoading">Favourite ❤️<span *ngIf="favLoading"
+                    class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>
+                <button style="bottom:5%;right:1%;position:absolute;" class="btn btn-dark btn-sm float-left"
+                  (click)="blockMessage(i)" [disabled]="blockLoading">Block ⛔<span *ngIf="blockLoading"
+                    class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>
               </div>
               <br>
             </div>
@@ -50,12 +56,18 @@
             <div *ngFor="let tuple of searchList">
               <div class="card mx-auto" style="width:50%;height:200px;">
                 <div class="lead card-body" [ngClass]="{'overflow':tuple[1].length > 200}">
-                  <a class="float-left">{{ tuple[0]  | uppercase }}</a>
-                  <a class="float-right">{{ tuple[2]  | date :'h:mm a dd/MMM/yy' | uppercase }}</a><br>
+                  <a class="float-left"><b>{{ tuple[0]  | uppercase }}</b></a>
+                  <a class="float-right"><b> {{ tuple[2]  | date :'h:mm a dd/MMM/yy' | uppercase }} </b></a><br>
                   <p class="text-left"> {{ tuple[1] }}</p>
                 </div>
-                <button style="bottom:5%;left:1%;position:absolute;" class="btn btn-secondary btn-sm float-left float-bottom"
+                <button style="bottom:5%;left:1%;position:absolute;" class="btn btn-outline-info btn-sm float-left"
                   (click)="showMarkDown(tuple[1])">Markdown</button>
+                <button style="bottom:5%;left:11%;position:absolute;" class="btn btn-outline-danger btn-sm float-left"
+                  (click)="favouriteMessage(i)" [disabled]="favLoading">Favourite ❤️<span *ngIf="favLoading"
+                    class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>
+                <button style="bottom:5%;right:1%;position:absolute;" class="btn btn-dark btn-sm float-left" (click)="blockMessage(i)"
+                  [disabled]="blockLoading">Block ⛔<span *ngIf="blockLoading" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span></button>
               </div>
               <br>
             </div>
@@ -66,6 +78,13 @@
     </div>
   </div>
 </div>
+
+<button class="btn btn-dark text-center" style="bottom:2%;right:1%;position:fixed;" (click)="backToTop()">
+  <h3>&nbsp;↑&nbsp;</h3>
+</button>
+<button class="btn btn-dark text-center" [disabled]="messageLoading" style="bottom:2%;right:5%;position:fixed;" (click)="updateList()">
+  <h3>&nbsp;⟳&nbsp;</h3>
+</button>
 <!-- Mark down modal -->
 <div *ngIf="showMarked" (click)="closeMarkDown()" class="modal" [ngStyle]="{'display': modalMarked}">
   <div class="modal-content">
@@ -75,9 +94,6 @@
           <div class="card">
             <div class="card-body">
               <markdown [data]="markedDownMessage"></markdown>
-              <!-- <markdown ngPreserveWhitespaces>
-                {{markedDownMessage}}
-              </markdown> -->
             </div>
           </div>
         </div>

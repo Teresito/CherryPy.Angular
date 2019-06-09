@@ -5,9 +5,10 @@
       <hr style="width:40%">
       <div class="card mx-auto" style="width:80%;padding: 0 0 0 0;">
         <div class="card-body text-center lead">
-          <span *ngIf="messageLoading" class="spinner-border spinner-border-sm" style="width: 3rem; height: 3rem;" role="status" aria-hidden="true"></span>
+          <span *ngIf="listLoading" class="spinner-border spinner-border-sm" style="width: 3rem; height: 3rem;"
+            role="status" aria-hidden="true"></span>
 
-          <table *ngIf="!messageLoading"class="table table-sm mx-auto" >
+          <table *ngIf="!listLoading" class="table table-sm mx-auto">
             <thead>
               <tr>
                 <th scope="col">Username</th>
@@ -19,7 +20,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let user of usersList" [ngClass]="{'table-success': user.status === 'online','table-danger': user.status === 'offline','table-warning': user.status === 'busy'}">
+              <tr *ngFor="let user of usersList"
+                [ngClass]="{'table-success': user.status === 'online','table-danger': user.status === 'offline','table-warning': user.status === 'busy'}">
                 <td>{{user.username}}</td>
                 <td>{{user.connection_address | slice:0:20}}</td>
                 <td>{{user.connection_location }}</td>
@@ -34,3 +36,10 @@
     </div>
   </div>
 </div>
+<button class="btn btn-dark text-center" style="bottom:2%;right:1%;position:fixed;" (click)="backToTop()">
+  <h3>&nbsp;↑&nbsp;</h3>
+</button>
+<button class="btn btn-dark text-center" [disabled]="listLoading" style="bottom:2%;right:5%;position:fixed;"
+  (click)="updateList()">
+  <h3>&nbsp;⟳&nbsp;</h3>
+</button>

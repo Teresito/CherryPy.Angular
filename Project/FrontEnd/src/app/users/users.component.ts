@@ -8,12 +8,12 @@ import { apiServices } from '../services/apiServices';
 })
 export class UsersComponent implements OnInit {
 
-  messageLoading = true;
+  listLoading = true;
   usersList = [];
   constructor(private API: apiServices) { }
 
   ngOnInit() {
-    this.messageLoading = true
+    this.listLoading = true
     this.loadUsers()
   }
 
@@ -23,8 +23,19 @@ export class UsersComponent implements OnInit {
         response[index]['connection_updated_at'] = Date.now() - response[index]['connection_updated_at']*1000;
         this.usersList.push(response[index]);        
       }
-      this.messageLoading = false
+      this.listLoading = false
     });
   }
 
+  updateList(){
+    this.listLoading = true;
+    setTimeout(() => {
+      this.loadUsers();
+    }, 2500);
+  }
+
+
+  backToTop() {
+    window.scrollTo(0, 0);
+  }
 }

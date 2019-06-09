@@ -13,7 +13,7 @@ def updatePublicMessages(user, message, time, record, signature):
 def updatePrivateMessages(user, message, cameFrom, time, record, signature,public_key):
     with sqlite3.connect(MESSAGE_DB) as db:
         db.execute(
-            "INSERT INTO PRIVATE_MESSAGES (USER,MESSAGE,FROM,TIME,USER_PUBLICKEY,SIGNATURE,LOGINSERVER_RECORD) VALUES (?,?,?,?,?,?,?)", (user, message, cameFrom, time,public_key,signature,record))
+            "INSERT INTO PRIVATE_MESSAGES (USER,MESSAGE,FROM_USER,TIME,USER_PUBLICKEY,SIGNATURE,LOGINSERVER_RECORD) VALUES (?,?,?,?,?,?,?)", (user, message, cameFrom, time,public_key,signature,record))
 
 def fetchPublicMessages():
     with sqlite3.connect(MESSAGE_DB) as db:

@@ -6,6 +6,7 @@ import json
 import cherrypy
 import message_handler
 
+
 class Interface(object):
 
     @cherrypy.expose
@@ -26,12 +27,13 @@ class Interface(object):
         print("====================")
         print("RX_BROADCAST MESSAGE CALLED")
         print("====================")
-        rawbody = cherrypy.request.body.read()      
+        rawbody = cherrypy.request.body.read()
 
         try:
             body = json.loads(rawbody)
             if body['loginserver_record'] and body['message'] and body['sender_created_at'] and body['signature']:
-                record_inparts = helper.splitServerRecord(body['loginserver_record'])
+                record_inparts = helper.splitServerRecord(
+                    body['loginserver_record'])
                 message_handler.updatePublicMessages(
                     record_inparts[0], body['message'], body['sender_created_at'], body['loginserver_record'], body['signature'])
                 payload = {
@@ -50,13 +52,13 @@ class Interface(object):
                 'response': 'error',
                 'message': 'invalid body,  missing required parameters'
             }
-        #return bytes(json.dumps(payload), 'utf-8')
+        # return bytes(json.dumps(payload), 'utf-8')
         return json.dumps(payload)
 
     @cherrypy.expose
     def ping_check(self):
         print("====================")
-        print("PING_CHECK MESSAGE CALLED")
+        print("PING_CHECK CALLED")
         print("====================")
         rawbody = cherrypy.request.body.read()
         try:
@@ -78,8 +80,8 @@ class Interface(object):
                 print("====================")
             else:
                 payload = {
-                    'response':'error',
-                    'message':'invalid body, missing required parameters'
+                    'response': 'error',
+                    'message': 'invalid body, missing required parameters'
                 }
         except Exception as error:
             print("====================")
@@ -97,27 +99,32 @@ class Interface(object):
         print("RX_PRIVATE MESSAGE CALLED")
         print("====================")
         rawbody = cherrypy.request.body.read()
+
         try:
             body = json.loads(rawbody)
-        except:
-            payload = {
-                'response': 'error',
-                'message': 'invalid body, missing required parameters'
-            }
-            return json.dumps(payload)
-        
-        try:
             if body['loginserver_record'] and body['target_pubkey'] and body['target_username'] and body['encrypted_message'] and body['sender_created_at'] and body['signature']:
+                record_inparts = helper.splitServerRecord(
+                    body['loginserver_record'])
+                message_handler.updatePrivateMessages(
+                    body['target_username'], body['encrypted_message'], record_inparts[0], body['sender_created_at'], body['loginserver_record'], body['signature'], body['target_pubkey'])
                 payload = {
                     'response': 'ok',
                 }
                 print("====================")
                 print("PRIVATE MESSAGE SUCCESS")
                 print("====================")
+            else:
+                print("====================")
+                print("PRIVATE MESSAGE FAILED")
+                print("====================")
         except Exception as error:
+            print(error)
             payload = {
                 'response': 'error',
                 'message': 'invalid body, missing required parameters'
             }
+            print("====================")
+            print("PRIVATE MESSAGE FAILED")
+            print("====================")
 
         return json.dumps(payload)

@@ -5,6 +5,9 @@ import { componentState } from './componentService';
 @Injectable()
 export class AuthGuard implements CanActivate {
  
+  /* 
+    USER ROUTING PROTECTION
+  */
   constructor(private route: Router, private state: componentState) {}
 
   canActivate() {

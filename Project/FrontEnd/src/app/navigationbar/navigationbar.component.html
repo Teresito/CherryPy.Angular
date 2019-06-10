@@ -8,7 +8,6 @@
 
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
-      <!-- TO DO: BLOCKING AT ACCOUNT SETTINGS -->
       <li class="nav-item pointer"><a routerLink="/broadcast" routerLinkActive="active" class="nav-link">Home</a></li>
       <li class="nav-item pointer"><a routerLink="/message" routerLinkActive="active" class="nav-link">Messages</a></li>
       <li class="nav-item pointer"><a routerLink="/group" routerLinkActive="active" class="nav-link">Groups</a></li>
@@ -23,9 +22,10 @@
     &nbsp;
     &nbsp;
     <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" (keydown.enter)="onKeydown($event)" [formControl]="search" type="text" placeholder="Search User" aria-label="Search">
-      <button class="btn btn-outline-success mr-2 my-2 my-sm-0"  (click)="searchUser()" type="button">Search</button>
-      <button class="btn btn-outline-secondary my-2 my-sm-0"  (click)="logout()" type="button">Logout</button>
+      <input class="form-control mr-sm-2" (keydown.enter)="onKeydown($event)" [formControl]="search" type="text"
+        placeholder="Search User" aria-label="Search">
+      <button class="btn btn-outline-success mr-2 my-2 my-sm-0" (click)="searchUser()" type="button">Search</button>
+      <button class="btn btn-outline-secondary my-2 my-sm-0" (click)="logout()" type="button">Logout</button>
     </form>
   </div>
 </nav>

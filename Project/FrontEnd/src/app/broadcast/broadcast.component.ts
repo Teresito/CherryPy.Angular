@@ -21,15 +21,15 @@ export class BroadcastComponent implements OnInit {
   messageList: any;
 
   notify: boolean;
-
+  // Loading spinners
   blockLoading = false;
   favLoading = false;
-
+  // Searching DOM change
   isSearching = false;
   searchList = [];
   searchZero = false;
   searched: string;
-
+  // Modal showing
   showMarked = false;
   modalMarked = 'none';
   markedDownMessage: string;
@@ -39,7 +39,7 @@ export class BroadcastComponent implements OnInit {
   constructor(private API: apiServices, private state: componentState, private markService: MarkdownService) {
 
   }
-
+  // Initialize the component with these parameters and function calls
   ngOnInit() {
     this.fetchPublicMessages();
     this.state.session.subscribe(
@@ -83,31 +83,26 @@ export class BroadcastComponent implements OnInit {
     this.notify = !Boolean(sessionStorage.getItem('inSession'));
 
   }
-
+  // Shows the marked down message
   showMarkDown(message: string) {
     this.showMarked = true;
     this.modalMarked = 'block';
-
-    // this.markedDownMessage = this.markService.compile(message);
     this.markedDownMessage = message
-    // console.log(message)
-    // console.log(this.markedDownMessage)
-
-
   }
 
+  // Closing modal marked down preview
   closeMarkDown() {
     this.showMarked = false;
     this.modalMarked = 'none';
     this.markedDownMessage = null;
   }
-
+  // Enter key is pressed
   onKeydown(event) {
     if (!this.loading) {
       this.sendMessage();
     }
   }
-
+  // User sends a message 
   sendMessage() {
     this.API.broadcast(this.message.value);
     this.loading = true;
@@ -117,11 +112,11 @@ export class BroadcastComponent implements OnInit {
       this.fetchPublicMessages();
     }, 2000);
   }
-
+  // Scrolls page up
   backToTop(){
     window.scrollTo(0, 0);
   }
-
+  // Updates all the messages
   updateList(){
     this.messageLoading = true;
     setTimeout(() => {
@@ -129,7 +124,7 @@ export class BroadcastComponent implements OnInit {
     }, 2000);
 
   }
-
+  // Fetches public messages
   fetchPublicMessages() {
     this.messageLoading = true;
     this.API.get_broadcastMessages().then(

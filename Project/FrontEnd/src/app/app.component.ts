@@ -2,14 +2,13 @@ import { Component, OnInit, OnDestroy, AfterViewInit, HostListener } from '@angu
 import { componentState } from './services/componentService';
 import { Subscription } from 'rxjs';
 import { apiServices } from './services/apiServices';
-import { NavigationStart, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AppComponent implements OnInit, OnDestroy {
   @HostListener('window:beforeunload')
 
   listener = new Subscription;
@@ -19,20 +18,33 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private reportTimer: any;
   private usersTimer: any;
 
-  constructor(private state: componentState, private API: apiServices, private router: Router) {
+  constructor(private state: componentState, private API: apiServices) {
 
   }
-
+  // Initialize the component with these parameters and function calls
   ngOnInit() {
 
     this.showNav = this.state.getAuth();
-    if (sessionStorage.getItem('status') == '' && Boolean(sessionStorage.getItem('authenticated'))){
+    if (sessionStorage.getItem('status') == '' && Boolean(sessionStorage.getItem('authenticated'))) {
       sessionStorage.setItem('status', 'online')
     }
     this.listener = this.state.clientState.subscribe(
       () => {
         this.showNav = this.state.getAuth();
       });
+
+    this.StartnEndTimers();
+
+
+    this.state.session.subscribe(() => {
+      this.StartnEndTimers();
+    });
+
+
+
+  }
+  // Start reporting the user and starts updating the list
+  StartnEndTimers() {
     if (Boolean(sessionStorage.getItem('inSession'))) {
       this.reportTimer = setInterval(() => {
         this.API.reportUser();
@@ -47,40 +59,16 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       clearInterval(this.reportTimer);
       clearInterval(this.usersTimer);
     }
-    this.state.session.subscribe(()=>{
-      if (Boolean(sessionStorage.getItem('inSession'))) {
-        this.reportTimer = setInterval(() => {
-          this.API.reportUser();
-        }, 10000);
+  }
+  // User has logged out
+  logout() {
+    this.API.logoutAPI();
+    this.state.clearClient();
+  }
 
-        this.usersTimer = setInterval(() => {
-          this.state.usersList = this.API.listUserAPI();
-        }, 30000);
+  ngOnDestroy() {
+    this.listener.unsubscribe();
 
-      }
-      else {
-        clearInterval(this.reportTimer);
-        clearInterval(this.usersTimer);
-      }
-    });
-
-  
-
-}
-
-logout() {
-  this.API.logoutAPI();
-  this.state.clearClient();
-}
-
-ngAfterViewInit(){
-
-
-}
-
-ngOnDestroy(){
-  this.listener.unsubscribe();
-
-}
+  }
 
 }

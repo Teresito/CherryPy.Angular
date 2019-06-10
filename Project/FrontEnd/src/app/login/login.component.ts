@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { apiServices } from '../services/apiServices';
 import { AuthGuard } from '../services/auth-guard.service';
 import { componentState } from '../services/componentService';
+import { webServer } from '../constants'
 
 
 @Component({
@@ -19,11 +20,13 @@ export class LoginComponent implements OnInit {
   });
 
   constructor(private API: apiServices, private state: componentState, private router: Router) { }
-
+  
   wrongLogin: boolean = false;
   loading: boolean = false;
   badAccessMessage: boolean = false;
   badServer: boolean = false;
+
+  // Initialize the component with these parameters and function calls
   ngOnInit() {
     if(sessionStorage.getItem('authenticated')){
       this.router.navigate(['/broadcast'])
@@ -37,7 +40,7 @@ export class LoginComponent implements OnInit {
     }
 
   }
-
+  // Submits the user information to backend
   onSubmit() {
     this.loading = true;
     this.wrongLogin = false;

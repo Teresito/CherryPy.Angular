@@ -2,13 +2,13 @@
   <div class="row">
     <div class="col">
       <div class="starter-template text-center">
-        <!-- <app-user-list></app-user-list> -->
+        <!-- HEADER -->
         <h1 style="padding-right:1%;display:inline">Public Broadcasts</h1>
         <span *ngIf="messageLoading" class="spinner-border" style="animation-play-state:initial;" role="status">
           <span class="sr-only">Loading...</span>
           <span class="glyphicon glyphicon-repeat"></span>
         </span>
-
+        <!-- TEXT-AREA AND BUTTON -->
         <hr style="width:50%">
         <div class="mx-auto" style="width:50%;">
           <div class="input-group mb-3">
@@ -26,7 +26,7 @@
           </div>
         </div>
 
-        <!-- TO DO: FOR LOOP FOR MESSAGES -->
+        <!-- FOR MESSAGE LOADING -->
         <ng-template [ngIf]="!messageLoading">
           <ng-template [ngIf]="!isSearching">
             <div *ngFor="let tuple of messageList; let i = index">
@@ -53,6 +53,7 @@
               <br>
             </div>
           </ng-template>
+          <!-- FOR SEARCHING USERS -->
           <ng-template [ngIf]="isSearching">
             <div class="lead text-center" *ngIf="searchZero">
               <p> Search found zero match for {{searched }}</p>
@@ -84,7 +85,7 @@
     </div>
   </div>
 </div>
-
+<!-- FIXED BOTTOM BUTTONS FOR REFRESH AND UPTOPSCROLL -->
 <button class="btn btn-dark text-center" style="bottom:2%;right:1%;position:fixed;" (click)="backToTop()">
   <h3>&nbsp;↑&nbsp;</h3>
 </button>
@@ -92,7 +93,8 @@
   (click)="updateList()">
   <h3>&nbsp;⟳&nbsp;</h3>
 </button>
-<!-- Mark down modal -->
+<!-- MODAL MESSAGES -->
+<!-- MARKED DOWN MESSAGE -->
 <div *ngIf="showMarked" (click)="closeMarkDown()" class="modal" [ngStyle]="{'display': modalMarked}">
   <div class="modal-content">
     <div class="container-fluid">
@@ -108,7 +110,7 @@
     </div>
   </div>
 </div>
-<!-- Modal -->
+<!-- PRIVATE DATA SIGNIN -->
 <div *ngIf="notify" class="modal" [ngStyle]="{'display': toggleModal}">
   <div class="modal-content">
     <div class="container-fluid">

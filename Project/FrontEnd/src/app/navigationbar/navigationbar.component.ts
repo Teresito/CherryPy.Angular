@@ -20,7 +20,7 @@ export class NavigationbarComponent implements OnInit {
   statusList = ['Online', 'Away', 'Busy', 'Offline']
   user: string;
   constructor(private route: Router, private API: apiServices, private state: componentState) { }
-
+  // Initialize the component with these parameters and function calls
   ngOnInit() {
     this.zIndex = !Boolean(sessionStorage.getItem('inSession'))
     this.user = sessionStorage.getItem('username')
@@ -31,19 +31,20 @@ export class NavigationbarComponent implements OnInit {
       }
     })
   }
-
+  // Enter key is pressed
   onKeydown(event) {
     this.searchUser();
   }
 
+  // User searched
   searchUser(){
     this.state.searchTrigger.next(this.search.value.toLowerCase());
   }
-
+  // User changed status
   changedStatus() {
     sessionStorage.setItem('status', this.status.value.toLowerCase())
   }
-
+  // User logout
   logout() {
     this.state.clearClient();
     this.API.logoutAPI();

@@ -28,7 +28,8 @@ export class PrivatedataComponent implements OnInit {
   pholder = "Encryption Key";
   buttonKey: String;
   dataResponse: String;
-
+  
+  // Initialize the component with these parameters and function calls
   ngOnInit() {
     this.API.checkPrivateData().then(
       (response) => {

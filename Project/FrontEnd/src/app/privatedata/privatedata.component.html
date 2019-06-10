@@ -1,12 +1,11 @@
-<!-- <ng-template> -->
-<!-- <span class="close" style="cursor: pointer;" (click)="toggleDecrypt='none'">&times;</span> -->
+
 <div class="text-center">
   <p class="lead" style="padding-top:5%" *ngIf="!loading">
     {{ dataResponse }}
   </p>
 </div>
 <form [formGroup]="eKeyForm" *ngIf="!loading">
-  <!-- Has private data  -->
+  <!-- USER HAS PRIVATE DATA -->
   <div class="text-center" *ngIf="options">
     <button type="button" class="btn btn-outline-success" (click)="NewKey()">New Key</button>
     <span style="padding-left:2%;">
@@ -15,7 +14,7 @@
   </div>
   <div class="form-group">
 
-
+    <!-- USER CAN DECRYPT OR MAKE A NEW KEY -->
     <div class="input-group mb-3" *ngIf="decryptForm">
       <input type="password" (keydown.enter)="decryptSubmit()" class="form-control" [ngClass]="{'is-invalid':wrongKey}" placeholder="{{ pholder }}"
         formControlName="Dkey">

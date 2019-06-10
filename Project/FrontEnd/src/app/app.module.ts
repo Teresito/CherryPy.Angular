@@ -13,9 +13,7 @@ import { AuthGuard } from './services/auth-guard.service';
 import { apiServices } from './services/apiServices';
 import { componentState } from './services/componentService';
 import { GroupComponent } from './group/group.component';
-import { AccountComponent } from './account/account.component';
 import { PrivatedataComponent } from './privatedata/privatedata.component';
-import { UserListComponent } from './user-list/user-list.component';
 import { UsersComponent } from './users/users.component';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
@@ -28,9 +26,7 @@ import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
     BroadcastComponent,
     PageNotFoundComponent,
     GroupComponent,
-    AccountComponent,
     PrivatedataComponent,
-    UserListComponent,
     UsersComponent,
     
   ],

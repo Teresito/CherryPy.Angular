@@ -1,9 +1,7 @@
 # CherryPy / Angular Project ( CHAT )
 ---
 
-
-To lunch my project open the **chat** folder and run the main.py in the terminal
-
+## Clone my repository and navigate to Chat folder
 
 Running main.py from **chat** folder
 ```

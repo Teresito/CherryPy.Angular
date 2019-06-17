@@ -350,7 +350,7 @@ class Interface(object):
         # Update session DB of their status
         session_handler.updateStatus(username,userStatus)
         # Report the user of their updated status
-        centralResponse = centralAPI.report(APIkey, username, main.LOCATION_ADRESS, main.WORLD_CONNECTION, public_key, userStatus)
+        centralResponse = centralAPI.report(APIkey, username, main.LOCATION_ADRESS+":"+str(main.LISTEN_PORT), main.WORLD_CONNECTION, public_key, userStatus)
         
         if (centralResponse != "error"):
             if(centralResponse['response'] == 'ok'):

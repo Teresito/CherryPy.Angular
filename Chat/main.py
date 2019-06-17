@@ -10,7 +10,7 @@ import socket
 # LISTEN_IP = "192.168.1.6"  # IPv4 connection router to this device
 hostname = socket.gethostname()
 LISTEN_IP = socket.gethostbyname(hostname)
-LISTEN_PORT = 10204  # Port to be communicated with
+LISTEN_PORT = 10099  # Port to be communicated with
 ##                                                         ##
 # Note if you are in uni, you use IPv4 for LOCATION_ADDRESS #
 ##                                                         ##

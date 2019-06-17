@@ -36,8 +36,9 @@ class Interface(object):
         rawbody = cherrypy.request.body.read()
 
         try:
-            body = json.loads(rawbody)
-            # Checks if the body of the JSON sent has all the required parameters
+            body = json.loads(rawbody.decode('utf-8'))
+            record_inparts = helper.splitServerRecord(body['loginserver_record'])
+            message_handler.updatePublicMessages(record_inparts[0], body['message'], body['sender_created_at'], body['loginserver_record'], body['signature'])
             if body['loginserver_record'] and body['message'] and body['sender_created_at'] and body['signature']:
                 record_inparts = helper.splitServerRecord(
                     body['loginserver_record'])
@@ -75,7 +76,7 @@ class Interface(object):
         print("====================")
         rawbody = cherrypy.request.body.read()
         try:
-            body = json.loads(rawbody)
+            body = json.loads(rawbody.decode('utf-8'))
         except:
             payload = {
                 'response': 'error',
@@ -116,7 +117,7 @@ class Interface(object):
         rawbody = cherrypy.request.body.read()
 
         try:
-            body = json.loads(rawbody)
+            body = json.loads(rawbody.decode('utf-8'))
             # Checks if all the parameters are in the JSON sent
             if body['loginserver_record'] and body['target_pubkey'] and body['target_username'] and body['encrypted_message'] and body['sender_created_at'] and body['signature']:
                 record_inparts = helper.splitServerRecord(

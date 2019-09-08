@@ -46,22 +46,23 @@ export class LoginComponent implements OnInit {
     this.wrongLogin = false;
     let username = this.LoginForm.value.username;
     let password = this.LoginForm.value.password;
-    this.API.loginAPI(username, password).then(
-      (response) => {
+    this.state.setClient(username, true)
+    // this.API.loginAPI(username, password).then(
+    //   (response) => {
         
-        this.wrongLogin = false
-        if (response == '1') {
-          this.state.setClient(username, true)
-        }
-        else if (response == 'error'){
-          this.badServer = true;
-        }
-        else {
-          this.wrongLogin = true;
-        }
-        this.loading = false;
-      }
-    );
+    //     this.wrongLogin = false
+    //     if (response == '1') {
+    //       this.state.setClient(username, true)
+    //     }
+    //     else if (response == 'error'){
+    //       this.badServer = true;
+    //     }
+    //     else {
+    //       this.wrongLogin = true;
+    //     }
+    //     this.loading = false;
+    //   }
+    // );
   }
 
 }

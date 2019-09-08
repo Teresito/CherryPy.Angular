@@ -10,10 +10,10 @@ import { UsersComponent } from './users/users.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent, pathMatch: 'full'},
-  { path: 'broadcast', component: BroadcastComponent, pathMatch: 'full', canActivate: [AuthGuard]},
-  { path: 'reports', component: UsersComponent, pathMatch: 'full', canActivate: [AuthGuard]},
-  { path: 'message', component: PrivatemessageComponent, pathMatch: 'full', canActivate: [AuthGuard]},
-  { path: 'group', component: GroupComponent, pathMatch: 'full', canActivate: [AuthGuard]},
+  { path: 'broadcast', component: BroadcastComponent, pathMatch: 'full'},
+  { path: 'reports', component: UsersComponent, pathMatch: 'full'},
+  { path: 'message', component: PrivatemessageComponent, pathMatch: 'full'},
+  { path: 'group', component: GroupComponent, pathMatch: 'full'},
   { path: '', redirectTo: 'login', pathMatch: 'full'},
   {path:'**', component: PageNotFoundComponent, pathMatch: 'full'},
 ];

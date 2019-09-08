@@ -11,7 +11,8 @@ export class apiServices {
     IP_LOCATION: any;
 
     constructor(private httpClient: HttpClient, private state: componentState) {
-        this.IP_LOCATION = window.location.origin +"/client";
+        // this.IP_LOCATION = window.location.origin +"/client";
+        this.IP_LOCATION = "http://192.168.1.12:80/client";
      }
 
     public async listUserAPI(): Promise<any> {
@@ -99,10 +100,10 @@ export class apiServices {
 
     // CHECKS IF THE SERVER HAS THE USER LOGGED IN
     private checkResponse(response: any) {
-        if (response == 2) {
-            sessionStorage.setItem('badAccess',true.toString());
-            this.state.clearClient();
-        }
+        // if (response == 2) {
+        //     sessionStorage.setItem('badAccess',true.toString());
+        //     this.state.clearClient();
+        // }
     }
 
 

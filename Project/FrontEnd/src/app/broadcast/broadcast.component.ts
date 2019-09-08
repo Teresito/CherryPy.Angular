@@ -129,7 +129,8 @@ export class BroadcastComponent implements OnInit {
     this.messageLoading = true;
     this.API.get_broadcastMessages().then(
       (response) => {
-        console.log(response.length + " From DB")
+        console.log(response)
+        // console.log(response.length + " From DB")
 
         for (let index = 0; index < response.length; index++) {
           response[index][2] = response[index][2] * 1000;

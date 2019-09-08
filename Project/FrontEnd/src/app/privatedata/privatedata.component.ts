@@ -31,23 +31,27 @@ export class PrivatedataComponent implements OnInit {
   
   // Initialize the component with these parameters and function calls
   ngOnInit() {
-    this.API.checkPrivateData().then(
-      (response) => {
-        if (response == "1") {
-          this.options = true;
-          this.optionsBack = true;
-          this.buttonKey = "Decrypt";
-          this.dataResponse = "It seems like you have private data in the login server";
-          this.loading = false;
-        }
-        else if (response == "0") {
-          this.encryptForm = true;
-          this.buttonKey = "Encrypt";
-          this.dataResponse = "To proceed, enter your key for encryption. Minimum 5 characters";
-          this.loading = false;
-        }
-      }
-    );
+    this.encryptForm = true;
+    this.buttonKey = "Encrypt";
+    this.dataResponse = "To proceed, enter your key for encryption. Minimum 5 characters";
+    this.loading = false;
+    // this.API.checkPrivateData().then(
+    //   (response) => {
+    //     if (response == "1") {
+    //       this.options = true;
+    //       this.optionsBack = true;
+    //       this.buttonKey = "Decrypt";
+    //       this.dataResponse = "It seems like you have private data in the login server";
+    //       this.loading = false;
+    //     }
+    //     else if (response == "0") {
+    //       this.encryptForm = true;
+    //       this.buttonKey = "Encrypt";
+    //       this.dataResponse = "To proceed, enter your key for encryption. Minimum 5 characters";
+    //       this.loading = false;
+    //     }
+    //   }
+    // );
 
 
   }
@@ -81,24 +85,26 @@ export class PrivatedataComponent implements OnInit {
     this.loading = true;
     let uniqueKey = this.eKeyForm.value.newEKey;
     let match = this.eKeyForm.value.EKeyAgain;
-    if(match == uniqueKey){
-      this.API.newPrivateData(uniqueKey).then((response) => {
-        if (response == '1') {
-          sessionStorage.setItem('status', 'online');
-          sessionStorage.setItem('inSession', true.toString())
-          this.state.session.next();
-        }
-        else {
-          this.wrongKey = true;
-          this.loading = false;
-        }
-      });
-    }
-    else{
-      this.wrongKey = true;
-      this.loading = false;
-    }
-
+    // if(match == uniqueKey){
+    //   this.API.newPrivateData(uniqueKey).then((response) => {
+    //     if (response == '1') {
+    //       sessionStorage.setItem('status', 'online');
+    //       sessionStorage.setItem('inSession', true.toString())
+    //       this.state.session.next();
+    //     }
+    //     else {
+    //       this.wrongKey = true;
+    //       this.loading = false;
+    //     }
+    //   });
+    // }
+    // else{
+    //   this.wrongKey = true;
+    //   this.loading = false;
+    // }
+    sessionStorage.setItem('status', 'online');
+    sessionStorage.setItem('inSession', true.toString())
+    this.state.session.next();
   }
 
   decryptSubmit() {
